@@ -13,4 +13,15 @@ El FreeCAD y STEP incluyen parte superior e inferior
 * [thinlinbearhouse1rail_lm8.stp](step/thinlinbearhouse1rail_lm8.step)
 * Parte inferior: [thinlinbearhouse1rail_lm8_bot.stl](stl/thinlinbearhouse1rail_lm8_bot.stl)
 * Parte superior, para imprimir hay que darle la vuelta: [thinlinbearhouse1rail_lm8_top.stl](stl/thinlinbearhouse1rail_lm8_top.stl)
-* ![thinlinbearhouse1rail_lm8](img/thinlinbearhouse1rail_lm8.png)
+
+Vista de conjunto:
+![thinlinbearhouse1rail_lm8](img/thinlinbearhouse1rail_lm8.png)
+
+* Vista de la parte inferior:
+![thinlinbearhouse1rail_lm8_bot](img/thinlinbearhouse1rail_lm8_bot.png)
+
+### Soporte de eje
+Eje de 8mm, con tolerancias para imprimir
+
+![sk08](img/sk08.png)
+
