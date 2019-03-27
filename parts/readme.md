@@ -6,13 +6,11 @@
 * doc: documentación
 
 
-## Carcasa de rodamiento lineal estrecha de 8mm LM8 con un único agujero de sujeción a cada lado:
-* El FreeCAD y STEP incluyen parte superior e inferior
+### Carcasa de rodamiento lineal
+Modelo estrecho. Rodamiento LM8 de 8mm LM8 con un único agujero de sujeción a cada lado.
+El FreeCAD y STEP incluyen parte superior e inferior
 * [thinlinbearhouse1rail_lm8.fcad](freecad/thinlinbearhouse1rail_lm8.FCStd)
 * [thinlinbearhouse1rail_lm8.stp](step/thinlinbearhouse1rail_lm8.step)
 * Parte inferior: [thinlinbearhouse1rail_lm8_bot.stl](stl/thinlinbearhouse1rail_lm8_bot.stl)
-* Parte superior: [thinlinbearhouse1rail_lm8_top.stl](stl/thinlinbearhouse1rail_lm8_top.stl)
+* Parte superior, para imprimir hay que darle la vuelta: [thinlinbearhouse1rail_lm8_top.stl](stl/thinlinbearhouse1rail_lm8_top.stl)
 * ![thinlinbearhouse1rail_lm8](img/thinlinbearhouse1rail_lm8.png)
-
-
- [rom4b_blue_monster32x32.vhd](freecad/rom4b_blue_monster32x32.vhd)
