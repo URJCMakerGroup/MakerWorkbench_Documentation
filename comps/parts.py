@@ -1941,6 +1941,17 @@ class SimpleEndstopHolder (object):
         #        mbolt_head_r ......|________________|_____|....:
 
 
+        #   it can have a second hole:
+        #                             :  :estop_topbolt_dist
+        #                                : holder_out
+        #      __:________:______________: :..................
+        #     |   _________      |       |                   :
+        #     |  (_________) ----| 0  0  |                   + tot_w
+        #     |   _________  ----|       |-----> fc_axis_d   :
+        #     |  (_________) ----| 0  0  |                   :
+        #     |__________________|_______|...................:
+        #     :  :     
+
         # mounting bolt data
         d_mbolt = kcomp.D912[int(mbolt_d)]  #dictionary of the mounting bolt
         #print(str(d_mbolt))
@@ -1956,6 +1967,12 @@ class SimpleEndstopHolder (object):
         estp_bolt_sep = d_endstop['BOLT_SEP']
         estp_bolt_d = d_endstop['BOLT_D']  #diameter, not depth
         estp_w = d_endstop['L']
+
+        # if there is a second bolt 
+        if 'BOLT_TOP_H' in d_endstop:
+           estop_2ndbolt_topdist = d_endstop['BOLT_TOP_H']
+        else:
+           estop_2ndbolt_topdist = 0
 
         # length of the pins:
         estp_pin_d  = estp_tot_d - estp_d
@@ -2016,11 +2033,18 @@ class SimpleEndstopHolder (object):
         #dis_2_3_d = rail_l
         dis_1_5_d = tot_d + holder_out
         dis_1_4_d = dis_1_5_d - (estp_d - estp_bolt_dist)
+        # distances to the new point, that is the second bolt hole, if exists
+        if estop_2ndbolt_topdist > 0 :
+            dis_1_6_d = dis_1_5_d - estop_2ndbolt_topdist
+        else:
+            # same as 4: (to avoid errors) it will be the same hole
+            dis_1_6_d = dis_1_4_d
 
         fc_1_2_d = DraftVecUtils.scale(axis_d, dis_1_2_d)
         fc_1_3_d = DraftVecUtils.scale(axis_d, dis_1_3_d)
         fc_1_4_d = DraftVecUtils.scale(axis_d, dis_1_4_d)
         fc_1_5_d = DraftVecUtils.scale(axis_d, dis_1_5_d)
+        fc_1_6_d = DraftVecUtils.scale(axis_d, dis_1_6_d)
         # vector from the reference point to point 1 on axis_d
         if ref_d == 1: 
             refto_1_d = V0
@@ -2107,16 +2131,36 @@ class SimpleEndstopHolder (object):
             pos_estpbolt = d1_w1_h1_pos + fc_1_4_d + fc_1_2_wi
             # hole with the nut hole
             shp_estpbolt = fcfun.shp_bolt_dir (
-                                r_shank= (estp_bolt_d+TOL)/2.,
-                                l_bolt = tot_h,
-                                r_head = (kcomp.NUT_D934_D[estp_bolt_d]+TOL)/2.,
-                                l_head = endstop_nut_l,
-                                hex_head = 1,
-                                xtr_head = 1, xtr_shank = 1,
-                                fc_normal = axis_h,
-                                fc_verx1 = hex_verx,
-                                pos = pos_estpbolt)
+                             r_shank= (estp_bolt_d+TOL)/2.,
+                             l_bolt = tot_h,
+                           # 1 TOL didnt fit
+                           r_head = (kcomp.NUT_D934_D[estp_bolt_d]+2*TOL)/2.,
+                             l_head = endstop_nut_l,
+                             hex_head = 1,
+                             xtr_head = 1, xtr_shank = 1,
+                             fc_normal = axis_h,
+                             fc_verx1 = hex_verx,
+                             pos = pos_estpbolt)
             holes.append(shp_estpbolt)
+            # it can have a second hole
+            if estop_2ndbolt_topdist >0:
+                pos_estp_top_bolt =  d1_w1_h1_pos + fc_1_6_d + fc_1_2_wi
+                # hole with the nut hole
+                shp_estpbolt = fcfun.shp_bolt_dir (
+                             r_shank= (estp_bolt_d+TOL)/2.,
+                             l_bolt = tot_h,
+                           # 1 TOL didnt fit
+                           r_head = (kcomp.NUT_D934_D[estp_bolt_d]+2*TOL)/2.,
+                             l_head = endstop_nut_l,
+                             hex_head = 1,
+                             xtr_head = 1, xtr_shank = 1,
+                             fc_normal = axis_h,
+                             fc_verx1 = hex_verx,
+                             pos = pos_estp_top_bolt)
+                holes.append(shp_estpbolt)
+
+
+
         # holes for the rails, point d2 w3 h2
         for fc_1_3_wi in [fc_1_3_w, fc_1_3_w.negative()]:
             #hole for the rails, use the function stadium
@@ -2183,18 +2227,15 @@ class SimpleEndstopHolder (object):
         del mesh_shp
 
 
-
-
-
 #doc = FreeCAD.newDocument()
 #h_estp = SimpleEndstopHolder(
-#                 d_endstop = kcomp.ENDSTOP_A,
+#                 d_endstop = kcomp.ENDSTOP_D3V,
 #                 rail_l = 25,
-#                 base_h = 4.,
+#                 base_h = 3.,
 #                 h = 0,
-#                 holder_out = 2.,
+#                 holder_out = 0, 
 #                 #csunk = 1,
-#                 mbolt_d = 3.,
+#                 mbolt_d = 4.,
 #                 endstop_nut_dist = 2.,
 #                 min_d = 1,
 #                 fc_axis_d = VX,
@@ -2205,7 +2246,7 @@ class SimpleEndstopHolder (object):
 #                 ref_h = 1,
 #                 pos = V0,
 #                 wfco = 1,
-#                 name = 'simple_enstop_holder')
+#                 name = 'simple_endstop_holder')
 
 
 # ----------- thin linear bearing housing with one rail to be attached
@@ -2363,8 +2404,8 @@ class ThinLinBearHouse1rail (object):
         MLTOL = self.MLTOL
         BOLT_HEAD_R = kcomp.D912_HEAD_D[BOLT_D] / 2.0
         BOLT_HEAD_L = kcomp.D912_HEAD_L[BOLT_D] + MTOL
-        BOLT_HEAD_R_TOL = BOLT_HEAD_R + MTOL/2.0 
-        BOLT_SHANK_R_TOL = BOLT_D / 2.0 + MTOL/2.0
+        BOLT_HEAD_R_TOL = BOLT_HEAD_R + MTOL # More toler/2.0 
+        BOLT_SHANK_R_TOL = BOLT_D / 2.0 + MTOL # more tolerance: MTOL/2.
         BOLT_NUT_R = kcomp.NUT_D934_D[BOLT_D] / 2.0
         BOLT_NUT_L = kcomp.NUT_D934_L[BOLT_D] + MTOL
         #  1.5 TOL because diameter values are minimum, so they may be larger
@@ -2488,7 +2529,7 @@ class ThinLinBearHouse1rail (object):
         bolt2_atch_pos = (  botcenter_pos
                          + DraftVecUtils.scale(n1_slide_axis,-boltrailcen_dist))
 
-        print str(BOLT_SHANK_R_TOL)
+        print 'shank tol' + str(BOLT_SHANK_R_TOL)
         shp_bolt1_atch = fcfun.shp_cylcenxtr(r=BOLT_SHANK_R_TOL,
                                              h = base_h,
                                              normal = n1_bot_axis_neg,
@@ -2592,7 +2633,7 @@ class ThinLinBearHouse1rail (object):
 
 
 #doc = FreeCAD.newDocument()
-#ThinLinBearHouse1rail (kcomp.LMEUU[8])
+#ThinLinBearHouse1rail (kcomp.LMUU[8])
 #ThinLinBearHouse (kcomp.LMEUU[10], mid_center=0)
 
 # ----------- thin linear bearing housing with one rail to be attached
@@ -4200,12 +4241,12 @@ class NemaMotorHolder (object):
 #                  motor_thick = 4.,
 #                  reinf_thick = 3.,
 #                  motor_min_h =8., 
-#                  motor_max_h = 25.,
+#                  motor_max_h = 35.,
 #                  motor_xtr_space = 2., # counting on one side
-#                  motor_xtr_space_d = 0, 
+#                  motor_xtr_space_d = -1, 
 #                  bolt_wall_d = 4.,
 #                  chmf_r = 0.2,
-#                  bolt_wall_sep = 40., # optional
+#                  #bolt_wall_sep = 40., # optional
 #                  rail = 1,
 #                  fc_axis_h = VZN,#FreeCAD.Vector(1,1,0),
 #                  fc_axis_n = VX, #FreeCAD.Vector(1,-1,0),
@@ -4214,7 +4255,7 @@ class NemaMotorHolder (object):
 #                  #ref_bolt = 0,
 #                  pos = V0, # FreeCAD.Vector(3,2,5),
 #                  wfco = 1,
-#                  name = 'nema_holder')
+#                  name = 'nema17_holder_rail35_8')
 
 #doc = FreeCAD.newDocument()
 #h_nema = NemaMotorHolder ( 
