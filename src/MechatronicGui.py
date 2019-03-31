@@ -263,11 +263,6 @@ class IdlePulleyHolder_TaskPanel:
                                 endstop_posh = EndHigh, #0,  
                                 name = "idlepulleyhold")
         
-        #FreeCAD.activeDocument.removeObject("idlepulleyhold_chmf")
-        #FreeCAD.activeDocument.removeObject("idlepulleyhold_aux")
-        #FreeCAD.activeDocument.removeObject("idlepulleyhold_nuthole")
-        #FreeCAD.activeDocument.removeObject("idlepulleyhold_nuthole_hole")
-        #FreeCAD.activeDocument.removeObject("idlepulleyhold_nuthole_nut")
         FreeCADGui.activeDocument().activeView().viewAxonometric() #Axonometric view
         FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
         FreeCADGui.Control.closeDialog() #close the dialog
@@ -553,17 +548,15 @@ class AluprofBracket_TaskPanel:
         # Label:
         self.Sunk_Label = QtGui.QLabel("Sunk:")
         # Spin Box that takes doubles
-        self.Sunk_Value = QtGui.QDoubleSpinBox()
-        # Default value
-        self.Sunk_Value.setValue(0)
-        
-        # suffix to indicate the units
-        self.Sunk_Value.setSuffix(' mm')
+        self.Sunk_ComboBox = QtGui.QComboBox()
+        Sunk_Text = ["Hole fot Nut","Without center","Withput reinforce"]
+        self.Sunk_ComboBox.addItems(Sunk_Text)
+        self.Sunk_ComboBox.setCurrentIndex(0)
 
         # row 9, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Sunk_Label,9,0,1,1)
         # row 9, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Sunk_Value,9,1,1,1)        
+        layout.addWidget(self.Sunk_ComboBox,9,1,1,1)        
 
         #if self.Type == 0:
             #self.form.repaint()
@@ -628,6 +621,7 @@ class AluprofBracket_TaskPanel:
     def accept(self):
         NUT = {0:3, 1:4, 2:5, 3:6}
         Size = {0: 10, 1: 15, 2: 20, 3: 30, 4: 40}
+        Sunk_values = {0:0, 1:1, 2:2}
         Size_1 = Size[self.Size_1_ComboBox.currentIndex()]
         Size_2 = Size[self.Size_2_ComboBox.currentIndex()]
         Thikness = self.Thikness_Value.value()
@@ -635,7 +629,7 @@ class AluprofBracket_TaskPanel:
         Nut_Prof_2 = NUT[self.Nut_Profile_2_ComboBox.currentIndex()]
         NumberNut = 1+self.N_Nut_ComboBox.currentIndex()
         Dist_Nut = self.Dist_Nut_Value.value()
-        Sunk = self.Sunk_Value.value()
+        Sunk = Sunk_values[self.Sunk_ComboBox.currentIndex()]
         self.Type = self.Type_ComboBox.currentIndex()
 
         if self.Type == 0:
@@ -832,25 +826,25 @@ class _ThinLinBearHouse1rail_Cmd:
     def Activated(self):
         # what is done when the command is clicked
         # creates a panel with a dialog
-        Widget_ThinkLinBearHouse1rail = QtGui.QWidget()
-        Panel_ThinkLinBearHouse1rail = ThinkLinBearHouse1railTaskPanel(Widget_ThinkLinBearHouse1rail)
-        FreeCADGui.Control.showDialog(Panel_ThinkLinBearHouse1rail) 
+        Widget_ThinLinBearHouse1rail = QtGui.QWidget()
+        Panel_ThinLinBearHouse1rail = ThinLinBearHouse1railTaskPanel(Widget_ThinLinBearHouse1rail)
+        FreeCADGui.Control.showDialog(Panel_ThinLinBearHouse1rail) 
         
     def GetResources(self):
         MenuText = QtCore.QT_TRANSLATE_NOOP(
-            'Think Linear Bear House 1 Rail',
-            'Think Linear Bear House 1 Rail')
+            'Thin Linear Bear House 1 Rail',
+            'Thin Linear Bear House 1 Rail')
         ToolTip = QtCore.QT_TRANSLATE_NOOP(
-            'Think Linear Bear House 1 Rail',
-            'Creates a new Think Linear Bear House 1 Rail')
+            'Thin Linear Bear House 1 Rail',
+            'Creates a new Thin Linear Bear House 1 Rail')
         return {
-            'Pixmap': __dir__ + '/icons/Think_Linear_Bear_House_1Rail_cmd.svg',
+            'Pixmap': __dir__ + '/icons/Thin_Linear_Bear_House_1Rail_cmd.svg',
             'MenuText': MenuText,
             'ToolTip': ToolTip}
     def IsActive(self):
         return not FreeCAD.ActiveDocument is None
 
-class ThinkLinBearHouse1railTaskPanel:
+class ThinLinBearHouse1railTaskPanel:
     def __init__(self, widget):
         self.form = widget
         # The layout will be a grid
