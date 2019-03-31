@@ -20,7 +20,7 @@ En este repositorio se encuentra el código de las piezas que se emplean en Meca
 - icons: iconos del workbench.
 - parts: 
 - src: código fuente
-    - func: funciones creadass para el workbench
+    - func: funciones creadas para el workbench
 
 ---
 ## Verión estable:
