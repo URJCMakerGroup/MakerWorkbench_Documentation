@@ -15,13 +15,13 @@ En este repositorio se encuentra el código de las piezas que se emplean en Meca
 
 ---
 ## Organización de las carpetas:
- [dir]: https://github.com/felipe-m/fcad-comps
 - comps: copia del repositorio [fcad-comps](dir) de Felipe Machado.
 - icons: iconos del workbench.
 - parts: 
 - src: código fuente
-    - func: funciones creadass para el workbench
+    - func: funciones creadas para el workbench
 
+ [dir]: https://github.com/felipe-m/fcad-comps
 ---
 ## Verión estable:
 La versión estable del workbench se encuentra en el archivo comprimido "Mechatronic.zip"
