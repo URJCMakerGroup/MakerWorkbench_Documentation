@@ -305,9 +305,9 @@ class SimpleEndStopHolder_TaskPanel:
         self.Type_Label = QtGui.QLabel("Type:")
         # ComboBox
         self.Type_ComboBox = QtGui.QComboBox()
-        Type_text = ["A","B"]
+        Type_text = ["A","B","C"]
         self.Type_ComboBox.addItems(Type_text)
-        self.Type_ComboBox.setCurrentIndex(0)
+        self.Type_ComboBox.setCurrentIndex(2)
 
         # row 0, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Type_Label,0,0,1,1)
@@ -333,7 +333,7 @@ class SimpleEndStopHolder_TaskPanel:
 
         
     def accept(self):
-        Type_values = {0:kcomp.ENDSTOP_A, 1:kcomp.ENDSTOP_B}
+        Type_values = {0:kcomp.ENDSTOP_A, 1:kcomp.ENDSTOP_B, 2:kcomp.ENDSTOP_D3V}
         Type = Type_values[self.Type_ComboBox.currentIndex()]
         Rail_L = self.Rail_Value.value()
         parts.SimpleEndstopHolder(d_endstop = Type,
@@ -889,6 +889,144 @@ class ThinLinBearHouse1railTaskPanel:
         FreeCADGui.SendMsgToActiveView("ViewFit")
 
 ###############################################################################
+#**************************Thin**Linear***Bear**House**************************
+class _ThinLinBearHouse_Cmd:
+    def Activated(self):
+        # what is done when the command is clicked
+        # creates a panel with a dialog
+        Widget_ThinLinBearHouse = QtGui.QWidget()
+        Panel_ThinLinBearHouse = ThinLinBearHouseTaskPanel(Widget_ThinLinBearHouse)
+        FreeCADGui.Control.showDialog(Panel_ThinLinBearHouse) 
+        
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Thin Linear Bear House',
+            'Thin Linear Bear House')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            'Thin Linear Bear House',
+            'Creates a new Thin Linear Bear House')
+        return {
+            'Pixmap': __dir__ + '/icons/Thin_Linear_Bear_House_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None
+        
+class ThinLinBearHouseTaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        # The layout will be a grid
+        layout = QtGui.QGridLayout(self.form)
+        
+        # ---- row 0: 
+        # Label:
+        self.LMTipe_Label = QtGui.QLabel("Type:")
+        # Spin Box that takes doubles
+        self.LMType_ComboBox = QtGui.QComboBox()
+        # Default value
+        self.LMType_text = ["LMUU 6","LMUU 8","LMUU 10","LMUU 12","LMEUU 8","LMEUU 10","LMEUU12","LMELUU 12"]
+        self.LMType_ComboBox.addItems(self.LMType_text)
+        self.LMType_ComboBox.setCurrentIndex(1)
+
+        # row 0, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.LMTipe_Label,0,0,1,1)
+        # row 0, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.LMType_ComboBox,0,1,1,1)
+
+    def accept(self):
+        LMType_values = {0:kcomp.LM6UU,
+                         1:kcomp.LM8UU,
+                         2:kcomp.LM10UU,
+                         3:kcomp.LM12UU,
+                         4:kcomp.LME8UU,
+                         5:kcomp.LME10UU,
+                         6:kcomp.LME12UU,
+                         7:kcomp.LME12LUU, }
+
+        LMType = LMType_values[self.LMType_ComboBox.currentIndex()]
+        parts.ThinLinBearHouse(d_lbear=LMType,
+                         fc_slide_axis = VX,
+                         fc_bot_axis =VZN,
+                         fc_perp_axis = V0,
+                         axis_h = 0,
+                         bolts_side = 1,
+                         axis_center = 1,
+                         mid_center  = 1,
+                         bolt_center  = 0,
+                         pos = V0,
+                         name = 'thinlinbearhouse')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+###############################################################################
+#*****************************Linear***Bear**House*****************************
+class _LinBearHouse_Cmd:
+    def Activated(self):
+        # what is done when the command is clicked
+        # creates a panel with a dialog
+        Widget_LinBearHouse = QtGui.QWidget()
+        Panel_LinBearHouse = LinBearHouseTaskPanel(Widget_LinBearHouse)
+        FreeCADGui.Control.showDialog(Panel_LinBearHouse) 
+        
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Linear Bear House',
+            'Linear Bear House')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            'Linear Bear House',
+            'Creates a new Linear Bear House')
+        return {
+            'Pixmap': __dir__ + '/icons/Linear_Bear_House_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None
+
+class LinBearHouseTaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        # The layout will be a grid
+        layout = QtGui.QGridLayout(self.form)
+        
+        # ---- row 0: 
+        # Label:
+        self.SCTipe_Label = QtGui.QLabel("Type:")
+        # Spin Box that takes doubles
+        self.SCType_ComboBox = QtGui.QComboBox()
+        # Default value
+        self.SCType_text = ["SC8UU","SC8UU_Pr","SC10UU","SC10UU_Pr","SC12UU","SC12UU_Pr"]
+        self.SCType_ComboBox.addItems(self.SCType_text)
+        self.SCType_ComboBox.setCurrentIndex(1)
+
+        # row 0, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.SCTipe_Label,0,0,1,1)
+        # row 0, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.SCType_ComboBox,0,1,1,1)
+
+    def accept(self):
+        SCType_values = {0:kcomp.SC8UU,
+                         1:kcomp.SC8UU_Pr,
+                         2:kcomp.SC10UU,
+                         3:kcomp.SC10UU_Pr,
+                         4:kcomp.SC12UU,
+                         5:kcomp.SC12UU_Pr}
+
+        SCType = SCType_values[self.SCType_ComboBox.currentIndex()]
+        parts.LinBearHouse(d_lbearhousing = SCType,
+                               fc_slide_axis = VX,
+                               fc_bot_axis =VZN,
+                               axis_center = 1,
+                               mid_center  = 1,
+                               pos = V0,
+                               name = 'linbearhouse')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+###############################################################################
 #******************************PRINT**AND**EXPORT******************************
 class _ChangePosExportCmd:
     def Activated(self):
@@ -918,6 +1056,8 @@ FreeCADGui.addCommand('Aluprof_Bracket',_AluprofBracket_Cmd())
 FreeCADGui.addCommand('Motor_Holder',_MotorHolderCmd())
 FreeCADGui.addCommand('Simple_End_Stop_Holder',_SimpleEndStopHolder_Cmd())
 FreeCADGui.addCommand('ThinLinBearHouse1rail',_ThinLinBearHouse1rail_Cmd())
+FreeCADGui.addCommand('ThinLinBearHouse',_ThinLinBearHouse_Cmd())
+FreeCADGui.addCommand('LinBearHouse',_LinBearHouse_Cmd())
 FreeCADGui.addCommand('ChangePosExport',_ChangePosExportCmd())
 
 #        # ---- row 0: 
