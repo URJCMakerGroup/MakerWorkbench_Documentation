@@ -244,7 +244,7 @@ class IdlePulleyHolder_TaskPanel:
         layout.addWidget(self.EndStopHigh_Value,4,1,1,1)
 
     def accept(self):
-        self.Aluprof_values = {0: 20, 1:30}
+        self.Aluprof_values = {0:20, 1:30}
         self.NutBolt_values = {0:2.5, 1:3, 2:4, 3:5, 4:6}
         self.EndSide_values = {0:1, 1:0, 2:-1}
         Aluprof = self.Aluprof_values[self.Aluprof_ComboBox.currentIndex()]
@@ -336,19 +336,30 @@ class SimpleEndStopHolder_TaskPanel:
         Type_values = {0:kcomp.ENDSTOP_A, 1:kcomp.ENDSTOP_B, 2:kcomp.ENDSTOP_D3V}
         Type = Type_values[self.Type_ComboBox.currentIndex()]
         Rail_L = self.Rail_Value.value()
+        ref_d = 1.
+        mbolt_d = 3.
+        endstop_nut_dist = 0.
+        min_d = 0.
+        holder_out = 2.
+        if self.Type_ComboBox.currentIndex() == 2:
+            ref_d = 2.
+            mbolt_d = 4.
+            endstop_nut_dist = 2.
+            min_d = 1.
+            holder_out = 0.
         parts.SimpleEndstopHolder(d_endstop = Type,
                                   rail_l = Rail_L,
-                                  base_h = 5.,
+                                  base_h = 3.,
                                   h = 0,
-                                  holder_out = 2.,
+                                  holder_out = holder_out,
                                   #csunk = 1,
-                                  mbolt_d = 3.,
-                                  endstop_nut_dist = 0.,
-                                  min_d = 0,
+                                  mbolt_d = mbolt_d,
+                                  endstop_nut_dist = endstop_nut_dist,
+                                  min_d = min_d,
                                   fc_axis_d = VX,
                                   fc_axis_w = V0,
                                   fc_axis_h = VZ,
-                                  ref_d = 1,
+                                  ref_d = ref_d,
                                   ref_w = 1,
                                   ref_h = 1,
                                   pos = V0,
