@@ -376,9 +376,9 @@ WASH_D125_T  = {
                  10:   2.0 }
 
 D125 = {} # empty dictionary
-for (k_di, di), (k_do, do), (k_t, t) in zip(WASH_D125_DI.iteritems(),
-                                            WASH_D125_DO.iteritems(),
-                                            WASH_D125_T.iteritems()):
+for (k_di, di), (k_do, do), (k_t, t) in zip(WASH_D125_DI.items(),
+                                            WASH_D125_DO.items(),
+                                            WASH_D125_T.items()):
     # creation of a 2 dimension dictionary
     # for example: 
     #              D125[4]['do']
@@ -426,9 +426,9 @@ WASH_D9021_T  = {
                  10:   2.5 }
 
 D9021 = {} # empty dictionary
-for (k_di, di), (k_do, do), (k_t, t) in zip(WASH_D9021_DI.iteritems(),
-                                            WASH_D9021_DO.iteritems(),
-                                            WASH_D9021_T.iteritems()):
+for (k_di, di), (k_do, do), (k_t, t) in zip(WASH_D9021_DI.items(),
+                                            WASH_D9021_DO.items(),
+                                            WASH_D9021_T.items()):
     # creation of a 2 dimension dictionary
     # for example: 
     #              D9021[4]['do']
@@ -491,9 +491,9 @@ BEAR_T  = {
           }
 
 BEARING = {} # empty dictionary
-for (k_ndi, di), (k_ndo, do), (k_nt, t) in zip(BEAR_DI.iteritems(),
-                                               BEAR_DO.iteritems(),
-                                               BEAR_T.iteritems()):
+for (k_ndi, di), (k_ndo, do), (k_nt, t) in zip(BEAR_DI.items(),
+                                               BEAR_DO.items(),
+                                               BEAR_T.items()):
     # creation of a 2 dimension dictionary
     # for example: 
     #              BEARING[603]['do']

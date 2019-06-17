@@ -2426,7 +2426,7 @@ class ThinLinBearHouse1rail (object):
         bolt2wall = fcfun.get_bolt_end_sep(BOLT_D, hasnut=1) 
         #housing_l = bearing_l_tol + 2 * (2*BOLT_HEAD_R_TOL + 2* MIN_SEP_WALL)
         housing_l = bearing_l_tol + 2 * (2* bolt2wall)
-        print "housing_l: %", housing_l
+        print ("housing_l: %", housing_l)
         # width of the housing (very tight)
         if rod_d > 8 :
           housing_w = max ((bearing_d_tol + 2* MIN_SEP_WALL), 
@@ -2434,22 +2434,22 @@ class ThinLinBearHouse1rail (object):
         else: # 8 is very thight
           housing_w = max ((bearing_d_tol + 2* MIN_SEP_WALL), 
                            (d_lbear['Di'] + 4* MIN_SEP_WALL + 2*BOLT_D))
-        print "housing_w: %", housing_w
+        print ("housing_w: %", housing_w)
 
         # dimensions of the base:
         # length on the direction of the sliding rod
         base_l = housing_l +  4* MIN_SEP_WALL + 4 * BOLT_HEAD_R_TOL
-        print "base_l: %", base_l
+        print ("base_l: %", base_l)
         # width of the base (very tight), the same as the housing
         base_w = housing_w
-        print "base_w: %", base_w
+        print ("base_w: %", base_w)
         # height of the base (not tight). twice the mininum height
         base_h = 2 * OUT_SEP_H 
-        print "base_h: %", base_h
+        print ("base_h: %", base_h)
 
         # height of the housing (not tight, can be large)
         housing_h = base_h +  2* BOLT_HEAD_L + bearing_d_tol
-        print "housing_h: %", housing_h
+        print ("housing_h: %", housing_h)
 
 
         # distance on the slide_axis from midcenter=0 to midcenter 1.
@@ -2529,7 +2529,7 @@ class ThinLinBearHouse1rail (object):
         bolt2_atch_pos = (  botcenter_pos
                          + DraftVecUtils.scale(n1_slide_axis,-boltrailcen_dist))
 
-        print 'shank tol' + str(BOLT_SHANK_R_TOL)
+        print('shank tol' + str(BOLT_SHANK_R_TOL))
         shp_bolt1_atch = fcfun.shp_cylcenxtr(r=BOLT_SHANK_R_TOL,
                                              h = base_h,
                                              normal = n1_bot_axis_neg,
@@ -2866,8 +2866,8 @@ class ThinLinBearHouse (object):
             housing_w = max ((bearing_d + 2* MIN_SEP_WALL), 
                               2 * (bolt2wall + bolt2axis))
 
-        print "housing_l: %", housing_l
-        print "housing_w: %", housing_w
+        print("housing_l: %", housing_l)
+        print("housing_w: %", housing_w)
 
         # bolt distance
         # distance of the bolts to the center, on n1_slide_axis dir
@@ -2878,7 +2878,7 @@ class ThinLinBearHouse (object):
         # minimum height of the housing 
         housing_min_h = bearing_d + 2 * OUT_SEP_H
         axis_min_h = housing_min_h / 2.
-        print "min housing_h: %", housing_min_h
+        print("min housing_h: %", housing_min_h)
         if axis_h == 0:
             # minimum values
             housing_h = housing_min_h
@@ -3638,8 +3638,8 @@ class ThinLinBearHouseAsim (object):
                               2 * bolt2wall + bolt2cen_wid_n + bolt2cen_wid_p)
 
 
-        print "housing_d: %", housing_d
-        print "housing_w: %", housing_w
+        print("housing_d: %", housing_d)
+        print("housing_w: %", housing_w)
 
         # bolt distance
         # distance of the bolts to the center, on nfro_ax dir
@@ -3648,7 +3648,7 @@ class ThinLinBearHouseAsim (object):
         # minimum height of the housing 
         housing_min_h = bearing_d + 2 * OUT_SEP_H
         axis_min_h = housing_min_h / 2.
-        print "min housing_h: %", housing_min_h
+        print("min housing_h: %", housing_min_h)
         if axis_h == 0:
             # minimum values
             housing_h = housing_min_h
