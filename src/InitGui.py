@@ -42,13 +42,13 @@ class MechatronicWorkbench (Workbench):
     ".+@#########+@+.",
     ".+++++++++++@#+.",
     ".+#########+##+.",
-    ".+###++####+##+.",
-    ".+####+####+##+.",
-    ".+####+####+##+.",
-    ".+####+####+##+.",
-    ".+####+####+##+.",
-    ".+####+####+##+.",
-    ".+###+++###+#@+.",
+    ".+#++###++#+##+.",
+    ".+#+#+#+#+#+##+.",
+    ".+#+##+##+#+##+.",
+    ".+#+#####+#+##+.",
+    ".+#+#####+#+##+.",
+    ".+#+#####+#+##+.",
+    ".+#+#####+#+#@+.",
     ".+#########+@+..",
     ".++++++++++++...",
     "................"};
@@ -60,11 +60,21 @@ class MechatronicWorkbench (Workbench):
         from PySide import QtCore, QtGui
         import MechatronicGui
         #list of commands:
-        cmdlist = ["Sk","Idle_Pulley_Holder","Aluprof_Bracket","Motor_Holder","Simple_End_Stop_Holder","ThinLinBearHouse1rail","Filter_Holder","Tensioner","Double_Belt_Clamp","ChangePosExport","Filter_Stage"]
+        cmdlist = ["Sk",
+                   "Idle_Pulley_Holder",
+                   "Aluprof_Bracket",
+                   "Motor_Holder",
+                   "Simple_End_Stop_Holder",
+                   "LinBearHouse",
+                   "Stop_Holder",
+                   "Filter_Holder","Tensioner",
+                   #"Double_Belt_Clamp",
+                   "ChangePosExport",
+                   "Filter_Stage"]
         self.appendToolbar(
-            str(QtCore.QT_TRANSLATE_NOOP("Sk", "Sk")), cmdlist)
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Mechatronic")), cmdlist)
         self.appendMenu(
-            str(QtCore.QT_TRANSLATE_NOOP("Sk", "Sk")), cmdlist)
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Mechatronic")), cmdlist)
         
         Log ('Loalding Mechatronic Workbench... done! \n')
     
