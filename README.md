@@ -106,7 +106,7 @@ Select your lenguage:
   </details>
 
   ![nema17-25](/parts/img/nema17_holder_rail25_8.png)
-  ![nema17-35](/parts/img/nema17_holder_rail35_8.FcStd.png)
+  ![nema17-35](/parts/img/nema17_holder_rail35_8.FCStd.png)
 
   <details>
     <summary>Thin lin bear house</summary>
@@ -115,7 +115,7 @@ Select your lenguage:
       </ul>
   </details>
 
-  ![all](/parts/img/thilinbearhouse1rail_lm8.png)
+  ![all](/parts/img/thinlinbearhouse1rail_lm8.png)
   ![bot](/parts/img/thinlinbearhouse1rail_lm8_bot.png)
 
   #### Functions:
@@ -192,7 +192,7 @@ Select your lenguage:
   ![End-Stop-25-d3v](/parts/img/d3v_endstop_holder_r25_m4.png)
 
   <details>
-    <summary>Hall stop holder</summary>
+    <summary>Soporte finalr</summary>
       <ul>
         <li>Ancho</li>
         <li>Espesor</li>
@@ -236,7 +236,7 @@ Select your lenguage:
   </details>
 
   ![nema17-25](/parts/img/nema17_holder_rail25_8.png)
-  ![nema17-35](/parts/img/nema17_holder_rail35_8.FcStd.png)
+  ![nema17-35](/parts/img/nema17_holder_rail35_8.FCStd.png)
 
   <details>
     <summary>Carcasa del rodamiento lineal</summary>
@@ -245,7 +245,7 @@ Select your lenguage:
       </ul>
   </details>
 
-  ![all](/parts/img/thilinbearhouse1rail_lm8.png)
+  ![all](/parts/img/thinlinbearhouse1rail_lm8.png)
   ![bot](/parts/img/thinlinbearhouse1rail_lm8_bot.png)
 
   #### Funciones:
