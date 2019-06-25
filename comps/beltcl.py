@@ -717,8 +717,8 @@ class BeltClamp (object):
             vec_tofrontclamp = V0
             vec_tofrontbolt = vec_2to3
             vec_tofrontbase = vec_2to4
-            vec_tobackbolt = ve_2to1 + vec_1to5
-            vec_tobackbase = ve_2to1 + vec_1to6
+            vec_tobackbolt = vec_2to1 + vec_1to5
+            vec_tobackbase = vec_2to1 + vec_1to6
         elif ref == 3:
             if clamp2end == 0 or bolt2end == 0:
                 logger.error('reference on the bolts, there are no bolts')

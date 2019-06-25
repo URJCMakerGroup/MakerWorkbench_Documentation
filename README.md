@@ -4,7 +4,7 @@ Select your lenguage:
 <details>
   <summary>English</summary>
   This repository have the parts of a mechatronic system
-  
+
   ---
   
   ### Index
@@ -12,6 +12,7 @@ Select your lenguage:
   * [Stable Version](#stable-version)
   * [How it's works](#how-its-works)
     * [Components](#components)
+    * [Mechatronic system](#mechatronic-systems)
     * [Functions](#functions)
   ---
   ### Folder organization
@@ -118,6 +119,55 @@ Select your lenguage:
   ![all](/parts/img/thinlinbearhouse1rail_lm8.png)
   ![bot](/parts/img/thinlinbearhouse1rail_lm8_bot.png)
 
+  <details>
+    <summary>Filter holder</summary>
+      <ul>
+        <li>Length</li>
+        <li>Width</li>
+      </ul>
+  </details>
+
+  ![filter_holder](/parts/img/filter_holder.png)
+
+  <details>
+    <summary>Tensioner</summary>
+      <ul>
+        <li>Belt hight</li>
+        <li>Base width</li>
+        <li>Thickness</li>
+        <li>Metric nut</li>
+      </ul>
+  </details>
+
+  ![tensioner](/parts/img/tensioner.png)
+
+  <details>
+    <summary>Belt clamp</summary>
+      <ul>
+        <li>Type</li>
+        <li>Length</li>
+        <li>Width</li>
+        <li>Metric nut</li>
+      </ul>
+  </details>
+
+  ![BeltClamp1](/parts/img/belt_clamp_simple.png)
+  ![BeltClamp2](/parts/img/belt_clamp_double.png)
+
+  #### Mechatronic Systems:
+  <details>
+    <summary>Filter Stage</summary>
+      <ul>
+        <li>Move distance</li>
+        <li>Base width</li>
+        <li>Tensioner stroke</li>
+        <li>Thickness</li>
+        <li>Metric nut</li>
+      </ul>
+  </details>
+
+  ![filter_stage](/parts/img/filter_stage.png)
+
   #### Functions:
   <details>
     <summary>Change to print position</summary>
@@ -137,6 +187,7 @@ Select your lenguage:
   * [Versión estable](#verión-estable)
   * [Funcionamiento del workbench](#funcionamiento-del-workbench)  
     * [Componentes](#componentes)
+    * [Sistemas mecatrónicos](#sistemas-mecatrónicos)
     * [Funciones](#funciones)
 
   ---
@@ -192,7 +243,7 @@ Select your lenguage:
   ![End-Stop-25-d3v](/parts/img/d3v_endstop_holder_r25_m4.png)
 
   <details>
-    <summary>Soporte finalr</summary>
+    <summary>Soporte final</summary>
       <ul>
         <li>Ancho</li>
         <li>Espesor</li>
@@ -247,6 +298,55 @@ Select your lenguage:
 
   ![all](/parts/img/thinlinbearhouse1rail_lm8.png)
   ![bot](/parts/img/thinlinbearhouse1rail_lm8_bot.png)
+
+  <details>
+    <summary>Soporte del filtro</summary>
+      <ul>
+        <li>Largo</li>
+        <li>Ancho</li>
+      </ul>
+  </details>
+
+  ![filter_holder](/parts/img/filter_holder.png)
+
+  <details>
+    <summary>Tensionador de la polea</summary>
+      <ul>
+        <li>Altura de polea</li>
+        <li>Ancho de base</li>
+        <li>Espesor</li>
+        <li>Metrica del tornillo</li>
+      </ul>
+  </details>
+
+  ![tensioner](/parts/img/tensioner.png)
+
+  <details>
+    <summary>Abrazadera de polea</summary>
+      <ul>
+        <li>Tipo</li>
+        <li>Largo</li>
+        <li>Ancho</li>
+        <li>Metrica del tornillo</li>
+      </ul>
+  </details>
+
+  ![BeltClamp1](/parts/img/belt_clamp_simple.png)
+  ![BeltClamp2](/parts/img/belt_clamp_double.png)
+
+  #### Sistemas mecatrónicos:
+  <details>
+    <summary>Filter Stage</summary>
+      <ul>
+        <li>Distancia de recorrido</li>
+        <li>Ancho de base</li>
+        <li>Tensionador de carrera</li>
+        <li>Espesor</li>
+        <li>Metrica del tornillo</li>
+      </ul>
+  </details>
+
+  ![filter_stage](/parts/img/filter_stage.png)
 
   #### Funciones:
   <details>
