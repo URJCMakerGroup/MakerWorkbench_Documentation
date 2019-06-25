@@ -151,8 +151,8 @@ Select your lenguage:
       </ul>
   </details>
 
-  ![BeltClamp1](/parts/img/belt_clamp_simple.png)
-  ![BeltClamp2](/parts/img/belt_clamp_double.png)
+  ![BeltClamp1](/parts/img/Belt_clamp_simple.png)
+  ![BeltClamp2](/parts/img/Belt_clamp_double.png)
 
   #### Mechatronic Systems:
   <details>
@@ -331,8 +331,8 @@ Select your lenguage:
       </ul>
   </details>
 
-  ![BeltClamp1](/parts/img/belt_clamp_simple.png)
-  ![BeltClamp2](/parts/img/belt_clamp_double.png)
+  ![BeltClamp1](/parts/img/Belt_clamp_simple.png)
+  ![BeltClamp2](/parts/img/Belt_clamp_double.png)
 
   #### Sistemas mecatrónicos:
   <details>
