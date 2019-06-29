@@ -35,6 +35,7 @@ from fcfun import V0, VX, VY, VZ, VZN
 import parts
 import kcomp
 import partset
+import beltcl
 from filter_stage_fun import filter_stage_fun, filter_holder_fun, tensioner_fun
 from print_export_fun import print_export
 
@@ -682,7 +683,7 @@ class _MotorHolderCmd:
             'Motor Holder')
         ToolTip = QtCore.QT_TRANSLATE_NOOP(
             'Motor Holder',
-            'Creates a new Motor Holder')
+            'Creates a Motor Holder')
         return {
             'Pixmap': __dir__ + '/icons/Motor_Holder_cmd.svg',
             'MenuText': MenuText,
@@ -792,7 +793,7 @@ class _LinBearHouse_Cmd:
             'Linear Bear House')
         ToolTip = QtCore.QT_TRANSLATE_NOOP(
             'Linear Bear House',
-            'Creates a new Linear Bear House')
+            'Creates a Linear Bear House')
         return {
             'Pixmap': __dir__ + '/icons/Thin_Linear_Bear_House_1Rail_cmd.svg',
             'MenuText': MenuText,
@@ -1197,7 +1198,7 @@ class _FilterHolderCmd:
             'Filter Holder')
         ToolTip = QtCore.QT_TRANSLATE_NOOP(
             '',
-            'Creates a new Filter Holder')
+            'Creates a Filter Holder')
         return {
             'Pixmap': __dir__ + '/icons/Filter_Holder_cmd.svg',
             'MenuText': MenuText,
@@ -1287,7 +1288,7 @@ class _TensionerCmd:
             'Tensioner')
         ToolTip = QtCore.QT_TRANSLATE_NOOP(
             'Tensioner',
-            'Creates a new Tensioner')
+            'Creates a Tensioner')
         return {
             'Pixmap': __dir__ + '/icons/Tensioner_cmd.svg',
             'MenuText': MenuText,
@@ -1416,7 +1417,7 @@ class TensionerTaskPanel:
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
 
-"""
+
 ###############################################################################
 #******************************Double**Belt**Clamp*****************************
 #                               IN PROGRESS
@@ -1427,11 +1428,11 @@ class _DoubleBeltClampCmd:
         FreeCADGui.Control.showDialog(Panel_DoubleBeltClamp)     
     def GetResources(self):
         MenuText = QtCore.QT_TRANSLATE_NOOP(
-            'Nueva Pieza',
-            'Nueva Pieza')
+            '',
+            'Belt clamp')
         ToolTip = QtCore.QT_TRANSLATE_NOOP(
             '',
-            'Dibuja nueva pieza')
+            'Creates a belt clamp')
         return {
             'Pixmap': __dir__ + '/icons/Double_Belt_Clamp_cmd.svg',
             'MenuText': MenuText,
@@ -1444,25 +1445,115 @@ class DoubleBeltClampTaskPanel:
         self.form = widget
         layout = QtGui.QGridLayout(self.form)
 
+        # ---- row 0: Type ----
+        #Label:
+        self.Type_Label = QtGui.QLabel("Type:")   
+
+        # Combo Box that have multiple choice
+        self.Type_ComboBox = QtGui.QComboBox()
+        # Type of Nut
+        self.TextType = ["Simple","Double"]
+        self.Type_ComboBox.addItems(self.TextType)
+        # Indicate inicial value in ComboBox
+        self.Type_ComboBox.setCurrentIndex(0)
+
+        # row 0, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Type_Label,0,0,1,1)
+        # row 0, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Type_ComboBox,0,1,1,1)
+
+        # ---- row 1: Length ----
+        # Label:
+        self.Length_Label = QtGui.QLabel("Length:")
+        # Spin Box that takes doubles
+        self.Length_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Length_Value.setValue(42)
+        # suffix to indicate the units
+        self.Length_Value.setSuffix(' mm')
+        self.Length_Value.setMinimum(42)
+
+        # row 1, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Length_Label,1,0,1,1)
+        # row 1, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Length_Value,1,1,1,1)
+
+        # ---- row 2: Width ----
+        # Label:
+        self.Width_Label = QtGui.QLabel("Width:")
+        # Spin Box that takes doubles
+        self.Width_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Width_Value.setValue(10.8)
+        # suffix to indicate the units
+        self.Width_Value.setSuffix(' mm')
+        self.Width_Value.setMinimum(10.8)
+
+        # row 2, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Width_Label,2,0,1,1)
+        # row 2, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Width_Value,2,1,1,1)
+
+        # ---- row 3: Nut Type ----
+        #Label:
+        self.nut_hole_Label = QtGui.QLabel("Nut Type:")   
+
+        # Combo Box that have multiple choice
+        self.ComboBox_Nut_Hole = QtGui.QComboBox()
+        # Type of Nut
+        self.TextNutType = ["M3","M4","M5","M6"]
+        self.ComboBox_Nut_Hole.addItems(self.TextNutType)
+        # Indicate inicial value in ComboBox
+        self.ComboBox_Nut_Hole.setCurrentIndex(self.TextNutType.index('M3'))
+
+        # row 3, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.nut_hole_Label,3,0,1,1)
+        # row 3, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.ComboBox_Nut_Hole,3,1,1,1)
+
     def accept(self):
-        parts.DoubleBeltClamp(axis_h = VZ,
-                             axis_d = VX,
-                             axis_w = VY,
-				             base_h = 2,
-				             base_l = 10,
-				             base_w = 5,
-				             bold_d = 3,
-				             bolt_csunk = 0,
-            				 ref = 1,
+        Type = self.Type_ComboBox.currentIndex()
+        Length = self.Length_Value.value()
+        Width = self.Width_Value.value()
+        IndexNut = {0 : 3,
+                    1 : 4,
+                    2 : 5,
+                    3 : 6}
+        nut_hole = IndexNut[self.ComboBox_Nut_Hole.currentIndex()]
+
+        if Type == 0:
+            beltcl.BeltClamp(fc_fro_ax = VX,
+                             fc_top_ax = VZ,
+                             base_h = 2,
+                             base_l = Length,
+                             base_w = Width,
+                             bolt_d = nut_hole,
+                             bolt_csunk = 0,
+                             ref = 1,
                              pos = V0,
                              extra=1,
                              wfco = 1,
                              intol = 0,
-                             name = 'double_belt_clamp' )
+                             name = 'belt_clamp' )
+        elif Type == 1:
+            beltcl.DoubleBeltClamp(axis_h = VZ,
+                                axis_d = VX,
+                                axis_w = VY,
+                                base_h = 2,
+                                base_l = Length,
+                                base_w = width,
+                                bolt_d = nut_hole,
+                                bolt_csunk = 0,
+                                ref = 1,
+                                pos = V0,
+                                extra=1,
+                                wfco = 1,
+                                intol = 0,
+                                name = 'double_belt_clamp' )
         FreeCADGui.activeDocument().activeView().viewAxonometric()
         FreeCADGui.Control.closeDialog() #close the dialog
         FreeCADGui.SendMsgToActiveView("ViewFit")
-"""
+
 ###############################################################################
 #******************************PRINT**AND**EXPORT******************************
 class _ChangePosExportCmd:
@@ -1503,7 +1594,7 @@ FreeCADGui.addCommand('Filter_Holder',_FilterHolderCmd())
 FreeCADGui.addCommand('Tensioner',_TensionerCmd())
 
 ## In progress
-#FreeCADGui.addCommand('Double_Belt_Clamp',_DoubleBeltClampCmd())
+FreeCADGui.addCommand('Double_Belt_Clamp',_DoubleBeltClampCmd())
 
 ## Print
 FreeCADGui.addCommand('ChangePosExport',_ChangePosExportCmd())

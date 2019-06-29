@@ -60,7 +60,7 @@ class MechatronicWorkbench (Workbench):
         from PySide import QtCore, QtGui
         import MechatronicGui
         #list of commands:
-        cmdlist = ["Sk",
+        partsList = ["Sk",
                    "Idle_Pulley_Holder",
                    "Aluprof_Bracket",
                    "Motor_Holder",
@@ -68,13 +68,17 @@ class MechatronicWorkbench (Workbench):
                    "LinBearHouse",
                    "Stop_Holder",
                    "Filter_Holder","Tensioner",
-                   #"Double_Belt_Clamp",
-                   "ChangePosExport",
-                   "Filter_Stage"]
+                   "Double_Belt_Clamp"]
+        sysList = ["Filter_Stage"]
+        modList = ["ChangePosExport"]
         self.appendToolbar(
-            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Mechatronic")), cmdlist)
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Parts")), partsList)
+        self.appendToolbar(
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Mechatronic systems")), sysList)
+        self.appendToolbar(
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Modification")), modList)
         self.appendMenu(
-            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Mechatronic")), cmdlist)
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Machatronic Parts")), partsList)
         
         Log ('Loalding Mechatronic Workbench... done! \n')
     
