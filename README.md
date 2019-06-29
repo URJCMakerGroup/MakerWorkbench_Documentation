@@ -199,7 +199,7 @@ Select your lenguage:
       - func: funciones creadas para el workbench
 
   ---
-  ### Verión estable:
+  ### Versión estable:
   La versión estable del workbench se encuentra en el archivo comprimido [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). Funciona en FreeCAD 0.18
 
   ---
