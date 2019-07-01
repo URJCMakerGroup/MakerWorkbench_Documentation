@@ -1420,7 +1420,6 @@ class TensionerTaskPanel:
 
 ###############################################################################
 #******************************Double**Belt**Clamp*****************************
-#                               IN PROGRESS
 class _DoubleBeltClampCmd:
     def Activated(self):
         Widget_DoubleBeltClamp = QtGui.QWidget()
@@ -1541,7 +1540,7 @@ class DoubleBeltClampTaskPanel:
                                 axis_w = VY,
                                 base_h = 2,
                                 base_l = Length,
-                                base_w = width,
+                                base_w = Width,
                                 bolt_d = nut_hole,
                                 bolt_csunk = 0,
                                 ref = 1,
@@ -1550,6 +1549,164 @@ class DoubleBeltClampTaskPanel:
                                 wfco = 1,
                                 intol = 0,
                                 name = 'double_belt_clamp' )
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+
+###############################################################################
+#********************************SENSOR**HOLDER********************************
+class _SensorHolderCmd:
+    def Activated(self):
+        Widget_SensorHolder = QtGui.QWidget()
+        Panel_SensorHolder = SensorHolderTaskPanel(Widget_SensorHolder)
+        FreeCADGui.Control.showDialog(Panel_SensorHolder)     
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            'Sensor Holder')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            'Creates a sensor holder')
+        return {
+            'Pixmap': __dir__ + '/icons/Sensor_holder_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class SensorHolderTaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: Sensor Pin Length ----
+        #Label:
+        self.Sensor_Pin_Length_Label = QtGui.QLabel("Sensor Pin Length:")  
+        # Spin Box that takes doubles
+        self.Sensor_Pin_Length_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Sensor_Pin_Length_Value.setValue(10)
+        # suffix to indicate the units
+        self.Sensor_Pin_Length_Value.setSuffix(' mm')
+        self.Sensor_Pin_Length_Value.setMinimum(10) #Not sure
+
+        # row 0, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Sensor_Pin_Length_Label,0,0,1,1)
+        # row 0, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Sensor_Pin_Length_Value,0,1,1,1)
+
+        # ---- row 1: Sensor Pin Width ----
+        #Label:
+        self.Sensor_Pin_Width_Label = QtGui.QLabel("Sensor Pin Width:")  
+        # Spin Box that takes doubles
+        self.Sensor_Pin_Width_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Sensor_Pin_Width_Value.setValue(2)
+        # suffix to indicate the units
+        self.Sensor_Pin_Width_Value.setSuffix(' mm')
+        self.Sensor_Pin_Width_Value.setMinimum(2) #Not sure
+
+        # row 1, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Sensor_Pin_Width_Label,1,0,1,1)
+        # row 1, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Sensor_Pin_Width_Value,1,1,1,1)
+
+        # ---- row 2: Sensor Pin High ----
+        #Label:
+        self.Sensor_Pin_High_Label = QtGui.QLabel("Sensor Pin High:")  
+        # Spin Box that takes doubles
+        self.Sensor_Pin_High_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Sensor_Pin_High_Value.setValue(3)
+        # suffix to indicate the units
+        self.Sensor_Pin_High_Value.setSuffix(' mm')
+        self.Sensor_Pin_High_Value.setMinimum(3) #Not sure
+
+        # row 2, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Sensor_Pin_High_Label,2,0,1,1)
+        # row 2, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Sensor_Pin_High_Value,2,1,1,1)
+
+        # ---- row 3: Depth ----
+        #Label:
+        self.Depth_CD_Label = QtGui.QLabel("Depth:")  
+        # Spin Box that takes doubles
+        self.Depth_CD_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Depth_CD_Value.setValue(8)
+        # suffix to indicate the units
+        self.Depth_CD_Value.setSuffix(' mm')
+        self.Depth_CD_Value.setMinimum(8) #Not sure
+
+        # row 3, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Depth_CD_Label,3,0,1,1)
+        # row 3, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Depth_CD_Value,3,1,1,1)
+
+        # ---- row 4: Width CD case----
+        #Label:
+        self.Width_CD_Label = QtGui.QLabel("Width CD case:")  
+        # Spin Box that takes doubles
+        self.Width_CD_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Width_CD_Value.setValue(20)
+        # suffix to indicate the units
+        self.Width_CD_Value.setSuffix(' mm')
+        self.Width_CD_Value.setMinimum(20) #Not sure
+
+        # row 4, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Width_CD_Label,4,0,1,1)
+        # row 4, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Width_CD_Value,4,1,1,1)
+
+        # ---- row 5: High CD case----
+        #Label:
+        self.High_CD_Label = QtGui.QLabel("High CD case:")  
+        # Spin Box that takes doubles
+        self.High_CD_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.High_CD_Value.setValue(37)
+        # suffix to indicate the units
+        self.High_CD_Value.setSuffix(' mm')
+        self.High_CD_Value.setMinimum(37) #Not sure
+
+        # row 5, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.High_CD_Label,5,0,1,1)
+        # row 5, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.High_CD_Value,5,1,1,1)
+
+    def accept(self):
+        Sensor_Pin_Lenght = self.Sensor_Pin_Length_Value.value()
+        Sensor_Pin_Width = self.Sensor_Pin_Width_Value.value()
+        Sensor_Pin_High = self.Sensor_Pin_High_Value.value()
+        Depth_CD = self.Depth_CD_Value.value()
+        Width_CD = self.Width_CD_Value.value()
+        High_CD = self.High_CD_Value.value()
+
+        parts.sensor_holder(sensor_support_length = Sensor_Pin_Lenght,
+                            sensor_pin_sep = 2.54,
+                            sensor_pin_pos_h = Sensor_Pin_High,
+                            sensor_pin_pos_w = Sensor_Pin_Width,
+                            sensor_pin_r_tol = 1.05,
+                            sensor_pin_rows = 6,
+                            sensor_pin_cols = 6,
+                            #sensor_clip_pos_h = 2.45, #position from center
+                            #sensor_clip_h_tol = 1.28,
+                            #sensor_clip_w_tol = 1.,
+                            base_height = High_CD, # height of the cd case
+                            base_width = Width_CD, # width of the cd case
+                            flap_depth = Depth_CD,
+                            flap_thick = 2.,
+                            base_thick = 2., #la altura
+                            basesensor_thick = 9., #la altura de la parte de los sensores
+                            pos =V0,
+                            axis_h = VZ,
+                            axis_d = VX,
+                            axis_w = VY,
+                            wfco=1,
+                            name = 'holder')
+
         FreeCADGui.activeDocument().activeView().viewAxonometric()
         FreeCADGui.Control.closeDialog() #close the dialog
         FreeCADGui.SendMsgToActiveView("ViewFit")
@@ -1587,6 +1744,7 @@ FreeCADGui.addCommand('Motor_Holder',_MotorHolderCmd())
 FreeCADGui.addCommand('Simple_End_Stop_Holder',_SimpleEndStopHolder_Cmd())
 FreeCADGui.addCommand('LinBearHouse',_LinBearHouse_Cmd())
 FreeCADGui.addCommand('Stop_Holder',_stop_holderCmd())
+FreeCADGui.addCommand('Sensor_Holder',_SensorHolderCmd())
 
 ## Filter Stage
 FreeCADGui.addCommand('Filter_Stage', _FilterStageCmd())

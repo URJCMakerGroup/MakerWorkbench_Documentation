@@ -61,14 +61,16 @@ class MechatronicWorkbench (Workbench):
         import MechatronicGui
         #list of commands:
         partsList = ["Sk",
-                   "Idle_Pulley_Holder",
-                   "Aluprof_Bracket",
-                   "Motor_Holder",
-                   "Simple_End_Stop_Holder",
-                   "LinBearHouse",
-                   "Stop_Holder",
-                   "Filter_Holder","Tensioner",
-                   "Double_Belt_Clamp"]
+                     "Idle_Pulley_Holder",
+                     "Aluprof_Bracket",
+                     "Motor_Holder",
+                     "Simple_End_Stop_Holder",
+                     "LinBearHouse",
+                     "Stop_Holder",
+                     "Filter_Holder",
+                     "Tensioner",
+                     "Double_Belt_Clamp",
+                     "Sensor_Holder"]
         sysList = ["Filter_Stage"]
         modList = ["ChangePosExport"]
         self.appendToolbar(
