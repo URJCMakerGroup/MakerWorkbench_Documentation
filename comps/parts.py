@@ -5717,7 +5717,9 @@ class sensor_holder (object):
         shp_solid = fcfun.fuseshplist(shp_list)
         shp_final = shp_solid.cut(shp_holes)
         shp_final = shp_final.removeSplitter()
-		
-        Part.show(shp_final)
+        
+        fco_sensor_holder = FreeCAD.ActiveDocument.addObject("Part::Feature", name )
+        fco_sensor_holder.Shape = shp_final
+        
  
 #sensor_holder()

@@ -18,57 +18,46 @@ import kparts
 
 def print_export(objSelect):
     show_message = True
-    nema = 'motorholder'
-    nema_holder = 'nema_holder'
-    thinlinbearhouse1rail = 'thinlinbearhouse1rail'
-    top = 'top'
-    bot = 'bot'
-    bracket2 = 'bracket2'
-    bracket3 = 'bracket3'
-    bracket_twin = 'bracket_twin'
-    shaft = 'shaft'
-    idlepulleyhold = 'idlepulleyhold'
-    simple_endstop_holder = 'endstop'
-    stop_holder = 'stop_holder'
+    PlaceOld = objSelect.Placement
 
     #_________Motor_Holder_________
-    if  nema in objSelect.Name:
+    if  'motorholder' in objSelect.Name or 'nema_holder' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(0,1,0),180) 
         centre = FreeCAD.Vector(0,0,0)
 
     #_________Idler_Tensioner_________
-    elif objSelect.Name == 'idler_tensioner':
+    elif 'idler_tensioner' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(0,1,0),90)
         centre = FreeCAD.Vector(0,0,0)
 
     #_________Tensioner_Holder_________
-    elif objSelect.Name == 'tensioner_holder':
+    elif 'tensioner_holder' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(1,0,0),-90)
         centre = FreeCAD.Vector(0,0,0)
 
     #_________Filter_Holder_________
-    elif objSelect.Name == 'filter_holder':
+    elif 'filter_holder' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
         centre = FreeCAD.Vector(0,0,0)
 
     #_________Nema_Holder_________
-    elif nema_holder in objSelect.Name:
-        pos = objSelect.Placement.Base
-        rot = FreeCAD.Rotation(FreeCAD.Vector(0,1,0),180) 
-        centre = FreeCAD.Vector(0,0,0)
+    #elif 'nema_holder' in objSelect.Name:
+    #    pos = objSelect.Placement.Base
+    #    rot = FreeCAD.Rotation(FreeCAD.Vector(0,1,0),180) 
+    #    centre = FreeCAD.Vector(0,0,0)
 
-    #_________Thinlinbearhouse1rail_________
-    elif thinlinbearhouse1rail in objSelect.Name:
-        if top  in objSelect.Name:
+    #_________Linbearhouse_________
+    elif 'linbear' in objSelect.Name:
+        if 'top'  in objSelect.Name:
             pos = objSelect.Placement.Base
             rot = FreeCAD.Rotation(FreeCAD.Vector(0,1,0),180)
             centre = FreeCAD.Vector(0,0,0)
 
-        elif bot in objSelect.Name:
+        elif 'bot' in objSelect.Name:
             pos = objSelect.Placement.Base
             rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
             centre = FreeCAD.Vector(0,0,0)
@@ -80,46 +69,58 @@ def print_export(objSelect):
             message.setDefaultButton(QtGui.QMessageBox.Ok)
             message.exec_()
 
-    #_________Bracket_2_________
-    elif bracket2 in objSelect.Name:
+    #_________Bracket_________
+    elif 'bracket' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
         centre = FreeCAD.Vector(0,0,0)
     
     #_________Bracket_3_________
-    elif bracket3 in objSelect.Name:
-        pos = objSelect.Placement.Base
-        rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
-        centre = FreeCAD.Vector(0,0,0)
+    #elif bracket3 in objSelect.Name:
+    #    pos = objSelect.Placement.Base
+    #    rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
+    #    centre = FreeCAD.Vector(0,0,0)
 
     #_________Bracket_Twin_________
-    elif bracket_twin in objSelect.Name:
-        pos = objSelect.Placement.Base
-        rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
-        centre = FreeCAD.Vector(0,0,0)
+    #elif bracket_twin in objSelect.Name:
+    #    pos = objSelect.Placement.Base
+    #    rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
+    #    centre = FreeCAD.Vector(0,0,0)
 
     #_________Shaft_________
-    elif shaft in objSelect.Name:
+    elif 'shaft' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
         centre = FreeCAD.Vector(0,0,0)
 
     #_________IdlepulleyHold_________
-    elif idlepulleyhold in objSelect.Name:
+    elif 'idlepulleyhold' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
         centre = FreeCAD.Vector(0,0,0)
 
     #_________Simple_End_Stop_Holder_________
-    elif simple_endstop_holder in objSelect.Name:
+    elif 'simple_endstop_holder' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
         centre = FreeCAD.Vector(0,0,0)
 
     #_________Stop_Holder_________
-    elif stop_holder in objSelect.Name:
+    elif 'stop_holder' in objSelect.Name:
         pos = objSelect.Placement.Base
         rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
+        centre = FreeCAD.Vector(0,0,0)
+
+    #_________Belt_Clamp_________
+    elif 'belt_clamp' in objSelect.Name:
+        pos = objSelect.Placement.Base
+        rot = FreeCAD.Rotation(FreeCAD.Vector(0,0,0),0)
+        centre = FreeCAD.Vector(0,0,0)
+
+    #_________Sensor_Holder_________
+    elif 'sensorholder' in objSelect.Name:
+        pos = objSelect.Placement.Base
+        rot = FreeCAD.Rotation(FreeCAD.Vector(0,1,0),90)
         centre = FreeCAD.Vector(0,0,0)
 
     #_________Not_Name_________
@@ -149,9 +150,17 @@ def print_export(objSelect):
 
 
         # take the path and export the object
-        stlFileName = str(folderName) + objSelect.Name + ".stl"
+        stlFileName = str(folderName) +"/" + objSelect.Name + ".stl"
         mesh_shp = MeshPart.meshFromShape(objSelect.Shape,
                                             LinearDeflection=kparts.LIN_DEFL,
                                             AngularDeflection=kparts.ANG_DEFL)
         mesh_shp.write(stlFileName)
         del mesh_shp
+
+        objSelect.Placement = PlaceOld
+
+        message = QtGui.QMessageBox()
+        message.setText("You export " + objSelect.Name + " in " + folderName)
+        message.setStandardButtons(QtGui.QMessageBox.Ok)
+        message.setDefaultButton(QtGui.QMessageBox.Ok)
+        message.exec_()

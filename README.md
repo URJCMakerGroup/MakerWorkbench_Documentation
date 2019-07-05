@@ -110,7 +110,7 @@ Select your lenguage:
   ![nema17-35](/parts/img/nema17_holder_rail35_8.FCStd.png)
 
   <details>
-    <summary>Thin lin bear house</summary>
+    <summary>Lin bear house</summary>
       <ul>
         <li>Type</li>
       </ul>
@@ -159,10 +159,15 @@ Select your lenguage:
     <summary>Filter Stage</summary>
       <ul>
         <li>Move distance</li>
+        <li>Filter length</li>
+        <li>Filter width</li>
         <li>Base width</li>
         <li>Tensioner stroke</li>
-        <li>Thickness</li>
+        <li>Tensioner thickness</li>
         <li>Metric nut</li>
+        <li>Motor size</li>
+        <li>Lenght rail motor holder</li>
+        <li>Motor holder thickness</li>
       </ul>
   </details>
 
@@ -339,10 +344,15 @@ Select your lenguage:
     <summary>Filter Stage</summary>
       <ul>
         <li>Distancia de recorrido</li>
+        <li>Largo del filtro</li>
+        <li>Ancho del filtro</li>        
         <li>Ancho de base</li>
-        <li>Tensionador de carrera</li>
-        <li>Espesor</li>
+        <li>Largo tensionador</li>
+        <li>Espesor tensionador</li>
         <li>Metrica del tornillo</li>
+        <li>Tamaño del motor</li>
+        <li>Longitud del rail del soporte motor</li>
+        <li>Espesor del soporte motor</li>
       </ul>
   </details>
 

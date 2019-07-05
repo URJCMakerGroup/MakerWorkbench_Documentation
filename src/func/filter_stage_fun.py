@@ -132,7 +132,7 @@ axis_mov   = VY
 axis_front = VX
 axis_up    = VZ
 
-def filter_stage_fun( move_l, nut_hole, tens_stroke_Var, base_w, wall_thick_Var):
+def filter_stage_fun( move_l, Filter_Length, Filter_Width, nut_hole, tens_stroke_Var, base_w, wall_thick_Var, size_motor, h_motor, thik_motor):
                     #move_l => mov_distance
                     #nut_hole => bolttens_mtr
                     #tens_stroke_Var => tens_stroke
@@ -177,11 +177,11 @@ def filter_stage_fun( move_l, nut_hole, tens_stroke_Var, base_w, wall_thick_Var)
     bolt_linguide_mtr = linguide_blk_dict['boltd']
 
     filter_holder = filter_holder_clss.PartFilterHolder(
-                    filter_l = 60.,
-                    filter_w = 25.,
+                    filter_l = Filter_Length,
+                    filter_w = Filter_Width,
                     filter_t = 2.5,
                     base_h = 6.,
-                    hold_d = 12.,
+                    hold_d = 10., #12
                     filt_supp_in = 2.,
                     filt_rim = 3.,
                     filt_cen_d = 30,
@@ -340,7 +340,7 @@ def filter_stage_fun( move_l, nut_hole, tens_stroke_Var, base_w, wall_thick_Var)
                         in_fillet = 2.,
                         pulley_stroke_dist = 0,
                         nut_holder_thick = nut_hole ,   
-                        opt_tens_chmf = 1,
+                        opt_tens_chmf = 0,
                         min_width = 0,
                         tol = kcomp.TOL,
                         axis_d = axis_mov.negative(),
@@ -414,7 +414,8 @@ def filter_stage_fun( move_l, nut_hole, tens_stroke_Var, base_w, wall_thick_Var)
                     + DraftVecUtils.scale(axis_up, -(motorshaft_l - beltclamp_h)))
 
 
-    nema_size = 11
+    #nema_size = 11
+    nema_size = size_motor
 
     nemaholder_w_motor = partset.NemaMotorPulleyHolderSet(
                             nema_size = nema_size, 
@@ -434,11 +435,11 @@ def filter_stage_fun( move_l, nut_hole, tens_stroke_Var, base_w, wall_thick_Var)
                             pulley_base_d = 15.,
                             #pulley_tol = 0,
                             pulley_pos_h = 5.,                        
-                            hold_wall_thick = 4.,
+                            hold_wall_thick = thik_motor,#4.,
                             hold_motorside_thick = 3.,
                             hold_reinf_thick = 3.,
                             hold_rail_min_h = 3.,
-                            hold_rail_max_h = 20.,
+                            hold_rail_max_h = h_motor,#20.,
                             hold_motor_xtr_space = 2.,
                             hold_bolt_wall_d = 4.,
                             # hold_chmf_r = 1.,
@@ -547,207 +548,3 @@ def filter_stage_fun( move_l, nut_hole, tens_stroke_Var, base_w, wall_thick_Var)
                         pos=motor_pull_pos)
 
     belt.set_color(fcfun.GRAY_08)
-
-    
-##############################################################################################################################
-def filter_holder_fun(Filter_Length, Filter_Width, Set_Select):
-
-    # Other option. Set a value to change all the values (1*Size)
-
-    mov_distance = 60.
-    filter_mov = DraftVecUtils.scale(axis_mov,0)
-    linguide_dict = kcomp.SEB15A
-    linguide_blk_dict = linguide_dict['block']
-    linguide_rail_dict = linguide_dict['rail']
-    bolt_linguide_mtr = linguide_blk_dict['boltd']
-
-    filter_holder = filter_holder_clss.PartFilterHolder(filter_l = Filter_Length,
-                                                        filter_w = Filter_Width,
-                                                        filter_t = 2.5,
-                                                        base_h = 6.,
-                                                        hold_d = 12.,
-                                                        filt_supp_in = 2.,
-                                                        filt_rim = 3.,
-                                                        filt_cen_d = 30,
-                                                        fillet_r = 1.,
-                                                        boltcol1_dist = 20/2.,
-                                                        boltcol2_dist = 12.5,
-                                                        boltcol3_dist = 25,
-                                                        boltrow1_h = 0,
-                                                        boltrow1_2_dist = 12.5,
-                                                        boltrow1_3_dist = 20.,
-                                                        boltrow1_4_dist = 25.,
-                                                        bolt_cen_mtr = 4, 
-                                                        bolt_linguide_mtr = bolt_linguide_mtr,
-                                                        beltclamp_t = 3.,
-                                                        beltclamp_l = 12.,
-                                                        beltclamp_h = 5., #beltclamp_h,
-                                                        clamp_post_dist = 4.,
-                                                        sm_beltpost_r = 1.,
-                                                        tol = kcomp.TOL,
-                                                        axis_d = axis_front,
-                                                        axis_w = axis_mov,
-                                                        axis_h = axis_up,
-                                                        pos_d = 0, #filter_pos_d,
-                                                        pos_w = 0, #filter_pos_w,
-                                                        pos_h = 0, #filter_pos_h,
-                                                        pos = V0, #filter_pos,
-                                                        name = 'filter_holder')
-    filter_holder.set_color(fcfun.YELLOW_05)
-
-    if Set_Select == 1:
-        # ------ linear guide for the filter holder
-        # block:
-        partLinGuideBlock = comps.PartLinGuideBlock (
-                                                    block_dict = linguide_blk_dict,
-                                                    rail_dict  = linguide_rail_dict,
-                                                    axis_d = axis_mov,
-                                                    axis_w = axis_up,
-                                                    axis_h = axis_front,
-                                                    pos_d = 0, pos_w = -2, pos_h = 3,
-                                                    pos = filter_holder.get_pos_dwh(0,0,3) )
-        # 4 bolts to attach the filter holder to the linear guide
-        bolt_head_pos = filter_holder.get_o_to_d(5)
-        for w_i in [-2, 2]:
-            for d_i in [-1, 1]:
-                # positions of the bolts at the linear guide
-                filter_bolt_pos_i = (  partLinGuideBlock.get_pos_dwh(d_i, w_i, 3)
-                                    + bolt_head_pos)
-                fc_clss.Din912Bolt(metric = bolt_linguide_mtr,
-                                shank_l = (  bolt_head_pos.Length
-                                            + partLinGuideBlock.bolt_l),
-                                shank_l_adjust = -1, # shorter to shank_l
-                                axis_h = axis_front.negative(),
-                                pos_h = 3,
-                                pos = filter_bolt_pos_i,
-                                name = 'filter_bolt_w' + str(w_i) + '_d' + str(d_i)
-                                )
-
-        pos_fromblock = partLinGuideBlock.get_pos_dwh(0,0,4)
-
-        rail_xtr_d = 10.
-
-        pos_rail = (  pos_fromblock - filter_mov
-                    + DraftVecUtils.scale(axis_mov, rail_xtr_d/2.))
-
-        partLinGuideRail = comps.PartLinGuideRail (rail_d = (   filter_holder.tot_w + mov_distance
-                                                                + rail_xtr_d),
-                                                   rail_dict = linguide_rail_dict,
-                                                   boltend_sep = 0,
-                                                   axis_d = axis_mov,
-                                                   axis_w = axis_up,
-                                                   axis_h = axis_front,
-                                                   # center along axis_d and axis_d, base along axis_h
-                                                   pos_d = 2, pos_w = 0, pos_h = 0,
-                                                   pos = pos_rail)
-    
-##############################################################################################################################
-def tensioner_fun(base_w, tensioner_belt_h, tens_stroke_Var, wall_thick_Var, nut_hole, Set_Select):
-    #Definition of the axis
-#    axis_mov   = VY
-#    axis_front = VX
-#    axis_up    = VZ
-
-    boltaluprof_mtr = 4
-
-    tensioner = tensioner_clss.TensionerSet(aluprof_w = base_w,#20.,
-                                            belt_pos_h = tensioner_belt_h, 
-                                            hold_bas_h = 0,
-                                            hold_hole_2sides = 1,
-                                            boltidler_mtr = 3,
-                                            bolttens_mtr = nut_hole,   #métrica del tensor
-                                            boltaluprof_mtr = boltaluprof_mtr,
-                                            tens_stroke = tens_stroke_Var ,
-                                            wall_thick = wall_thick_Var,
-                                            in_fillet = 2.,
-                                            pulley_stroke_dist = 0,
-                                            nut_holder_thick = nut_hole ,   
-                                            opt_tens_chmf = 1,
-                                            min_width = 0,
-                                            tol = kcomp.TOL,
-                                            axis_d = axis_mov.negative(),
-                                            axis_w = axis_front.negative(),
-                                            axis_h = axis_up,
-                                            pos_d = 0., #tensioner_pos_d,
-                                            pos_w = 0., #tensioner_pos_w,
-                                            pos_h = 0., #tensioner_pos_h,
-                                            pos = V0, #tensioner_pos,
-                                            name = 'tensioner_set')
-
-    tensioner.get_idler_tensioner().set_color(fcfun.ORANGE,2)   #2: the tensioner
-    tensioner.set_color(fcfun.LSKYBLUE,2) #2: the holder
-
-    if Set_Select == 0:
-        FreeCAD.ActiveDocument.removeObject("bearing_idlpulley_m3")
-        FreeCAD.ActiveDocument.removeObject("idlpull_bearing")
-        FreeCAD.ActiveDocument.removeObject("idlpull_rwash_bt")
-        FreeCAD.ActiveDocument.removeObject("idlpull_lwash_bt")
-        FreeCAD.ActiveDocument.removeObject("idlpull_rwash_tp")
-        FreeCAD.ActiveDocument.removeObject("idlpull_lwash_tp")
-        FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m3")
-        FreeCAD.ActiveDocument.removeObject("d912bolt_m3_l20")#"d912bolt_washer_m" + str(int(boltidler_mtr)
-        FreeCAD.ActiveDocument.removeObject("din125_washer_m3")  
-        FreeCAD.ActiveDocument.removeObject("leadscrew_nut")
-        FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m3001")
-        FreeCAD.ActiveDocument.removeObject("d912bolt_m3_l25")
-        FreeCAD.ActiveDocument.removeObject("din125_washer_m3002")  
-        FreeCAD.ActiveDocument.removeObject("d9343")
-        FreeCAD.ActiveDocument.removeObject("d934nut_m3")
-        FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
-    
-
-##############################################################################################################################
-def motor_holder_fun(size_motor, h_motor, Set_select):
-    #Definition of the axis
-#    axis_mov   = VY
-#    axis_front = VX
-#    axis_up    = VZ
-
-    nema_size = size_motor     ##Varialbe
-
-    motorshaft_l = 24.
-
-    nemaholder_w_motor = partset.NemaMotorPulleyHolderSet(nema_size = nema_size, 
-                                                          motor_base_l = 32.,
-                                                          motor_shaft_l = motorshaft_l,
-                                                          motor_circle_r = 11.,
-                                                          motor_circle_h = 2.,
-                                                          motor_chmf_r = 1.,
-                                                          pulley_pitch = 2.,
-                                                          pulley_n_teeth = 20,
-                                                          pulley_toothed_h = 7.5,
-                                                          pulley_top_flange_h = 1.,
-                                                          pulley_bot_flange_h = 0,
-                                                          pulley_tot_h = 16.,
-                                                          pulley_flange_d = 15.,
-                                                          pulley_base_d = 15.,
-                                                          #pulley_tol = 0,
-                                                          pulley_pos_h = 5.,                        
-                                                          hold_wall_thick = 4.,
-                                                          hold_motorside_thick = 3.,
-                                                          hold_reinf_thick = 3.,
-                                                          hold_rail_min_h = 3.,
-                                                          hold_rail_max_h = h_motor,#20.,            ##Variable
-                                                          hold_motor_xtr_space = 2.,
-                                                          hold_bolt_wall_d = 4.,
-                                                          # hold_chmf_r = 1.,
-                                                          axis_h = axis_up,
-                                                          axis_d = axis_mov.negative(),
-                                                          axis_w = axis_front,
-                                                          pos_h = 0., #11, # middle point of the pulley toothed part
-                                                          pos_d = 0., #0, #0: at the wall where this holder is attached
-                                                          pos_w = 0., #5, #5: inner radius of the pulley (to the back
-                                                          pos = V0 #nemaholder_w_motor_pos
-                                                          )
-    if Set_select == 0:
-        FreeCAD.ActiveDocument.removeObject("nema" + str(size_motor) + "_pulley_set")
-        FreeCAD.ActiveDocument.removeObject("nema" + str(size_motor) + "_motor_l32")
-        FreeCAD.ActiveDocument.removeObject("gt2_pulley_20")                                                   
-
-    nemaholder_w_motor.set_color(fcfun.GREEN_05,2)   #2: the holder
-#    obj = FreeCAD.ActiveDocument.getObject("nema" + str(size_motor) + "_motorholder")
-#    pos = obj.Placement.Base
-#    rot = FreeCAD.Rotation(FreeCAD.Vector(0,1,0),180) 
-#    centre = FreeCAD.Vector(0,0,0)
-#    obj.Placement = FreeCAD.Placement(pos,rot,centre)
-    

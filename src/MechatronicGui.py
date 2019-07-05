@@ -36,7 +36,9 @@ import parts
 import kcomp
 import partset
 import beltcl
-from filter_stage_fun import filter_stage_fun, filter_holder_fun, tensioner_fun
+from filter_stage_fun import filter_stage_fun
+import tensioner_clss
+import filter_holder_clss
 from print_export_fun import print_export
 
 from parts import AluProfBracketPerp, AluProfBracketPerpFlap, AluProfBracketPerpTwin, NemaMotorHolder, ThinLinBearHouse1rail
@@ -746,8 +748,6 @@ class MotorHolderTaskPanel:
         h_motor=self.motor_high_Value.value()
         Thikness = self.Thikness_Value.value()
 
-        # En Partset sale con motor y más ancho.
-        #partset.NemaMotorPulleyHolderSet     # Make Holder and Motor
         parts.NemaMotorHolder(nema_size = self.size_motor,
                              wall_thick = Thikness,
                              motor_thick = Thikness,
@@ -1098,7 +1098,37 @@ class FilterStageTaskPanel:
         # row 0, column 1, rowspan 1, colspan 1
         layout.addWidget(self.move_l_Value,0,1,1,1)
 
-        # ---- row 1: Base width
+        # ---- row 1: Filter Length ----
+        # Label:
+        self.Filter_Length_Label = QtGui.QLabel("Filter Length")
+        # Spin Box that takes doubles
+        self.Filter_Length_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Filter_Length_Value.setValue(60)
+        # suffix to indicate the units
+        self.Filter_Length_Value.setSuffix(' mm')
+
+        # row 1, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Filter_Length_Label,1,0,1,1)
+        # row 1, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Filter_Length_Value,1,1,1,1)
+
+        # ---- row 2: Filter Width ----
+        # Label:
+        self.Filter_Width_Label = QtGui.QLabel("Filter Width")
+        # Spin Box that takes doubles
+        self.Filter_Width_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.Filter_Width_Value.setValue(25)
+        # suffix to indicate the units
+        self.Filter_Width_Value.setSuffix(' mm')
+
+        # row 2, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Filter_Width_Label,2,0,1,1)
+        # row 2, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Filter_Width_Value,2,1,1,1)
+
+        # ---- row 3: Base width
         # Label:
         self.base_w_Label = QtGui.QLabel("Base width:")  #10/15/20/30/40
         # Spin Box that takes doubles
@@ -1108,27 +1138,27 @@ class FilterStageTaskPanel:
         self.ComboBox_base_w.addItems(self.TextBase_W)
         self.ComboBox_base_w.setCurrentIndex(self.TextBase_W.index('20mm'))
 
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.base_w_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_base_w,1,1,1,1)
+        # row 3, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.base_w_Label,3,0,1,1)
+        # row 3, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.ComboBox_base_w,3,1,1,1)
                 
-        # ---- row 2: Tensioner Stroke
+        # ---- row 4: Tensioner Stroke
          # Label:
         self.tens_stroke_Label = QtGui.QLabel("Tensioner stroke:")
         # Spin Box that takes doubles
         self.tens_stroke_Value = QtGui.QDoubleSpinBox()
         # Default value
-        self.tens_stroke_Value.setValue(15)
+        self.tens_stroke_Value.setValue(20)
         # suffix to indicate the units
         self.tens_stroke_Value.setSuffix(' mm')
 
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.tens_stroke_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.tens_stroke_Value,2,1,1,1)
+        # row 4, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.tens_stroke_Label,4,0,1,1)
+        # row 4, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.tens_stroke_Value,4,1,1,1)
 
-        # ---- row 3: Wall thick
+        # ---- row 5: Wall thick
         # Label:
         self.wall_th_Label = QtGui.QLabel("Wall thick:")
         # Spin Box that takes doubles
@@ -1138,12 +1168,12 @@ class FilterStageTaskPanel:
         # suffix to indicate the units
         self.wall_th_Value.setSuffix(' mm')
 
-        # row 3, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.wall_th_Label,3,0,1,1)
-        # row 3, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.wall_th_Value,3,1,1,1)
+        # row 5, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.wall_th_Label,5,0,1,1)
+        # row 5, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.wall_th_Value,5,1,1,1)
 
-        # ---- row 4: Nut Type
+        # ---- row 6: Nut Type
         #Label:
         self.nut_hole_Label = QtGui.QLabel("Nut Type:")   
 
@@ -1155,10 +1185,52 @@ class FilterStageTaskPanel:
         # Indicate inicial value in ComboBox
         self.ComboBox_Nut_Hole.setCurrentIndex(self.TextNutType.index('M3'))
 
-        # row 4, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.nut_hole_Label,4,0,1,1)
-        # row 4, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_Nut_Hole,4,1,1,1)
+        # row 6, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.nut_hole_Label,6,0,1,1)
+        # row 6, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.ComboBox_Nut_Hole,6,1,1,1)
+
+        # ---- row 7: Size Holder ----
+        self.Size_Holder_Label = QtGui.QLabel("Motor size")
+        self.ComboBox_Size_Holder = QtGui.QComboBox()
+        # Type of Nut
+        self.TextSizeHolder = ["8","11","14","17","23","34","42"]
+        self.ComboBox_Size_Holder.addItems(self.TextSizeHolder)
+        # Indicate inicial value in ComboBox
+        self.ComboBox_Size_Holder.setCurrentIndex(self.TextSizeHolder.index('14'))
+
+        # row 7, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Size_Holder_Label,7,0,1,1)
+        # row 7, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.ComboBox_Size_Holder,7,1,1,1)
+
+        # ---- row 8: Rail Max High  ----
+        # Label:
+        self.motor_high_Label = QtGui.QLabel("Rail high Motor holder")
+        # Spin Box that takes doubles
+        self.motor_high_Value = QtGui.QDoubleSpinBox()
+        # Default value
+        self.motor_high_Value.setValue(25) #Value printed
+        # suffix to indicate the units
+        self.motor_high_Value.setSuffix(' mm')
+
+        # row 8, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.motor_high_Label,8,0,1,1)
+        # row 8, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.motor_high_Value,8,1,1,1)
+
+        # ---- row 9: Thikness ----
+        self.Thikness_Label = QtGui.QLabel("Motor holder thikness:")
+        self.Thikness_Value = QtGui.QDoubleSpinBox()
+        #Default value
+        self.Thikness_Value.setValue(3)
+        self.Thikness_Value.setMinimum(2)
+        self.Thikness_Value.setSuffix(' mm')
+
+        # row 9, column 0, rowspan 1, colspan 1        
+        layout.addWidget(self.Thikness_Label,9,0,1,1)
+        # row 9, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.Thikness_Value,9,1,1,1)
 
 
     # Ok and Cancel buttons are created by default in FreeCAD Task Panels
@@ -1167,12 +1239,21 @@ class FilterStageTaskPanel:
     def accept(self):
         self.selec_base = {0: 5, 1: 10, 2: 15, 3: 20, 4: 30, 5: 40}
         move_l = self.move_l_Value.value()
+        #Filter holder
+        Filter_Length = self.Filter_Length_Value.value()
+        Filter_Width = self.Filter_Width_Value.value()
+        #tensioner
         nut_hole = 3 + self.ComboBox_Nut_Hole.currentIndex()  #Index star in 0, first value = 3
         tens_stroke = self.tens_stroke_Value.value()
         base_w = self.selec_base[self.ComboBox_base_w.currentIndex()]
         wall_thick = self.wall_th_Value.value()
+        #motor holder
+        SizeHolder = {0:8, 1:11, 2:14, 3:17, 4:23, 5:34, 6:42}
+        size_motor = SizeHolder[self.ComboBox_Size_Holder.currentIndex()]
+        h_motor=self.motor_high_Value.value()
+        thik_motor = self.Thikness_Value.value()
 
-        filter_stage_fun(move_l, nut_hole, tens_stroke, base_w, wall_thick)
+        filter_stage_fun(move_l,Filter_Length,Filter_Width, nut_hole, tens_stroke, base_w, wall_thick, size_motor, h_motor, thik_motor)
             #pulley_h => belt_pos_h
             #nut_hole => bolttens_mtr
             #tens_stroke => tens_stroke_Var
@@ -1242,26 +1323,50 @@ class FilterHolderTaskPanel:
         # row 1, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Filter_Width_Value,1,1,1,1)
 
-        # ---- row 2: Set Holder ----
-        self.Set_Label = QtGui.QLabel("See Set")
-        self.ComboBox_Set = QtGui.QComboBox()
-        # Type for ComboBox
-        self.TextSet = ["No","Yes"]
-        self.ComboBox_Set.addItems(self.TextSet)
-        # Indicate inicial value in ComboBox
-        self.ComboBox_Set.setCurrentIndex(self.TextSet.index('No'))
-
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Set_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_Set,2,1,1,1)
 
     def accept(self):
         Filter_Length = self.Filter_Length_Value.value()
         Filter_Width = self.Filter_Width_Value.value()
-        Set_Select = self.ComboBox_Set.currentIndex()
 
-        filter_holder_fun(Filter_Length, Filter_Width, Set_Select)
+        filter_holder_clss.PartFilterHolder(filter_l = Filter_Length, #60     #########################################################################
+                                            filter_w = Filter_Width, #25
+                                            filter_t = 2.5,
+                                            base_h = 6.,
+                                            hold_d = 10.,
+                                            filt_supp_in = 2.,
+                                            filt_rim = 3.,
+                                            filt_cen_d = 30,
+                                            fillet_r = 1.,
+                                            # linear guides SEBLV16 y SEBS15, y MGN12H:
+                                            boltcol1_dist = 20/2.,
+                                            boltcol2_dist = 12.5, #thorlabs breadboard distance
+                                            boltcol3_dist = 25,
+                                            boltrow1_h = 0,
+                                            boltrow1_2_dist = 12.5,
+                                            # linear guide MGN12H
+                                            boltrow1_3_dist = 20.,
+                                            # linear guide SEBLV16 and SEBS15
+                                            boltrow1_4_dist = 25.,
+
+                                            bolt_cen_mtr = 4, 
+                                            bolt_linguide_mtr = 3, # linear guide bolts 
+
+                                            beltclamp_t = 3.,
+                                            beltclamp_l = 12.,
+                                            beltclamp_h = 8.,
+                                            clamp_post_dist = 4.,
+                                            sm_beltpost_r = 1.,
+
+                                            tol = kcomp.TOL,
+                                            axis_d = VX,
+                                            axis_w = VY,
+                                            axis_h = VZ,
+                                            pos_d = 0,
+                                            pos_w = 0,
+                                            pos_h = 0,
+                                            pos = V0,
+                                            model_type = 0, # exact
+                                            name = 'filter_holder')
         
         FreeCADGui.activeDocument().activeView().viewAxonometric()
         FreeCADGui.SendMsgToActiveView("ViewFit")
@@ -1308,7 +1413,7 @@ class TensionerTaskPanel:
         # Spin Box that takes doubles
         self.belt_h_Value = QtGui.QDoubleSpinBox()
         # Default value
-        self.belt_h_Value.setValue(10)
+        self.belt_h_Value.setValue(20)
         # suffix to indicate the units
         self.belt_h_Value.setSuffix(' mm')
 
@@ -1338,7 +1443,7 @@ class TensionerTaskPanel:
         # Spin Box that takes doubles
         self.tens_stroke_Value = QtGui.QDoubleSpinBox()
         # Default value
-        self.tens_stroke_Value.setValue(15)
+        self.tens_stroke_Value.setValue(20)
         # suffix to indicate the units
         self.tens_stroke_Value.setSuffix(' mm')
 
@@ -1395,7 +1500,7 @@ class TensionerTaskPanel:
 
     def accept(self):
         IndexNut = {0:3,1:4,2:5,3:6}
-        IndexBase = {0: 5, 1: 10, 2: 15, 3: 20, 4: 30, 5: 40}
+        IndexBase = {0: 10, 1: 15, 2: 20, 3: 30, 4: 40}
         tensioner_belt_h = self.belt_h_Value.value()
         nut_hole = IndexNut[self.ComboBox_Nut_Hole.currentIndex()]
         tens_stroke = self.tens_stroke_Value.value()
@@ -1403,13 +1508,64 @@ class TensionerTaskPanel:
         wall_thick = self.wall_th_Value.value()
         Set_Select = self.ComboBox_Set.currentIndex()
 
-        tensioner_fun(base_w,
-                      tensioner_belt_h,
-                      tens_stroke,
-                      wall_thick,
-                      nut_hole,
-                      Set_Select) 
+        tensioner_clss.TensionerSet(aluprof_w = base_w,#20.,
+                                    belt_pos_h = tensioner_belt_h, 
+                                    hold_bas_h = 0,
+                                    hold_hole_2sides = 1,
+                                    boltidler_mtr = 3,
+                                    bolttens_mtr = nut_hole,   #métrica del tensor
+                                    boltaluprof_mtr = nut_hole,
+                                    tens_stroke = tens_stroke ,
+                                    wall_thick = wall_thick,
+                                    in_fillet = 2.,
+                                    pulley_stroke_dist = 0,
+                                    nut_holder_thick = nut_hole ,   
+                                    opt_tens_chmf = 0,
+                                    min_width = 0,
+                                    tol = kcomp.TOL,
+                                    axis_d = VY.negative(),
+                                    axis_w = VX.negative(),
+                                    axis_h = VZ,
+                                    pos_d = 0.,
+                                    pos_w = 0.,
+                                    pos_h = 0.,
+                                    pos = V0,
+                                    name = 'tensioner_set')
         
+        if Set_Select == 0: #work only for tens_stroke = 20
+            FreeCAD.ActiveDocument.removeObject("bearing_idlpulley_m3")
+            FreeCAD.ActiveDocument.removeObject("idlpull_bearing")
+            FreeCAD.ActiveDocument.removeObject("idlpull_rwash_bt")
+            FreeCAD.ActiveDocument.removeObject("idlpull_lwash_bt")
+            FreeCAD.ActiveDocument.removeObject("idlpull_rwash_tp")
+            FreeCAD.ActiveDocument.removeObject("idlpull_lwash_tp")
+            FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m3")
+            FreeCAD.ActiveDocument.removeObject("din125_washer_m3")  
+            FreeCAD.ActiveDocument.removeObject("leadscrew_nut")
+            FreeCAD.ActiveDocument.removeObject("d9343")
+            FreeCAD.ActiveDocument.removeObject("d934nut_m3")
+            FreeCAD.ActiveDocument.removeObject("d912bolt_m3_l20")
+            if nut_hole == 3:
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_m3_l30")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m"  + str(int(nut_hole)) + "001")
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m" + str(int(nut_hole)) + "002")  
+            elif nut_hole == 4:
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_m4_l35")
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m4")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m4")
+            elif nut_hole == 5:  
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_m5_l40")
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m5")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m5")
+            else: 
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_m6_l40")
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m6")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m6")
+
         FreeCADGui.activeDocument().activeView().viewAxonometric()
         FreeCADGui.SendMsgToActiveView("ViewFit")
         FreeCADGui.Control.closeDialog() #close the dialog
@@ -1419,12 +1575,12 @@ class TensionerTaskPanel:
 
 
 ###############################################################################
-#******************************Double**Belt**Clamp*****************************
-class _DoubleBeltClampCmd:
+#*********************************Belt***Clamp*********************************
+class _BeltClampCmd:
     def Activated(self):
-        Widget_DoubleBeltClamp = QtGui.QWidget()
-        Panel_DoubleBeltClamp = DoubleBeltClampTaskPanel(Widget_DoubleBeltClamp)
-        FreeCADGui.Control.showDialog(Panel_DoubleBeltClamp)     
+        Widget_BeltClamp = QtGui.QWidget()
+        Panel_BeltClamp = BeltClampTaskPanel(Widget_BeltClamp)
+        FreeCADGui.Control.showDialog(Panel_BeltClamp)     
     def GetResources(self):
         MenuText = QtCore.QT_TRANSLATE_NOOP(
             '',
@@ -1439,7 +1595,7 @@ class _DoubleBeltClampCmd:
     def IsActive(self):
         return not FreeCAD.ActiveDocument is None 
 
-class DoubleBeltClampTaskPanel:
+class BeltClampTaskPanel:
     def __init__(self, widget):
         self.form = widget
         layout = QtGui.QGridLayout(self.form)
@@ -1705,7 +1861,7 @@ class SensorHolderTaskPanel:
                             axis_d = VX,
                             axis_w = VY,
                             wfco=1,
-                            name = 'holder')
+                            name = 'sensorholder')
 
         FreeCADGui.activeDocument().activeView().viewAxonometric()
         FreeCADGui.Control.closeDialog() #close the dialog
@@ -1752,7 +1908,7 @@ FreeCADGui.addCommand('Filter_Holder',_FilterHolderCmd())
 FreeCADGui.addCommand('Tensioner',_TensionerCmd())
 
 ## In progress
-FreeCADGui.addCommand('Double_Belt_Clamp',_DoubleBeltClampCmd())
+FreeCADGui.addCommand('Belt_Clamp',_BeltClampCmd())
 
 ## Print
 FreeCADGui.addCommand('ChangePosExport',_ChangePosExportCmd())
