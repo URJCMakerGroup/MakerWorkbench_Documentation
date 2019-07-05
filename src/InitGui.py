@@ -69,7 +69,7 @@ class MechatronicWorkbench (Workbench):
                      "Stop_Holder",
                      "Filter_Holder",
                      "Tensioner",
-                     "Double_Belt_Clamp",
+                     "Belt_Clamp",
                      "Sensor_Holder"]
         sysList = ["Filter_Stage"]
         modList = ["ChangePosExport"]
