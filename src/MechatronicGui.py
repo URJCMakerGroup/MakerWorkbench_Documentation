@@ -30,6 +30,8 @@ from PySide import QtCore, QtGui
 import os
 import FreeCAD
 import FreeCADGui
+import logging
+
 import comps
 from fcfun import V0, VX, VY, VZ, VZN
 import parts
@@ -43,7 +45,12 @@ from print_export_fun import print_export
 
 from parts import AluProfBracketPerp, AluProfBracketPerpFlap, AluProfBracketPerpTwin, NemaMotorHolder, ThinLinBearHouse1rail
 
+import grafic
+
 __dir__ = os.path.dirname(__file__)
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 ###############################################################################
 #***************************************SK*************************************
@@ -1888,8 +1895,79 @@ class _ChangePosExportCmd:
     def IsActive(self):
         return not FreeCAD.ActiveDocument is None 
 
+###############################################################################
+#***********************************ASSEMBLY***********************************
+class _AssemlyCmd:
+    """
+    This utility change the position of the component that has been selected and set up in the second component you have selected.
+    Shape has:
+        - Vertexes
+        - Edges
+        - Faces
+        - Solids
+    
+    """
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_Assembly = Assembly_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_Assembly) 
+        """
+        message = QtGui.QMessageBox()
+        message.setText('Select:\n  - First: Think to move.\n   - Second: New placement.\n')
+        message.setStandardButtons(QtGui.QMessageBox.Ok)
+        message.setDefaultButton(QtGui.QMessageBox.Ok)
+        message.exec_()"""
+        
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Assembly',
+            'Assembly')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/Assembly_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+    
+class Assembly_TaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
 
+        # ---- row 0: Text ----
+        #Label:
+        self.Text_1_Label = QtGui.QLabel("1 - Select object to move")  
 
+        # row 0, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Text_1_Label,0,0,1,1)
+
+        """# ---- row 1: Text ----
+        #Label:
+        self.Text_2_Label = QtGui.QLabel(" ")  
+
+        # row 1, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Text_2_Label,1,0,1,1)
+        """
+        # ---- row 2: Text ----
+        #Label:
+        self.Text_3_Label = QtGui.QLabel("2 - After select the place")  
+
+        # row 2, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Text_3_Label,1,0,1,1)
+
+    def accept(self):
+        if len(FreeCADGui.Selection.getSelection()) == 2 :
+            grafic.grafic()
+            FreeCADGui.Control.closeDialog() #close the dialog
+        else:
+            message = QtGui.QMessageBox()
+            message.setText('Select object to move and placement')
+            message.setStandardButtons(QtGui.QMessageBox.Ok)
+            message.setDefaultButton(QtGui.QMessageBox.Ok)
+            message.exec_()
 
 ###############################################################################
 #***********************************COMMANDS***********************************
@@ -1912,3 +1990,6 @@ FreeCADGui.addCommand('Belt_Clamp',_BeltClampCmd())
 
 ## Print
 FreeCADGui.addCommand('ChangePosExport',_ChangePosExportCmd())
+
+## Assembly
+FreeCADGui.addCommand('Assembly',_AssemlyCmd())

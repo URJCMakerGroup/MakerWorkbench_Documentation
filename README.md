@@ -179,6 +179,11 @@ Select your lenguage:
     Change the position of the piece to print position. Also, the user can select the folder where is save the piece.
   </details>
 
+  <details>
+    <summary>Assembly</summary>
+    Select the part you like and a new place.
+  </details>
+
   ---
   ---
 </details>
@@ -362,6 +367,11 @@ Select your lenguage:
   <details>
     <summary>Cambiar a posición de imprimir</summary>
     Coloca la pieza seleccionada en la posición de impresión y pide al usuario la carpeta donde exportar la pieza.
+  </details>
+
+  <details>
+    <summary>Ensamblaje</summary>
+    Selecciona la pieza y su nueva posición.
   </details>
 
   ---

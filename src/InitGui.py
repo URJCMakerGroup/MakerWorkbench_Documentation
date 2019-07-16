@@ -72,7 +72,8 @@ class MechatronicWorkbench (Workbench):
                      "Belt_Clamp",
                      "Sensor_Holder"]
         sysList = ["Filter_Stage"]
-        modList = ["ChangePosExport"]
+        modList = ["ChangePosExport",
+                   "Assembly"]
         self.appendToolbar(
             str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Parts")), partsList)
         self.appendToolbar(
