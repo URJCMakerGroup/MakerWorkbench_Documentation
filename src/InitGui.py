@@ -70,7 +70,9 @@ class MechatronicWorkbench (Workbench):
                      "Filter_Holder",
                      "Tensioner",
                      "Belt_Clamp",
-                     "Sensor_Holder"]
+                     "Sensor_Holder",
+                     "Aluproft",
+                     "Bolts, Nuts & Washers"]
         sysList = ["Filter_Stage"]
         modList = ["ChangePosExport",
                    "Assembly"]

@@ -154,6 +154,29 @@ Select your lenguage:
   ![BeltClamp1](/parts/img/Belt_clamp_simple.png)
   ![BeltClamp2](/parts/img/Belt_clamp_double.png)
 
+  <details>
+      <summary>Aluminium profile</summary>
+        <ul>
+          <li>Secction</li>
+          <li>Length</li>
+        </ul>
+    </details>
+
+  ![Profiles](/parts/img/Profiles.png)
+
+  <details>
+    <summary>Bolts, Nuts & Washers</summary>
+      <ul>
+        <li>Type</li>
+        <li>Metric</li>
+        <li>Bolt legnth</li>
+      </ul>
+  </details>
+
+  ![Bolt](/parts/img/Bolt.png)
+  ![Nut](/parts/img/Nut.png)
+  ![Washers](/parts/img/Washers.png)
+
   #### Mechatronic Systems:
   <details>
     <summary>Filter Stage</summary>
@@ -325,7 +348,7 @@ Select your lenguage:
         <li>Altura de polea</li>
         <li>Ancho de base</li>
         <li>Espesor</li>
-        <li>Metrica del tornillo</li>
+        <li>Métrica del tornillo</li>
       </ul>
   </details>
 
@@ -337,12 +360,35 @@ Select your lenguage:
         <li>Tipo</li>
         <li>Largo</li>
         <li>Ancho</li>
-        <li>Metrica del tornillo</li>
+        <li>Métrica del tornillo</li>
       </ul>
   </details>
 
   ![BeltClamp1](/parts/img/Belt_clamp_simple.png)
   ![BeltClamp2](/parts/img/Belt_clamp_double.png)
+
+  <details>
+      <summary>Perfil de aluminio</summary>
+        <ul>
+          <li>Sección</li>
+          <li>Longitud</li>
+        </ul>
+    </details>
+
+  ![Profiles](/parts/img/Profiles.png)
+
+  <details>
+      <summary>Tornillos, Tuercas y Arandelas</summary>
+        <ul>
+          <li>Tipo</li>
+          <li>Métrica</li>
+          <li>Longitud del tornillo</li>
+        </ul>
+  </details>
+
+  ![Bolt](/parts/img/Bolts.png)
+  ![Nut](/parts/img/Nuts.png)
+  ![Washers](/parts/img/Washers.png)
 
   #### Sistemas mecatrónicos:
   <details>
@@ -354,7 +400,7 @@ Select your lenguage:
         <li>Ancho de base</li>
         <li>Largo tensionador</li>
         <li>Espesor tensionador</li>
-        <li>Metrica del tornillo</li>
+        <li>Métrica del tornillo</li>
         <li>Tamaño del motor</li>
         <li>Longitud del rail del soporte motor</li>
         <li>Espesor del soporte motor</li>

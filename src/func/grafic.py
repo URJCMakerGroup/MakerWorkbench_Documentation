@@ -34,7 +34,6 @@ def grafic():
     pos1 = objSelect.getGlobalPlacement().Base
 
     p_1 = Sel.CenterOfMass
-    #o_1 = Sel.Orientation ------------------------------- DIDNT KNOW HOW TO CHANGE
     #Relative position of the center respect the point select
     p_ret_1 = FreeCAD.Vector(0,0,0)
     #------------------------------
@@ -59,7 +58,6 @@ def grafic():
     pos2 = objSelect2.getGlobalPlacement().Base
     
     p_2 = Sel2.CenterOfMass
-    #o_2 = Sel2.Orientation ------------------------------- DIDNT KNOW HOW TO CHANGE
     #Relative position of the center respect the edge select
     p_ret_2 = FreeCAD.Vector(0,0,0)
     #------------------------------
