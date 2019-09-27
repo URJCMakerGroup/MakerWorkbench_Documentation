@@ -1929,7 +1929,7 @@ class Aluproft_TaskPanel:
         # suffix to indicate the units
         self.length_prof.setSuffix(' mm')
         # Minimum value
-        self.length_prof.setMinimum(10) 
+        self.length_prof.setRange (10, 999)
 
 
         # row 1, column 0, rowspan 1, colspan 1
@@ -2174,6 +2174,60 @@ class Assembly_TaskPanel:
     def reject(self):
         FreeCADGui.Control.closeDialog() #close the dialog
 
+class _Python_Cmd:
+    """
+    This utility open a console of python    
+    """
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_python = Python_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_python) 
+        
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Python Console',
+            'Python Console')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/Python_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class Python_TaskPanel:
+    def __init__(self,widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0
+        #Label:
+        self.commands_Label = QtGui.QLabel("Commands:")  
+        self.commands = QtGui.QComboBox()
+        self.commands.addItems('addbox','addCyl')
+        self.commands.setCurrentIndex(0)
+
+        # row 0, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.commands_Label,0,0,1,1)
+        # row 0, column 1, rowspan 1, colspan 1
+        layout.addWidget(self.commands,0,1,1,1)
+
+        self.text_edit = QtGui.QTextEdit()
+        layout.addWidget(self.text_edit,1,0,1,0)
+
+    def accept(self):
+        text=self.text_edit.toPlainText()          
+        code = compile(text, 'fcfun.py', 'exec') 
+        globalParameter = {'addBox': fcfun.addBox,
+                           'addCyl': fcfun.addCyl} #add all the functions
+        exec(code, globalParameter)
+        self.text_edit.clear()
+
+    def reject(self):
+        FreeCADGui.Control.closeDialog() #close the dialog
+
 ###############################################################################
 #***********************************COMMANDS***********************************
 FreeCADGui.addCommand('Sk',_Sk_Dir_Cmd())
@@ -2198,4 +2252,7 @@ FreeCADGui.addCommand('ChangePosExport',_ChangePosExportCmd())
 
 ## Assembly
 FreeCADGui.addCommand('Assembly',_AssemlyCmd())
+
+## Python console
+FreeCADGui.addCommand('Python',_Python_Cmd())
 
