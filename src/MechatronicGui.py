@@ -2206,7 +2206,8 @@ class Python_TaskPanel:
         #Label:
         self.commands_Label = QtGui.QLabel("Commands:")  
         self.commands = QtGui.QComboBox()
-        self.commands.addItems('addbox','addCyl')
+        commands = ['addBox','addCyl']
+        self.commands.addItems(commands)
         self.commands.setCurrentIndex(0)
 
         # row 0, column 0, rowspan 1, colspan 1
