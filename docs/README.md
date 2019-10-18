@@ -1,4 +1,4 @@
-<h1>Mechatronic</h1>
+# Mechatronic
 ---
 Select your lenguage:
 <details>
@@ -7,32 +7,28 @@ Select your lenguage:
 
   ---
   
-<h2>Index</h2>
-<ul>
+  ### Index
   * [Folder organization](#folder-organization)
   * [Stable Version](#stable-version)
   * [How it's works](#how-its-works)
     * [Components](#components)
     * [Mechatronic system](#mechatronic-systems)
     * [Functions](#functions)
-</ul>
   ---
-<h3>Folder organization</h3>
-<ul>
+  ### Folder organization
   - comps: copy of the repository [fcad-comps](https://github.com/felipe-m/fcad-comps) of Felipe Machado.
   - icons: icons of the workbench.
   - parts: 
   - src: source code
       - func: functions makes for the workbench
-</ul>
   ---
-<h3>Stable version</h3>
+  ### Stable version
   The stable version is in the file [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). This version run in FreeCAD 0.18
 
   ---
-<h3>How it's works</h3>
+  ### How it's works
   This workbench has some parts of a mechatronic system. You can modify this parts and build your system.
-  <h4>Components:</h4>
+  #### Components:
   <details>
     <summary>Shaft holder</summary>
       <ul>
@@ -181,7 +177,7 @@ Select your lenguage:
   ![Nut](/parts/img/Nut.png)
   ![Washers](/parts/img/Washers.png)
 
-  <h4>Mechatronic Systems:</h4>
+  #### Mechatronic Systems:
   <details>
     <summary>Filter Stage</summary>
       <ul>
@@ -200,7 +196,7 @@ Select your lenguage:
 
   ![filter_stage](/parts/img/filter_stage.png)
 
-  <h4>Functions:</h4>
+  #### Functions:
   <details>
     <summary>Change to print position</summary>
     Change the position of the piece to print position. Also, the user can select the folder where is save the piece.
