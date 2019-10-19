@@ -1,0 +1,415 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Mechatronic Workbench</title>
+</head>
+<body>
+    <h1>Mechatronic Workbench</h1>
+    <p>Workbench with objects of mechatronic system</p>
+
+    <h2>Select your lenguage:</h2>
+    <details>
+        <summary>English</summary>
+        <p>This repository have the parts of a mechatronic system</p>
+
+        <h3>Index:</h3>
+            <ul>
+                <li><a href="https://davidmubernal.github.io/Mechatronic/#Folder-organizarion">Folder organizarion</a></li>
+                <li><a href="https://davidmubernal.github.io/Mechatronic/#stable-version">Stable Version</a></li>
+                <li><a href="https://davidmubernal.github.io/Mechatronic/#how-its-works">How it's works</a></li>
+                <li><a href="https://davidmubernal.github.io/Mechatronic/#components">Components</a></li>
+                <li><a href="https://davidmubernal.github.io/Mechatronic/#mechatronic-systems">Mechatronic system</a></li>
+                <li><a href="https://davidmubernal.github.io/Mechatronic/#functions">Functions</a></li>
+            </ul>
+
+        <h3><a name="Folder-organizarion">Folder organization</a></h3>
+            <ul>
+                <li>comps: copy of the repository <a href="https://github.com/felipe-m/fcad-comps">facd-comps</a> of <b>Felipe Machado</b>.</li>
+                <li>icons: icons of the workbench.</li>
+                <li>parts:</li>
+                <li>src: source code</li>
+                <li>func: functions makes for the workbench</li>
+            </ul>
+
+        <h3><a name="stable-version">Stable version</a></h3>
+            <p>The stable version is in the file <a href="https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip">Mechatronic.zip</a>. This version run in FreeCAD 0.18</p>
+
+
+        <h3><a name="how-its-works">How it's works</a></h3>
+            <p>This workbench has some parts of a mechatronic system. You can modify this parts and build your system.</p>
+
+        <h4>Components:</h4>
+            <details>
+                <summary>Shaft holder</summary>
+                <ul>
+                    <li>Size</li>
+                    <li>Low profile: only size 8</li>
+                </ul>
+                <img src="../parts/img/sk08.png" />
+                <img src="../parts/img/sk08_pillow.png" />
+            </details>
+            
+            <details>
+                <summary>Idle pulley holder</summary>
+                <ul>
+                    <li>Size of the profile</li>
+                    <li>Metric Nut</li>
+                    <li>Height</li>
+                    <li>Position of the end stop sensor</li>
+                    <li>Height of the end stop sensor</li>
+                </ul>
+            </details>
+
+            <details>
+                <summary>End stop holder</summary>
+                <ul>
+                    <li>Type</li>
+                    <li>Distance of the rail</li>
+                </ul>
+                <img src="../parts/img/endstop_holder_30.png" />
+                <img src="../parts/img/d3v_endstop_holder_r25_m4.png" />
+            </details>
+
+            <details>
+                <summary>Hall stop holder</summary>
+                <ul>
+                    <li>Width</li>
+                    <li>Thikness</li>
+                    <li>Metric nut</li>
+                    <li>Profile size</li>
+                    <li>Reinforce</li>
+                </ul>
+                <img src="../parts/img/hall_stop_holder_21_10.png"/>
+            </details>
+
+            <details>
+                <summary>Bracket</summary>
+                <ul>
+                    <li>Type: 3 options</li>
+                    <li>Size first profile</li>
+                    <li>Size second profile</li>
+                    <li>Thickness</li>
+                    <li>Metric nut first profile</li>
+                    <li>Metric nut second profile</li>
+                    <li>Number of nuts</li>
+                    <li>Distance betwen nuts</li>
+                    <li>Type of hole</li>
+                    <li>Reinforcment: first type only</li>
+                    <li>Flap: second type only</li>
+                    <li>Distance between profiles: third type only</li>
+                </ul>
+                <img src="../parts/img/bracket_30x30_m6.png" />
+                <img src="../parts/img/bracket_30x30_m6_rail15.png" />
+                <img src="../parts/img/bracket_30x30_m6_rail20_6thick.png" />
+            </details>
+
+            <details>
+                <summary>Motor holder</summary>
+                <ul>
+                    <li>Size</li>
+                    <li>Height</li>
+                    <li>Thickness</li>
+                </ul>
+                <img src="../parts/img/nema17_holder_rail25_8.png" />
+                <img src="../parts/img/nema17_holder_rail35_8.FCStd.png" />
+            </details>
+
+            <details>
+                <summary>Lin bear house</summary>
+                <ul>
+                    <li>Type</li>
+                </ul>
+                <img src="/parts/img/thinlinbearhouse1rail_lm8.png" />
+                <img src="/parts/img/thinlinbearhouse1rail_lm8_bot.png" />
+            </details>
+
+
+            <details>
+                <summary>Filter holder</summary>
+                <ul>
+                    <li>Length</li>
+                    <li>Width</li>
+                </ul>
+                <img src="../parts/img/filter_holder.png" />
+            </details>
+
+
+            <details>
+                <summary>Tensioner</summary>
+                <ul>
+                    <li>Belt hight</li>
+                    <li>Base width</li>
+                    <li>Thickness</li>
+                    <li>Metric nut</li>
+                </ul>
+                <img src="../parts/img/tensioner.png" />
+            </details>
+
+            <details>
+                <summary>Belt clamp</summary>
+                <ul>
+                    <li>Type</li>
+                    <li>Length</li>
+                    <li>Width</li>
+                    <li>Metric nut</li>
+                </ul>
+                <img src="../parts/img/Belt_clamp_simple.png" />
+                <img src="../parts/img/Belt_clamp_double.png" />
+            </details>
+
+            <details>
+                <summary>Aluminium profile</summary>
+                <ul>
+                    <li>Secction</li>
+                    <li>Length</li>
+                </ul>
+                <img src="../parts/img/Profiles.png" />
+            </details>
+
+            <details>
+                <summary>Bolts, Nuts & Washers</summary>
+                <ul>
+                    <li>Type</li>
+                    <li>Metric</li>
+                    <li>Bolt legnth</li>
+                </ul>
+                <img src="../parts/img/Bolts.png" />
+                <img src="../parts/img/Nuts.png" />
+                <img src="../parts/img/Washers.png" />
+            </details>
+
+        <h4>Mechatronic Systems:</h4>
+            <details>
+                <summary>Filter Stage</summary>
+                <ul>
+                    <li>Move distance</li>
+                    <li>Filter length</li>
+                    <li>Filter width</li>
+                    <li>Base width</li>
+                    <li>Tensioner stroke</li>
+                    <li>Tensioner thickness</li>
+                    <li>Metric nut</li>
+                    <li>Motor size</li>
+                    <li>Lenght rail motor holder</li>
+                    <li>Motor holder thickness</li>
+                </ul>
+                <img src="../parts/img/filter_stage.png" />
+            </details>
+
+        <h4>Functions:</h4>
+            <details>
+                <summary>Change to print position</summary>
+                    <p>Change the position of the piece to print position. Also, the user can select the folder where is save the piece.</p>
+            </details>
+
+            <details>
+                <summary>Assembly</summary>
+                    <p>Select the part you like and a new place.</p>
+            </details>
+
+    </details>
+
+    <details>
+        <summary>Español</summary>
+        <p>Este repositorio tiene componentes de un sistema mecatrónico.</p>
+
+
+        <h3>Índice:</h3>
+        <ul>
+            <li><a href="https://davidmubernal.github.io/Mechatronic/#organización-de-las-carpetas">Organización de las caperpetas</a></li>
+            <li><a href="https://davidmubernal.github.io/Mechatronic/#verión-estable">Versión estable</a></li>
+            <li><a href="https://davidmubernal.github.io/Mechatronic/#funcionamiento-del-workbench">Funcionamiento del workbench</a></li>
+            <li><a href="https://davidmubernal.github.io/Mechatronic/#componentes">Componentes</a></li>
+            <li><a href="https://davidmubernal.github.io/Mechatronic/#sistemas-mecatrónicos">Sistemas mecatrónicos</a></li>
+            <li><a href="https://davidmubernal.github.io/Mechatronic/#funciones">Funciones</a></li>
+        </ul>
+
+        <h3><a name="organización-de-las-carpetas">Organización de las carpetas</a></h3>
+        <ul>
+            <li>comps: copia del repositorio <a href="https://github.com/felipe-m/fcad-comps">facd-comps</a> de <b>Felipe Machado</b>.</li>
+            <li>icons: iconos del workbench..</li>
+            <li>parts:</li>
+            <li>src: código fuente</li>
+            <li>func: funciones creadas para el workbench</li>
+        </ul>
+
+        <h3><a name="verión-estable">Versión estable:</a></h3>
+        <p>La versión estable del workbench se encuentra en el archivo comprimido <a href="https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip">Mechatronic.zip</a>. Funciona en FreeCAD 0.18</p>
+
+        <h3><a name="how-its-works">Funcionamiento del workbench</a></h3>
+        <p>El workbench consta de un conjunto de piezas empleadas en sistemas mecatrónicos.
+            En función de la pieza que seleccionemos tendremos distintas opciones de </p>
+
+        <h4>Componentes:</h4>
+        <details>
+            <summary>Soporte de eje</summary>
+            <ul>
+                <li>Tamaño</li>
+                <li>Perfil bajo: sólo para tamaño 8</li>
+            </ul>
+            <img src="../parts/img/sk08.png" />
+            <img src="../parts/img/sk08_pillow.png" />
+        </details>
+
+        <details>
+            <summary>Soporte polea loca</summary>
+            <ul>
+                <li>Tamaño del perfil sobre el que se monta</li>
+                <li>Métrica de los tornillos</li>
+                <li>Altura</li>
+                <li>Posición del sensor de final de carrera</li>
+                <li>Altura del sensor de final de carrera</li>
+            </ul>
+        </details>
+
+        <details>
+            <summary>Soporte final de carrera</summary>
+            <ul>
+                <li>Tipo</li>
+                <li>Distancia del carril</li>
+            </ul>
+            <img src="../parts/img/endstop_holder_30.png" />
+            <img src="../parts/img/d3v_endstop_holder_r25_m4.png" />
+        </details>
+
+        <details>
+            <summary>Soporte final</summary>
+            <ul>
+                <li>Ancho</li>
+                <li>Espesor</li>
+                <li>Métrica tornillo</li>
+                <li>Tamaño perfil</li>
+                <li>Refuerzo</li>
+            </ul>
+            <img src="../parts/img/hall_stop_holder_21_10.png" />
+        </details>
+
+        <details>
+            <summary>Bracket para perfiles</summary>
+            <ul>
+                <li>Tipo: 3 opciones distintas</li>
+                <li>Tamaño primer perfil</li>
+                <li>Tamaño segundo perfil</li>
+                <li>Espesor</li>
+                <li>Métrica tornillo primer perfil</li>
+                <li>Métrica tornillo segundo perfil</li>
+                <li>Número de tornillos</li>
+                <li>Distancia entre tornillos</li>
+                <li>Seleccion agujero</li>
+                <li>Refuerzo: sólo para el primer tipo de bracket</li>
+                <li>Flap: sólo para el segundo tipo de bracket</li>
+                <li>Distancia entre perfiles: sólo para el tercer tipo de bracket</li>
+            </ul>
+            <img src="../parts/img/bracket_30x30_m6.png" />
+            <img src="../parts/img/bracket_30x30_m6_rail15.png" />
+            <img src="../parts/img/bracket_30x30_m6_rail20_6thick.png" />
+        </details>
+
+        <details>
+            <summary>Soporte motor</summary>
+            <ul>
+                <li>Tamaño del soporte</li>
+                <li>Altura del soporte</li>
+                <li>Espesor de las paredes del soporte</li>
+            </ul>
+            <img src="../parts/img/nema17_holder_rail25_8.png" />
+            <img src="../parts/img/nema17_holder_rail35_8.FCStd.png" />
+        </details>
+
+        <details>
+            <summary>Carcasa del rodamiento lineal</summary>
+            <ul>
+                <li>Tipo</li>
+            </ul>
+            <img src="../parts/img/thinlinbearhouse1rail_lm8.png" />
+            <img src="../parts/img/thinlinbearhouse1rail_lm8_bot.png" />
+        </details>
+
+        <details>
+            <summary>Soporte del filtro</summary>
+            <ul>
+                <li>Largo</li>
+                <li>Ancho</li>
+            </ul>
+            <img src="../parts/img/filter_holder.png" />
+        </details>
+
+        <details>
+            <summary>Tensionador de la polea</summary>
+            <ul>
+                <li>Altura de polea</li>
+                <li>Ancho de base</li>
+                <li>Espesor</li>
+                <li>Métrica del tornillo</li>
+            </ul>
+            <img src="../parts/img/tensioner.png" />
+        </details>
+
+        <details>
+            <summary>Abrazadera de polea</summary>
+            <ul>
+                <li>Tipo</li>
+                <li>Largo</li>
+                <li>Ancho</li>
+                <li>Métrica del tornillo</li>
+            </ul>
+            <img src="../parts/img/Belt_clamp_simple.png" />
+            <img src="../parts/img/Belt_clamp_double.png" />
+        </details>
+        
+        <details>
+            <summary>Perfil de aluminio</summary>
+            <ul>
+                <li>Sección</li>
+                <li>Longitud</li>
+            </ul>
+            <img src="../parts/img/Profiles.png" />
+        </details>
+        
+        <details>
+            <summary>Tornillos, Tuercas y Arandelas</summary>
+            <ul>
+                <li>Tipo</li>
+                <li>Métrica</li>
+                <li>Longitud del tornillo</li>
+            </ul>
+            <img src="../parts/img/Bolts.png" />
+            <img src="../parts/img/Nuts.png" />
+            <img src="../parts/img/Washers.png" />
+        </details>
+
+        <h4>Sistemas mecatrónicos:</h4>
+        <details>
+            <summary>Filter Stage</summary>
+            <ul>
+                <li>Distancia de recorrido</li>
+                <li>Largo del filtro</li>
+                <li>Ancho del filtro</li>
+                <li>Ancho de base</li>
+                <li>Largo tensionador</li>
+                <li>Espesor tensionador</li>
+                <li>Métrica del tornillo</li>
+                <li>Tamaño del motor</li>
+                <li>Longitud del rail del soporte motor</li>
+                <li>Espesor del soporte motor</li>
+            </ul>
+            <img src="../parts/img/filter_stage.png" />
+        </details>
+
+        <h4>Funciones:</h4>
+        <details>
+            <summary>Cambiar a posición de imprimir</summary>
+            <p>Coloca la pieza seleccionada en la posición de impresión y pide al usuario la carpeta donde exportar la pieza.</p>
+        </details>
+
+        <details>
+            <summary>Ensamblaje</summary>
+            <p>Selecciona la pieza y su nueva posición.</p>
+        </details>
+
+    </details>
+</body>
+</html>
+
