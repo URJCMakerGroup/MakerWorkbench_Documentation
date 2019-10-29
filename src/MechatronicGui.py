@@ -32,12 +32,8 @@ import FreeCAD
 import FreeCADGui
 import logging
 
-import Part
-
 import comps
-import fcfun
 from fcfun import V0, VX, VY, VZ, VZN
-import fc_clss
 import parts
 import kcomp
 import partset
@@ -331,7 +327,7 @@ class SimpleEndStopHolder_TaskPanel:
 
         # ---- row 1: 
         # Label:
-        self.Rail_Label = QtGui.QLabel("Rail length:")
+        self.Rail_Label = QtGui.QLabel("Rail Lenght:")
         # Spin Box that takes doubles
         self.Rail_Value = QtGui.QDoubleSpinBox()
         # Default value
@@ -824,7 +820,7 @@ class LinBearHouseTaskPanel:
         # Combo Box
         self.LinBearHouse_ComboBox = QtGui.QComboBox()
         # Values and initial
-        self.LinBearHouse_text = ["Thin 1 rail", "Thin","Normal","Asimetric"]
+        self.LinBearHouse_text = ["Thin 1 rail", "Thin","Normal (only SC type)","Asimetric"]
         self.LinBearHouse_ComboBox.addItems(self.LinBearHouse_text)
         self.LinBearHouse_ComboBox.setCurrentIndex(0)
 
@@ -839,7 +835,7 @@ class LinBearHouseTaskPanel:
         # ComboBox
         self.Type_ComboBox = QtGui.QComboBox()
         # Values and initial
-        self.Type_text = ["LMUU 6","LMUU 8","LMUU 10","LMUU 12","LMEUU 8","LMEUU 10","LMEUU12","LMELUU 12"]
+        self.Type_text = ["LMUU 6","LMUU 8","LMUU 10","LMUU 12","LMEUU 8","LMEUU 10","LMEUU12","LMELUU 12","SC8UU_Pr","SC10UU_Pr","SC12UU_Pr"]
         self.Type_ComboBox.addItems(self.Type_text)
         self.Type_ComboBox.setCurrentIndex(1)
 
@@ -1748,7 +1744,7 @@ class SensorHolderTaskPanel:
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Sensor Pin Length ----
-        # Label:
+        #Label:
         self.Sensor_Pin_Length_Label = QtGui.QLabel("Sensor Pin Length:")  
         # Spin Box that takes doubles
         self.Sensor_Pin_Length_Value = QtGui.QDoubleSpinBox()
@@ -1764,7 +1760,7 @@ class SensorHolderTaskPanel:
         layout.addWidget(self.Sensor_Pin_Length_Value,0,1,1,1)
 
         # ---- row 1: Sensor Pin Width ----
-        # Label:
+        #Label:
         self.Sensor_Pin_Width_Label = QtGui.QLabel("Sensor Pin Width:")  
         # Spin Box that takes doubles
         self.Sensor_Pin_Width_Value = QtGui.QDoubleSpinBox()
@@ -1772,7 +1768,7 @@ class SensorHolderTaskPanel:
         self.Sensor_Pin_Width_Value.setValue(2)
         # suffix to indicate the units
         self.Sensor_Pin_Width_Value.setSuffix(' mm')
-        self.Sensor_Pin_Width_Value.setMinimum(2)
+        self.Sensor_Pin_Width_Value.setMinimum(2) #Not sure
 
         # row 1, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Sensor_Pin_Width_Label,1,0,1,1)
@@ -1780,7 +1776,7 @@ class SensorHolderTaskPanel:
         layout.addWidget(self.Sensor_Pin_Width_Value,1,1,1,1)
 
         # ---- row 2: Sensor Pin High ----
-        # Label:
+        #Label:
         self.Sensor_Pin_High_Label = QtGui.QLabel("Sensor Pin High:")  
         # Spin Box that takes doubles
         self.Sensor_Pin_High_Value = QtGui.QDoubleSpinBox()
@@ -1788,7 +1784,7 @@ class SensorHolderTaskPanel:
         self.Sensor_Pin_High_Value.setValue(3)
         # suffix to indicate the units
         self.Sensor_Pin_High_Value.setSuffix(' mm')
-        self.Sensor_Pin_High_Value.setMinimum(3)
+        self.Sensor_Pin_High_Value.setMinimum(3) #Not sure
 
         # row 2, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Sensor_Pin_High_Label,2,0,1,1)
@@ -1796,7 +1792,7 @@ class SensorHolderTaskPanel:
         layout.addWidget(self.Sensor_Pin_High_Value,2,1,1,1)
 
         # ---- row 3: Depth ----
-        # Label:
+        #Label:
         self.Depth_CD_Label = QtGui.QLabel("Depth:")  
         # Spin Box that takes doubles
         self.Depth_CD_Value = QtGui.QDoubleSpinBox()
@@ -1804,7 +1800,7 @@ class SensorHolderTaskPanel:
         self.Depth_CD_Value.setValue(8)
         # suffix to indicate the units
         self.Depth_CD_Value.setSuffix(' mm')
-        self.Depth_CD_Value.setMinimum(8) 
+        self.Depth_CD_Value.setMinimum(8) #Not sure
 
         # row 3, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Depth_CD_Label,3,0,1,1)
@@ -1812,7 +1808,7 @@ class SensorHolderTaskPanel:
         layout.addWidget(self.Depth_CD_Value,3,1,1,1)
 
         # ---- row 4: Width CD case----
-        # Label:
+        #Label:
         self.Width_CD_Label = QtGui.QLabel("Width CD case:")  
         # Spin Box that takes doubles
         self.Width_CD_Value = QtGui.QDoubleSpinBox()
@@ -1820,7 +1816,7 @@ class SensorHolderTaskPanel:
         self.Width_CD_Value.setValue(20)
         # suffix to indicate the units
         self.Width_CD_Value.setSuffix(' mm')
-        self.Width_CD_Value.setMinimum(20) 
+        self.Width_CD_Value.setMinimum(20) #Not sure
 
         # row 4, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Width_CD_Label,4,0,1,1)
@@ -1828,7 +1824,7 @@ class SensorHolderTaskPanel:
         layout.addWidget(self.Width_CD_Value,4,1,1,1)
 
         # ---- row 5: High CD case----
-        # Label:
+        #Label:
         self.High_CD_Label = QtGui.QLabel("High CD case:")  
         # Spin Box that takes doubles
         self.High_CD_Value = QtGui.QDoubleSpinBox()
@@ -1836,7 +1832,7 @@ class SensorHolderTaskPanel:
         self.High_CD_Value.setValue(37)
         # suffix to indicate the units
         self.High_CD_Value.setSuffix(' mm')
-        self.High_CD_Value.setMinimum(37)
+        self.High_CD_Value.setMinimum(37) #Not sure
 
         # row 5, column 0, rowspan 1, colspan 1
         layout.addWidget(self.High_CD_Label,5,0,1,1)
@@ -1844,20 +1840,23 @@ class SensorHolderTaskPanel:
         layout.addWidget(self.High_CD_Value,5,1,1,1)
 
     def accept(self):
-        Sensor_Pin_length = self.Sensor_Pin_Length_Value.value()
+        Sensor_Pin_Lenght = self.Sensor_Pin_Length_Value.value()
         Sensor_Pin_Width = self.Sensor_Pin_Width_Value.value()
         Sensor_Pin_High = self.Sensor_Pin_High_Value.value()
         Depth_CD = self.Depth_CD_Value.value()
         Width_CD = self.Width_CD_Value.value()
         High_CD = self.High_CD_Value.value()
 
-        parts.sensor_holder(sensor_support_length = Sensor_Pin_length,
+        parts.sensor_holder(sensor_support_length = Sensor_Pin_Lenght,
                             sensor_pin_sep = 2.54,
                             sensor_pin_pos_h = Sensor_Pin_High,
                             sensor_pin_pos_w = Sensor_Pin_Width,
                             sensor_pin_r_tol = 1.05,
                             sensor_pin_rows = 6,
                             sensor_pin_cols = 6,
+                            #sensor_clip_pos_h = 2.45, #position from center
+                            #sensor_clip_h_tol = 1.28,
+                            #sensor_clip_w_tol = 1.,
                             base_height = High_CD, # height of the cd case
                             base_width = Width_CD, # width of the cd case
                             flap_depth = Depth_CD,
@@ -1876,225 +1875,10 @@ class SensorHolderTaskPanel:
         FreeCADGui.SendMsgToActiveView("ViewFit")
 
 ###############################################################################
-#***********************************ALUPROF************************************
-class _Aluproft_Cmd:
-    """
-    This class create an aluminium profile with diferents sizes and any length
-    """
-    def Activated(self):
-        baseWidget = QtGui.QWidget()
-        panel_Aluproft = Aluproft_TaskPanel(baseWidget)
-        FreeCADGui.Control.showDialog(panel_Aluproft) 
-        
-    def GetResources(self):
-        MenuText = QtCore.QT_TRANSLATE_NOOP(
-            'Aluminium profile',
-            'Aluminium profile')
-        ToolTip = QtCore.QT_TRANSLATE_NOOP(
-            '',
-            '')
-        return {
-            'Pixmap': __dir__ + '/icons/Aluproft_cmd.svg',
-            'MenuText': MenuText,
-            'ToolTip': ToolTip}
-    def IsActive(self):
-        return not FreeCAD.ActiveDocument is None 
-    
-class Aluproft_TaskPanel:
-    def __init__(self, widget):
-        self.form = widget
-        layout = QtGui.QGridLayout(self.form)
-
-        # ---- row 0: Size ----
-        #Label:
-        self.Prof_Label = QtGui.QLabel("1 - Select object to move")  
-        # ComboBox:
-        self.prof_size = ["5", "10", "15", "20", "30", "40"]
-        self.profile = QtGui.QComboBox()
-        self.profile.addItems(self.prof_size)
-        self.profile.setCurrentIndex(3) #20
-
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Prof_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.profile,0,1,1,1)
-
-        # ---- row 1: Length ----
-        # Label:
-        self.length_Label = QtGui.QLabel("Length")  
-        # Dounble Spin Box:
-        self.length_prof = QtGui.QDoubleSpinBox()
-        # Default value
-        self.length_prof.setValue(20)
-        # suffix to indicate the units
-        self.length_prof.setSuffix(' mm')
-        # Minimum value
-        self.length_prof.setMinimum(10) 
-
-
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.length_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.length_prof,1,1,1,1)
-
-    def accept(self):
-        prof_type = {0:  5,
-                     1: 10,
-                     2: 15,
-                     3: 20,
-                     4: 30,
-                     5: 40}
-        prof = prof_type[self.profile.currentIndex()]
-        length = self.length_prof.value()
-        comps.PartAluProf(depth = length,
-                        aluprof_dict = kcomp.ALU_PROF[prof],
-                        xtr_d=0, xtr_nd=0,
-                        axis_d = VX, axis_w = VY, axis_h = V0,
-                        pos_d = 0, pos_w = 0, pos_h = 0,
-                        pos = V0,
-                        model_type = 1, # dimensional model
-                        name = 'aluprof_'+str(prof))
-        
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
-
-
-###############################################################################
-#*************************************BOLT*************************************
-class _Bolt_Cmd:
-    """
-    This class create Bolts, Nuts & Washers with diferents metrics
-    """
-    def Activated(self):
-        baseWidget = QtGui.QWidget()
-        panel_Bolt = Bolt_TaskPanel(baseWidget)
-        FreeCADGui.Control.showDialog(panel_Bolt) 
-        
-    def GetResources(self):
-        MenuText = QtCore.QT_TRANSLATE_NOOP(
-            'Bolts, Nuts & Washers',
-            'Bolts, Nuts & Washers')
-        ToolTip = QtCore.QT_TRANSLATE_NOOP(
-            '',
-            '')
-        return {
-            'Pixmap': __dir__ + '/icons/Bolt_cmd.svg',
-            'MenuText': MenuText,
-            'ToolTip': ToolTip}
-    def IsActive(self):
-        return not FreeCAD.ActiveDocument is None 
-    
-class Bolt_TaskPanel:
-    def __init__(self, widget):
-        self.form = widget
-        layout = QtGui.QGridLayout(self.form)
-
-        # ---- row 0: Type ----
-        #Label:
-        self.Type_select_Label = QtGui.QLabel("Type")  
-        # ComboBox:
-        self.Type_text = ["Bolt D912", "Nut D934", "Whasher DIN 125", "Whasher DIN 9021"]
-        self.Type_select = QtGui.QComboBox()
-        self.Type_select.addItems(self.Type_text)
-        self.Type_select.setCurrentIndex(0)
-
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Type_select_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Type_select,0,1,1,1)
-
-        # ---- row 1: Metric ----
-        # Label:
-        self.Bolt_Metric_Label = QtGui.QLabel("Metric")  
-        # ComboBox:
-        self.Bolt_metric = ["3","4","5","6"]
-        self.metric = QtGui.QComboBox()
-        self.metric.addItems(self.Bolt_metric)
-        self.metric.setCurrentIndex(0)
-
-
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Bolt_Metric_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.metric,1,1,1,1)
-
-        # ---- row 2: Length ----
-        # Label:
-        self.length_Label = QtGui.QLabel("Length for bolt")  
-        # Dounble Spin Box:
-        self.length_bolt = QtGui.QDoubleSpinBox()
-        # Default value
-        self.length_bolt.setValue(20)
-        # suffix to indicate the units
-        self.length_bolt.setSuffix(' mm')
-        # Minimum value
-        self.length_bolt.setMinimum(4) 
-
-
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.length_Label,2,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.length_bolt,2,1,1,1)
-
-    def accept(self):
-        metric = {0: 3,
-                  1: 4,
-                  2: 5,
-                  3: 6}
-        metric = metric[self.metric.currentIndex()]
-        Type_sel = self.Type_text[self.Type_select.currentIndex()]
-        length = self.length_bolt.value()
-        # Chose the data in function of the type selected
-        if Type_sel == "Bolt D912":
-            fc_clss.Din912Bolt(metric,
-                               shank_l = length,
-                               shank_l_adjust = 0,
-                               shank_out = 0,
-                               head_out = 0,
-                               axis_h = VZ, axis_d = None, axis_w = None,
-                               pos_h = 0, pos_d = 0, pos_w = 0,
-                               pos = V0,
-                               model_type = 0,
-                               name = '')
-
-        elif Type_sel == "Nut D934":
-            fc_clss.Din934Nut(metric = metric,
-                              axis_d_apo = 0, 
-                              h_offset = 0,
-                              axis_h = VZ,
-                              axis_d = None,
-                              axis_w = None,
-                              pos_h = 0, pos_d = 0, pos_w = 0,
-                              pos = V0)
-        elif Type_sel == "Whasher DIN 125":
-            fc_clss.Din125Washer(metric,
-                                 axis_h = VZ, 
-                                 pos_h = 1, 
-                                 tol = 0,
-                                 pos = V0,
-                                 model_type = 0, # exact
-                                 name = '')
-        else : #Type_sel == "Whasher DIN 9021"
-            fc_clss.Din9021Washer(metric,
-                                  axis_h = VZ, 
-                                  pos_h = 1, 
-                                  tol = 0,
-                                  pos = V0,
-                                  model_type = 0, # exact
-                                  name = '')
-            # If there are other types of bolts it could be there
-        
-
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
-
-###############################################################################
 #******************************PRINT**AND**EXPORT******************************
 class _ChangePosExportCmd:
     def Activated(self):
-        objSelect = FreeCADGui.Selection.getSelection()[0]
+        objSelect = FreeCADGui.Selection.getSelection()[0]#.Name
         print_export(objSelect)
         
     def GetResources(self):
@@ -2127,6 +1911,12 @@ class _AssemlyCmd:
         baseWidget = QtGui.QWidget()
         panel_Assembly = Assembly_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_Assembly) 
+        """
+        message = QtGui.QMessageBox()
+        message.setText('Select:\n  - First: Think to move.\n   - Second: New placement.\n')
+        message.setStandardButtons(QtGui.QMessageBox.Ok)
+        message.setDefaultButton(QtGui.QMessageBox.Ok)
+        message.exec_()"""
         
     def GetResources(self):
         MenuText = QtCore.QT_TRANSLATE_NOOP(
@@ -2148,14 +1938,21 @@ class Assembly_TaskPanel:
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Text ----
-        # Label:
+        #Label:
         self.Text_1_Label = QtGui.QLabel("1 - Select object to move")  
 
         # row 0, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Text_1_Label,0,0,1,1)
 
+        """# ---- row 1: Text ----
+        #Label:
+        self.Text_2_Label = QtGui.QLabel(" ")  
+
+        # row 1, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Text_2_Label,1,0,1,1)
+        """
         # ---- row 2: Text ----
-        # Label:
+        #Label:
         self.Text_3_Label = QtGui.QLabel("2 - After select the place")  
 
         # row 2, column 0, rowspan 1, colspan 1
@@ -2164,15 +1961,13 @@ class Assembly_TaskPanel:
     def accept(self):
         if len(FreeCADGui.Selection.getSelection()) == 2 :
             grafic.grafic()
+            FreeCADGui.Control.closeDialog() #close the dialog
         else:
             message = QtGui.QMessageBox()
             message.setText('Select object to move and placement')
             message.setStandardButtons(QtGui.QMessageBox.Ok)
             message.setDefaultButton(QtGui.QMessageBox.Ok)
             message.exec_()
-            
-    def reject(self):
-        FreeCADGui.Control.closeDialog() #close the dialog
 
 ###############################################################################
 #***********************************COMMANDS***********************************
@@ -2184,18 +1979,17 @@ FreeCADGui.addCommand('Simple_End_Stop_Holder',_SimpleEndStopHolder_Cmd())
 FreeCADGui.addCommand('LinBearHouse',_LinBearHouse_Cmd())
 FreeCADGui.addCommand('Stop_Holder',_stop_holderCmd())
 FreeCADGui.addCommand('Sensor_Holder',_SensorHolderCmd())
-FreeCADGui.addCommand('Belt_Clamp',_BeltClampCmd())
-FreeCADGui.addCommand('Aluproft',_Aluproft_Cmd()) 
-FreeCADGui.addCommand('Bolts, Nuts & Washers',_Bolt_Cmd())       
 
 ## Filter Stage
 FreeCADGui.addCommand('Filter_Stage', _FilterStageCmd())
 FreeCADGui.addCommand('Filter_Holder',_FilterHolderCmd())
 FreeCADGui.addCommand('Tensioner',_TensionerCmd())
 
+## In progress
+FreeCADGui.addCommand('Belt_Clamp',_BeltClampCmd())
+
 ## Print
 FreeCADGui.addCommand('ChangePosExport',_ChangePosExportCmd())
 
 ## Assembly
 FreeCADGui.addCommand('Assembly',_AssemlyCmd())
-
