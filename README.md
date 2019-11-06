@@ -1,38 +1,41 @@
-<h1>Mechatronic</h1>
+# Mechatronic
+
 ---
-Select your lenguage:
+
+All the documentation of Mechatronic is in the website https://davidmubernal.github.io/Mechatronic/
+
+
+Select your language:
 <details>
   <summary>English</summary>
   This repository have the parts of a mechatronic system
 
   ---
   
-<h2>Index</h2>
-<ul>
+  ### Index
   * [Folder organization](#folder-organization)
   * [Stable Version](#stable-version)
-  * [How it's works](#how-its-works)
+  * [How it works](#how-it-works)
     * [Components](#components)
     * [Mechatronic system](#mechatronic-systems)
     * [Functions](#functions)
-</ul>
+
   ---
-<h3>Folder organization</h3>
-<ul>
+  ### Folder organization
   - comps: copy of the repository [fcad-comps](https://github.com/felipe-m/fcad-comps) of Felipe Machado.
   - icons: icons of the workbench.
-  - parts: 
+  - parts 
   - src: source code
       - func: functions makes for the workbench
-</ul>
+  
   ---
-<h3>Stable version</h3>
+  ### Stable version
   The stable version is in the file [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). This version run in FreeCAD 0.18
 
   ---
-<h3>How it's works</h3>
+  ### How it works
   This workbench has some parts of a mechatronic system. You can modify this parts and build your system.
-  <h4>Components:</h4>
+  #### Components:
   <details>
     <summary>Shaft holder</summary>
       <ul>
@@ -59,7 +62,7 @@ Select your lenguage:
     <summary>End stop holder</summary>
       <ul>
         <li>Type</li>
-        <li>Distance of the rail</li>
+        <li>Rail length</li>
       </ul>
   </details>
 
@@ -91,7 +94,7 @@ Select your lenguage:
         <li>Number of nuts</li>
         <li>Distance betwen nuts</li>
         <li>Type of hole</li>
-        <li>Reinforcment: first type only</li>
+        <li>Reinforcement: first type only</li>
         <li>Flap: second type only</li>
         <li>Distance between profiles: third type only</li>
       </ul>
@@ -161,7 +164,7 @@ Select your lenguage:
   <details>
       <summary>Aluminium profile</summary>
         <ul>
-          <li>Secction</li>
+          <li>Section</li>
           <li>Length</li>
         </ul>
     </details>
@@ -173,15 +176,15 @@ Select your lenguage:
       <ul>
         <li>Type</li>
         <li>Metric</li>
-        <li>Bolt legnth</li>
+        <li>Bolt length</li>
       </ul>
   </details>
 
-  ![Bolt](/parts/img/Bolt.png)
-  ![Nut](/parts/img/Nut.png)
+  ![Bolt](/parts/img/Bolts.png)
+  ![Nut](/parts/img/Nuts.png)
   ![Washers](/parts/img/Washers.png)
 
-  <h4>Mechatronic Systems:</h4>
+  #### Mechatronic Systems:
   <details>
     <summary>Filter Stage</summary>
       <ul>
@@ -193,14 +196,14 @@ Select your lenguage:
         <li>Tensioner thickness</li>
         <li>Metric nut</li>
         <li>Motor size</li>
-        <li>Lenght rail motor holder</li>
+        <li>Length rail motor holder</li>
         <li>Motor holder thickness</li>
       </ul>
   </details>
 
   ![filter_stage](/parts/img/filter_stage.png)
 
-  <h4>Functions:</h4>
+  #### Functions:
   <details>
     <summary>Change to print position</summary>
     Change the position of the piece to print position. Also, the user can select the folder where is save the piece.
@@ -208,7 +211,7 @@ Select your lenguage:
 
   <details>
     <summary>Assembly</summary>
-    Select the part you like and a new place.
+    Select the part you want to move and the place to assembly.
   </details>
 
   ---
@@ -220,18 +223,18 @@ Select your lenguage:
   Este repositorio tiene componentes de un sistema mecatrónico.
 
   ### Índice
-  * [Organización de las caperpetas](#organización-de-las-carpetas)
+  * [Organización de las carpetas](#organización-de-las-carpetas)
   * [Versión estable](#verión-estable)
   * [Funcionamiento del workbench](#funcionamiento-del-workbench)  
-    * [Componentes](#componentes)
-    * [Sistemas mecatrónicos](#sistemas-mecatrónicos)
-    * [Funciones](#funciones)
+  * [Componentes](#componentes)
+  * [Sistemas mecatrónicos](#sistemas-mecatrónicos)
+  * [Funciones](#funciones)
 
   ---
   ### Organización de las carpetas:
   - comps: copia del repositorio [fcad-comps](https://github.com/felipe-m/fcad-comps) de Felipe Machado.
   - icons: iconos del workbench.
-  - parts: 
+  - parts 
   - src: código fuente
       - func: funciones creadas para el workbench
 
@@ -421,7 +424,7 @@ Select your lenguage:
 
   <details>
     <summary>Ensamblaje</summary>
-    Selecciona la pieza y su nueva posición.
+    Selecciona la pieza que quieres mover y su nueva posición.
   </details>
 
   ---
