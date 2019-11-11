@@ -835,7 +835,7 @@ class LinBearHouseTaskPanel:
         # ComboBox
         self.Type_ComboBox = QtGui.QComboBox()
         # Values and initial
-        self.Type_text = ["LMUU 6","LMUU 8","LMUU 10","LMUU 12","LMEUU 8","LMEUU 10","LMEUU12","LMELUU 12","SC8UU_Pr","SC10UU_Pr","SC12UU_Pr"]
+        self.Type_text = ["LMUU 6","LMUU 8","LMUU 10","LMUU 12","LMUU 20","LMEUU 8","LMEUU 10","LMEUU12","LMELUU 12","LMEUU 20","SC8UU_Pr","SC10UU_Pr","SC12UU_Pr","SCE20UU_Pr30","SCE20UU_Pr30b"]
         self.Type_ComboBox.addItems(self.Type_text)
         self.Type_ComboBox.setCurrentIndex(1)
 
@@ -849,13 +849,17 @@ class LinBearHouseTaskPanel:
                          1:kcomp.LM8UU,
                          2:kcomp.LM10UU,
                          3:kcomp.LM12UU,
-                         4:kcomp.LME8UU,
-                         5:kcomp.LME10UU,
-                         6:kcomp.LME12UU,
-                         7:kcomp.LME12LUU,
-                         8:kcomp.SC8UU_Pr,
-                         9:kcomp.SC10UU_Pr,
-                         10:kcomp.SC12UU_Pr }
+                         4:kcomp.LM20UU,
+                         5:kcomp.LME8UU,
+                         6:kcomp.LME10UU,
+                         7:kcomp.LME12UU,
+                         8:kcomp.LME12LUU,
+                         9:kcomp.LME20UU,
+                         10:kcomp.SC8UU_Pr,
+                         11:kcomp.SC10UU_Pr,
+                         12:kcomp.SC12UU_Pr,
+                         13:kcomp.SCE20UU_Pr30,
+                         14:kcomp.SCE20UU_Pr30b }
 
         LinBearHouse = self.LinBearHouse_ComboBox.currentIndex()
         Type = Type_values[self.Type_ComboBox.currentIndex()]

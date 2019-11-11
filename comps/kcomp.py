@@ -19,12 +19,18 @@ STOL = TOL / 2.0       # smaller tolerance
 LAYER3D_H = 0.3  
 
 # ---------------------- linear Bearings
-LMUU_D = { 6: 12., 8: 15., 10: 19.0, 12: 21.0 }; #diamenter of the bearing 
-LMUU_L = { 6: 19., 8: 24., 10: 29.0, 12: 30.0 }; #the length of the bearing
 
-LMEUU_D = {        8: 16., 10: 19.0, 12: 22.0 }; #diamenter of the bearing 
-LMEUU_L = {        8: 25., 10: 29.0, 12: 32.0 }; #the length of the bearing
-# Large:
+#external diameter of the bearing 
+LMUU_D = { 6: 12., 8: 15., 10: 19.0, 12: 21.0, 20: 42. };
+#Length of the bearing
+LMUU_L = { 6: 19., 8: 24., 10: 29.0, 12: 30.0, 20: 32. }; 
+
+#diamenter of the bearing 
+LMEUU_D = {        8: 16., 10: 19.0, 12: 22.0, 20: 32. };
+#Length of the bearing
+LMEUU_L = {        8: 25., 10: 29.0, 12: 32.0, 20: 45. };
+
+# Large version:
 LMELUU_L = {                   12: 57.0 }; #the length of the bearing
 LMELUU_D = { 8: 16., 10: 19.0, 12: 22.0 }; #diamenter of the bearing 
 
@@ -54,6 +60,11 @@ LM12UU = {
          'L' : LMUU_L[12] # length
            }
 
+LM20UU = {
+         'Di' : 20,  # interior diameter
+         'De' : LMUU_D[20], # exterior diameter
+         'L' : LMUU_L[20] # length
+           }
 
 LME8UU = {
          'Di' : 8,  # interior diameter
@@ -74,6 +85,13 @@ LME12UU = {
          'L' : LMEUU_L[12] # length
            }
 
+LME20UU = {
+         'Di' : 20,  # interior diameter
+         'De' : LMEUU_D[20], # exterior diameter
+         'L' : LMEUU_L[20] # length
+           }
+
+
 LME12LUU = {
          'Di' : 12,  # interior diameter
          'De' : LMELUU_D[12], # exterior diameter
@@ -85,14 +103,16 @@ LMUU = {
           6 : LM6UU,
           8 : LM8UU,
          10 : LM10UU,  # same as LMEUU
-         12 : LM12UU
+         12 : LM12UU,
+         20 : LM12UU
         }
 
 
 LMEUU = {
           8 : LME8UU,
          10 : LME10UU,
-         12 : LME12UU
+         12 : LME12UU,
+         20 : LME20UU
         }
 
 LMELUU = {
@@ -156,6 +176,9 @@ M3_SHANK_R_TOL = 3 / 2.0 + TOL/2.0
 M3_2AP = D912_2AP[3]  # 2xapotheme of the hex socket
 
 # typical length of DIN912 bolts
+D912_M2_5_L = [6,   8, 10, 12, 14, 16, 20]
+            
+
 D912_M3_L = [6,   8, 10, 12, 14, 16, 20,
              25, 30, 35, 40]
 D912_M4_L = [6,   8, 10, 12, 14, 16, 20,
@@ -174,7 +197,8 @@ D912_M8_L = [                12,  14,  16,  20,  22,
              60,   65,  70,  75,  80,  90,
              100, 110, 120, 130, 140, 150, 160, 170, 200 ]
 
-D912_L = {  3: D912_M3_L,
+D912_L = {  2.5: D912_M2_5_L,
+            3: D912_M3_L,
             4: D912_M4_L,
             5: D912_M5_L,
             6: D912_M6_L,
@@ -194,6 +218,19 @@ M6_HEAD_L_TOL = D912_HEAD_L[6] + TOL
 M6_HEAD_R_TOL = M6_HEAD_R + TOL/2.0 # smaller TOL, because it's small
 M6_SHANK_R_TOL = 6 / 2.0 + TOL/2.0
 M6_2AP = D912_2AP[6]  # 2 x apotheme of the hex socket
+
+D912_M2_5 = {
+            'd': 2.5,  # diameter of the shank
+            'shank_r_tol'  :  2.5 / 2. + TOL/2.,
+            'head_r'       :  D912_HEAD_D[2.5]/2.,
+            'head_r_tol'   :  D912_HEAD_D[2.5]/2. + TOL/2.,
+            'head_l'       :  D912_HEAD_L[2.5],
+            'head_l_tol'   :  D912_HEAD_L[2.5]+TOL,
+            'thread'       :  D912_THREAD[2.5],
+            'shank_l_list' :  D912_L[2.5], # list of possible shank lengths
+            'ap2' :  D912_2AP[2.5], # s: 2 x apotheme of the socket
+           }
+
 
 D912_M3 = {
             'd': 3.,  # diameter of the shank
@@ -233,7 +270,7 @@ D912_M5 = {
 
 D912_M6 = {
             'd': 6.,  # diameter of the shank
-            'shank_r_tol'  :  6 / 2. + TOL/2.,
+            'shank_r_tol'  :  6 / 2. + 1.5*TOL/2., # mult 1.5 to have more tol
             'head_r'       :  M6_HEAD_R,
             'head_r_tol'   :  M6_HEAD_R_TOL,
             'head_l'       :  M6_HEAD_L,
@@ -244,7 +281,8 @@ D912_M6 = {
            }
 
 
-D912 = { 3: D912_M3,
+D912 = { 2.5: D912_M2_5,
+         3: D912_M3,
          4: D912_M4,
          5: D912_M5,
          6: D912_M6 }
@@ -260,11 +298,29 @@ D912 = { 3: D912_M3,
 """
 
 # the circumdiameter, min value
-NUT_D934_D =  {2.5: 5.45, 3: 6.01, 4: 7.66, 5: 8.79, 6:11.05}
+NUT_D934_D =  {
+               2:   4.32,
+               2.5: 5.45,
+               3:   6.01,
+               4:   7.66,
+               5:   8.79,
+               6:  11.05}
 # double the apotheme, max value
-NUT_D934_2A = {2.5: 5.,   3: 5.5,  4: 7.0,  5: 8.0, 6:10.0}
+NUT_D934_2A = {
+               2:   4.,
+               2.5: 5.,
+               3:   5.5,
+               4:   7.0,
+               5:   8.0,
+               6:   10.0}
 # the heigth, max value
-NUT_D934_L  = {2.5: 2.,   3: 2.4,  4: 3.2,  5: 4.0, 6:5.0}
+NUT_D934_L  = {
+               2:    1.6,
+               2.5:  2.,
+               3:    2.4,
+               4:    3.2,
+               5:    4.0,
+               6:    5.0}
 
 M3_NUT_R = NUT_D934_D[3] / 2.0
 M3_NUT_L = NUT_D934_L[3] + TOL
@@ -285,6 +341,27 @@ M4_NUT_R = NUT_D934_D[4] / 2.0
 M4_NUT_L = NUT_D934_L[4] + TOL
 #  1.5 TOL because diameter values are minimum, so they may be larger
 M4_NUT_R_TOL = M4_NUT_R + 1.5*TOL
+
+D934_M2 = {
+            'in_d': 2.,  # inner diameter of the shank
+            'circ_d' : NUT_D934_D[2], #circumdiameter, min value
+            'circ_r' : NUT_D934_D[2]/2., #circumradius, min value
+            'circ_r_tol' : NUT_D934_D[2]/2. +  1.5*TOL , #circumradius + tol
+            'a2' :  NUT_D934_2A[2], #double of apotheme, max value
+            'l' :  NUT_D934_L[2], # height, max value
+            'l_tol' :  NUT_D934_L[2] + TOL #height with tolerance
+           }
+
+
+D934_M2_5 = {
+            'in_d': 2.5,  # inner diameter of the shank
+            'circ_d' : NUT_D934_D[2.5], #circumdiameter, min value
+            'circ_r' : NUT_D934_D[2.5]/2., #circumradius, min value
+            'circ_r_tol' : NUT_D934_D[2.5]/2. +  1.5*TOL , #circumradius + tol
+            'a2' :  NUT_D934_2A[2.5], #double of apotheme, max value
+            'l' :  NUT_D934_L[2.5], # height, max value
+            'l_tol' :  NUT_D934_L[2.5] + TOL #height with tolerance
+           }
 
 D934_M3 = {
             'in_d': 3.,  # inner diameter of the shank
@@ -328,7 +405,9 @@ D934_M6 = {
            }
            
            
-D934 = { 3: D934_M3,
+D934 = {
+         2.5: D934_M2_5,
+         3: D934_M3,
          4: D934_M4,
          5: D934_M5,
          6: D934_M6 }
@@ -347,28 +426,34 @@ D934 = { 3: D934_M3,
 # The Index reffers to the Metric (M3,...
 # Inner Diameter (of the hole). Minimum diameter.
 WASH_D125_DI = {
-                  3:  3.2,
-                  4:  4.3,
-                  5:  5.3,
-                  6:  6.4,
-                  7:  7.4,
-                  8:  8.4,
-                 10: 10.5 }
+                  2:    2.2,
+                  2.5:  2.7,
+                  3:    3.2,
+                  4:    4.3,
+                  5:    5.3,
+                  6:    6.4,
+                  7:    7.4,
+                  8:    8.4,
+                 10:   10.5 }
 
 # Outer diameter (maximum size)
 WASH_D125_DO = {
-                  3:   7.0,
-                  4:   9.0,
-                  5:  10.0,
-                  6:  12.0,
-                  7:  14.0,
-                  8:  16.0,
-                 10:  20.0 }
+                  2:    5.0,
+                  2.5:  6.0,
+                  3:    7.0,
+                  4:    9.0,
+                  5:   10.0,
+                  6:   12.0,
+                  7:   14.0,
+                  8:   16.0,
+                 10:   20.0 }
 
-# Thickness (Height) of the washer
+# Thickness (Height) of the washer. there is tolerance
 WASH_D125_T  = {
-                  3:   0.5,
-                  4:   0.8,
+                  2:   0.3,  #0.25 to 0.35
+                  2.5: 0.5,  #0.45 to 0.55
+                  3:   0.5,  #0.45 to 0.55
+                  4:   0.8,  #0.7 to 0.8
                   5:   1.0,
                   6:   1.6,
                   7:   1.6,
@@ -679,7 +764,7 @@ SC8UU = {
         'bolt_sep_l' : 18.,
         'bolt_sep_w' : 24.,
         'bolt_d'     : 4.,  # M4
-        'lbear'      : LME8UU  #dictionary with linear bearging dim.
+        'lbear'      : LM8UU  #dictionary with linear bearging dim.
         }
 
 SC10UU = {
@@ -690,7 +775,7 @@ SC10UU = {
         'bolt_sep_l' : 21.,
         'bolt_sep_w' : 28.,
         'bolt_d'     : 5.,  # M5
-        'lbear'      : LME10UU  #dictionary with linear bearging dim.
+        'lbear'      : LM10UU  #dictionary with linear bearging dim.
         }
 
 SC12UU = {
@@ -701,7 +786,18 @@ SC12UU = {
         'bolt_sep_l' : 26.,
         'bolt_sep_w' : 30.5,
         'bolt_d'     : 5.,  # M5
-        'lbear'      : LME12UU  #dictionary with linear bearging dim.
+        'lbear'      : LM12UU  #dictionary with linear bearging dim.
+        }
+
+SCE20UU = {
+        'L'          : 53.,
+        'W'          : 54.,
+        'H'          : 41.,
+        'axis_h'     : 21.,
+        'bolt_sep_l' : 40.,
+        'bolt_sep_w' : 40.,
+        'bolt_d'     : 6.,  # M6
+        'lbear'      : LME20UU  #dictionary with linear bearging dim.
         }
 
 # modified version to print
@@ -738,6 +834,28 @@ SC12UU_Pr = {
         'lbear'      : LME12UU  #dictionary with linear bearging dim.
         }
 
+SCE20UU_Pr30 = {    # to print with 30x30 profiles sep_l = 60
+        'L'          : 74.,
+        'W'          : 54.,
+        'H'          : 41.,
+        'axis_h'     : 21.,
+        'bolt_sep_l' : 60.,
+        'bolt_sep_w' : 40.,
+        'bolt_d'     : 6.,  # M6
+        'lbear'      : LME20UU  #dictionary with linear bearging dim.
+        }
+
+SCE20UU_Pr30b = {    # to print with 30x30 profiles sep_l = 30
+        'L'          : 53.,
+        'W'          : 54.,
+        'H'          : 41.,
+        'axis_h'     : 21.,
+        'bolt_sep_l' : 30.,
+        'bolt_sep_w' : 40.,
+        'bolt_d'     : 6.,  # M6
+        'lbear'      : LME20UU  #dictionary with linear bearging dim.
+        }
+
 
 SCUU = {
          8: SC8UU,
@@ -751,11 +869,15 @@ SCUU_Pr = {
         12: SC12UU_Pr
        }
 
+SCEUU_Pr = {
+        20: SCE20UU_Pr30
+}
+
 
 
 # ----------------------------- NEMA motor dimensions --------
 
-# width of the motor (both dimensions: it is a square)
+# width of the motor (both dimensions: it is a square) in mm
 NEMA_W  = {
              8:   20.2,
              11:  28.2,
@@ -862,7 +984,7 @@ SK10 = { 'd':10.0, 'H':32.8, 'W':42.0, 'L':14.0, 'B':32.0, 'S':5.5,
          'mbolt': 5,
          'tbolt': 4} 
 
-SK12 = { 'd':12.0, 'H':37.5, 'W':42.0, 'L':14.0, 'B':32.0, 'S':5.5,
+SK12 = { 'd':12.0, 'H':36, 'W':71.0, 'L':14.0, 'B':32.0, 'S':5.5,
          'h':23.0,
          #'A':21.0,
          #'b': 5.0,
@@ -871,15 +993,38 @@ SK12 = { 'd':12.0, 'H':37.5, 'W':42.0, 'L':14.0, 'B':32.0, 'S':5.5,
          'mbolt': 5,  
          'tbolt': 4} 
 
+# add tolerances L= 12 + 4 (bearing). Just approximate, the shape is not the
+# same
+PILLOW_SK12 =  { 'd':12.3,  'H':26., 'W':42.0, 'L':16.0, 'B':56.0, 'S':7.,
+         'h':18.0,
+         #'A':21.0,
+         #'b': 5.0,
+         'g':6.0,
+         'I':20.0,
+         'mbolt': 5,
+         'tbolt': 4} 
+
+#SH20
+SK20 = { 'd':20.0, 'H':51., 'W':60.0, 'L':20.0, 'B':45.0, 'S':6.6,
+         'h':31.0,
+         #'A':
+         #'b':
+         'g': 10.,
+         'I': 30.0,
+         'mbolt': 6,  
+         'tbolt': 5} 
+
 
 SK = {
           6: SK6,
           8: SK8,
          10: SK10,
-         12: SK12 }
+         12: SK12,
+         20: SK20 }
 
 PILLOW_SK = {
-          8: PILLOW_SK8
+          8: PILLOW_SK8,
+          12: PILLOW_SK12
             }
 
 
