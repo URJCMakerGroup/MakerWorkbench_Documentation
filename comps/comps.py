@@ -300,52 +300,84 @@ class Sk (object):
 
 
 class Sk_dir (object):
+# Similar to Sk, but in any direction
 
     """
-     Similar to Sk, but in any direction
-     SK dimensions:
-     dictionary for the dimensions
-     mbolt: is mounting bolt. it corresponds to its metric
-     tbolt: is the tightening bolt.
-    SK12 = { 'd':12.0, 'H':37.5, 'W':42.0, 'L':14.0, 'B':32.0, 'S':5.5,
-             'h':23.0, 'A':21.0, 'b': 5.0, 'g':6.0,  'I':20.0,
-              'mbolt': 5, 'tbolt': 4} 
+    SK dimensions:
+    dictionary for the dimensions
+    ::
+    
+        mbolt: is mounting bolt. it corresponds to its metric
+        tbolt: is the tightening bolt.
+        SK12 = { 'd':12.0, 'H':37.5, 'W':42.0, 'L':14.0, 'B':32.0, 'S':5.5,
+                 'h':23.0, 'A':21.0, 'b': 5.0, 'g':6.0,  'I':20.0,
+                 'mbolt': 5, 'tbolt': 4} 
 
+    ::
 
-            fc_axis_h
-            :
-         ___:___       _______________________________  tot_h 
-        |  ___  |                     
-        | /   \ |      __________ HoleH = h
-        | \___/ |  __
-      __|       |__ /| __
-     |_____________|/  __ TotD = L ___________________
- 
-          ___:___                     ___
-         |  ___  |                   |...|       
-         | / 2 \ |                   3 1 |.....> fc_axis_d
-         | \_*_/ |                   |...|
-     ____|       |____               |___|
-    8_:5_____4_____::_|..fc_axis_w   6_7_|....... fc_axis_d
-    :                 :              :   :
-    :... tot_w .......:              :...:
+             fc_axis_h
+             :
+          ___:___       _______________________________  tot_h 
+         |  ___  |                     
+         | /   \ |      __________ HoleH = h
+         | \___/ |  __
+       __|       |__ /| __
+      |_____________|/  __ TotD = L ___________________
+  
+           ___:___                     ___
+          |  ___  |                   |...|       
+          | / 2 \ |                   3 1 |.....> fc_axis_d
+          | \_*_/ |                   |...|
+      ____|       |____               |___|
+     8_:5_____4_____::_|..fc_axis_w   6_7_|....... fc_axis_d
+     :                 :              :   :
+     :... tot_w .......:              :...:
                                        tot_d
  
-    fc_axis_h = axis on the height direction
-    fc_axis_d = axis on the depth (rod) direction
-    fc_axis_w = width (perpendicular) dimension, only useful if I finally
-                include the tightening bolt, or if ref_wc != 1
-    ref_hr : 1: reference at the Rod Height dimension (rod center):
-                points 1, 2, 3
-             0: reference at the base: points 4, 5
-    ref_wc: 1: reference at the center on the width dimension (fc_axis_w)
-                   points: 2, 4,
-            0, reference at one of the bolt holes, point 5
-            -1, reference at one end. point 8
-    ref_dc: 1: reference at the center of the depth dimension
-                   (fc_axis_d) points: 1,7
-                0: reference at one of the ends on the depth dimension
-                   points 3, 6
+    :type fc_axis_h: FreeCAD.Vector
+    :param fc_axis_h: Axis on the height direction
+    :type fc_axis_d: FreeCAD.Vector
+    :param fc_axis_d: Axis on the depth (rod) direction
+    :type fc_axis_w: FreeCAD.Vector
+    :param fc_axis_w: Width (perpendicular) dimension, only useful if I finally
+                      include the tightening bolt, or if ref_wc != 1
+    :type ref_hr: int
+    :param ref_hr:
+        * 1: reference at the Rod Height dimension (rod center):
+          points 1, 2, 3
+        * 0: reference at the base: points 4, 5
+
+    :type ref_wc: int
+    :param ref_wc: 
+        * 1: reference at the center on the width dimension (fc_axis_w)
+          points: 2, 4,
+        * 0: reference at one of the bolt holes, point 5
+        * -1: reference at one end. point 8
+
+    :type ref_dc: int
+    :param ref_dc: 
+        * 1: reference at the center of the depth dimension
+          (fc_axis_d) points: 1,7
+        * 0: reference at one of the ends on the depth dimension
+          points 3, 6
+
+    :type pillow: int
+    :param pillow: 1 to make it the same height of a pillow block
+
+    :type pos: FreeCAD.Vector
+    :param pos: Placement
+
+    :type wfco: int
+    :param wfco: 1 to create a FreeCAD Object
+
+    :type tol: float
+    :param tol: Tolerance of the axis
+
+    :type name: str
+    :param name: FreeCAD Object name
+        
+    :returns:
+        FreeCAD Object
 
     """
 
@@ -1546,57 +1578,63 @@ class ShpAluProf (shp_clss.Obj3D):
         self.shp = shp_aluprof
 
 class PartAluProf (fc_clss.SinglePart, ShpAluProf):
-    """ Integration of a ShpAluProf object into a PartAluProf
+    """ 
+    Integration of a ShpAluProf object into a PartAluProf
     object, so it is a FreeCAD object that can be visualized in FreeCAD
     Instead of using all the arguments of ShpAluProf, it will use
     a dictionary
 
-    depth : float
-        (depth) length of the bar, the extrusion 
-    aluprof_dict : dictionary
-        dictionary with all the information about the profile
-        in kcomp.py there are some dictionaries that can be used, they are
-        not exact
-    -- same as ShpAluProf:
-    xtr_d: float
-        if >0 it will be that extra depth (length) on the direction of axis_d
-    xtr_nd: float
-        if >0 it will be that extra depth (length) on the opositve direction of
-        axis_d
-       can be V0 if pos_h = 0
-    axis_d : FreeCAD.Vector
-        axis along the length (depth) direction
-    axis_w : FreeCAD.Vector
-        axis along the width direction
-    axis_h = axis on the other width direction (perpendicular)
-        axis along the width direction
-    pos_d: int
-        location of pos along axis_d (see drawing)
-        0: start point, counting xtr_nd,
-           if xtr_nd == 0 -> pos_d 0 and 1 will be the same
-        1: start point, not counting xtr_nd
-        2: middle point not conunting xtr_nd and xtr_d
-        3: middle point conunting xtr_nd and xtr_d
-        4: end point, not counting xtr_d
-        5: end point considering xtr_d
-    pos_w: int
-        location of pos along axis_w (see drawing). Symmetric, negative indexes
+    :type depth: float
+    :param depth: (depth) length of the bar, the extrusion 
+    :type aluprof_dict: dictionary
+    :param aluprof_dict: Dictionary with all the information about the profile
+                         in kcomp.py there are some dictionaries that can be used, they are
+                         not exact -- same as ShpAluProf
+    :type xtr_d: float
+    :param xtr_d: If >0 it will be that extra depth (length) on the direction of axis_d
+    :type xtr_nd: float
+    :param xtr_nd: If >0 it will be that extra depth (length) on the opositve direction of
+                   axis_d
+                   can be V0 if pos_h = 0
+    :type axis_d: FreeCAD.Vector
+    :param axis_d: Axis along the length (depth) direction
+    :type axis_w: FreeCAD.Vector
+    :param axis_w: Axis along the width direction
+    :type axis_h: FreeCAD.Vector
+    :param axis_h: Axis along the width direction
+    :type pos_d: int
+    :param pos_d: location of pos along axis_d (see drawing)
+
+        * 0: start point, counting xtr_nd,
+          if xtr_nd == 0 -> pos_d 0 and 1 will be the same
+        * 1: start point, not counting xtr_nd
+        * 2: middle point not conunting xtr_nd and xtr_d
+        * 3: middle point conunting xtr_nd and xtr_d
+        * 4: end point, not counting xtr_d
+        * 5: end point considering xtr_d
+
+    :type pos_w: int
+    :param pos_w: location of pos along axis_w (see drawing). Symmetric, negative indexes
         means the other side
-        0: at the center of symmetry
-        1: at the inner square
-        2: at the interior side of the outer part of the rail (thickness of the4           side
-        3: at the end of the profile along axis_w 
-    pos_h: int
-        Same as pos_w 
-    pos : FreeCAD.Vector
-        position of point defined by pos_d, pos_w, pos_h
-    model_type : int
-        kind of model
-        1: dimensional model: it can be printed to assemble a model,but the part
-           will not work as defined. For example, if printed this aluminum
-           profile will not work as defined, and also, it is not exact
-    name : string
-        name of the object
+
+        * 0: at the center of symmetry
+        * 1: at the inner square
+        * 2: at the interior side of the outer part of the rail (thickness of the4 side)
+        * 3: at the end of the profile along axis_w 
+
+    :type pos_h: int
+    :param pos_h: Same as pos_w 
+    :type pos: FreeCAD.Vector
+    :param pos: position of point defined by pos_d, pos_w, pos_h
+    :type model_type: int
+    :param model_type: kind of model
+
+        * 1: dimensional model: it can be printed to assemble a model,but the part
+          will not work as defined. For example, if printed this aluminum
+          profile will not work as defined, and also, it is not exact
+
+    :type name: str
+    :param name: name of the object
 
     """
 
