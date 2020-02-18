@@ -9,13 +9,6 @@ En esta página puedes encontrar toda la información del Workbench Mechatronic.
 Tienes varios tutoriales donde puedes aprender a usarlo, así como la documentación de todos los modelos 3D 
 y las funciones que se han diseñado.
 
-.. image:: https://img.shields.io/github/issues/davidmubernal/Mechatronic   :alt: GitHub issues
-
-.. image:: https://img.shields.io/github/issues-pr/davidmubernal/mechatronic   :alt: GitHub pull requests
-
-.. image:: https://img.shields.io/github/v/tag/davidmubernal/mechatronic   :alt: GitHub tag (latest by date)
-
-
 Table Of Contents
 =================
 .. toctree::
