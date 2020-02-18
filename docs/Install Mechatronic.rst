@@ -45,7 +45,7 @@ Install
     :title: English
 
     |
-    
+
     .. image:: https://img.shields.io/badge/Download-FreeCAD-brightgreen
       :target: https://www.freecadweb.org/downloads.php
       :height: 35px
