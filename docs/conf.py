@@ -36,10 +36,10 @@ release = '0.2.1'
 # ones.
 extensions = ['sphinx_rtd_theme', #tema
               'sphinx.ext.todo',
-              'sphinx.ext.githubpages',
               'sphinx.ext.autodoc', #lectura automática desde la documentación en código
+              'sphinx.ext.viewcode', #permite ir al código fuente
               'sphinx.ext.autosummary', #generación automática de tablas con la documentación
-              'sphinxcontrib.contentui'] #permite cambio desplegables y cambio de idioma
+              'sphinxcontrib.contentui'] #permite desplegables y cambio generación de bloque seleccionable
 
 # The master toctree document.
 master_doc = 'index'
@@ -78,3 +78,9 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_logo = '../icons/Mechatronic.png'
 logo_only = True 
+
+# If true, links to the reST sources are added to the pages.
+html_show_sourcelink = False
+
+# If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
+html_show_sphinx = False

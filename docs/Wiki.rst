@@ -244,7 +244,7 @@ Perfil de aluminio
 .. toggle-header::
     :header: Details
 
-    .. currentmodule::comps
+    .. currentmodule:: comps
     .. autosummary::
         PartAluProf
     
