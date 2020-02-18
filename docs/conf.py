@@ -38,8 +38,8 @@ extensions = ['sphinx_rtd_theme', #tema
               'sphinx.ext.todo',
               'sphinx.ext.githubpages',
               'sphinx.ext.autodoc', #lectura automática desde la documentación en código
-              'sphinx.ext.autosummary'] #generación automática de tablas con la documentación
-              # 'sphinxcontrib.contentui'] #permite cambio desplegables y cambio de idioma
+              'sphinx.ext.autosummary', #generación automática de tablas con la documentación
+              'sphinxcontrib.contentui'] #permite cambio desplegables y cambio de idioma
 
 # The master toctree document.
 master_doc = 'index'
