@@ -5,9 +5,9 @@
 
 Mechatronic Documentation
 =========================
-En esta página puedes encontrar toda la información del Workbench Mechatronic.
-Tienes varios tutoriales donde puedes aprender a usarlo, así como la documentación de todos los modelos 3D 
-y las funciones que se han diseñado.
+On this page you can find all the information about the Mechatronic Workbench.
+You have some tutorials where you can learn how to use it, as well as the documentation of all the 3D models 
+and the functions that have been designed.
 
 Table Of Contents
 =================

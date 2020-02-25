@@ -48,6 +48,8 @@ from parts import AluProfBracketPerp, AluProfBracketPerpFlap, AluProfBracketPerp
 
 import grafic
 
+import NuevaClase
+
 __dir__ = os.path.dirname(__file__)
 
 logging.basicConfig(level=logging.DEBUG)
@@ -2090,6 +2092,47 @@ class Bolt_TaskPanel:
                                   name = '')
             # If there are other types of bolts it could be there
 
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+###############################################################################
+#*************************************TEST*************************************
+class _testCmD:
+    """
+    Test class
+    """
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_test = test_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_test) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Test',
+            'Test')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class test_TaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+    
+    def accept(self):
+
+        #NuevaClase.placa(L_d = 10, L_w = 10, L_h = 3, axis_d = VX, axis_h = VZ, axis_w = VY, name = 'placa base')
+
+        NuevaClase.placa_perforada( 10, 10, 5, 2, name = 'placa perforada')
+
+        NuevaClase.placa_tornillos( 10, 10, 5, 1, name = 'placa tornillos')
 
         FreeCADGui.activeDocument().activeView().viewAxonometric()
         FreeCADGui.Control.closeDialog() #close the dialog
@@ -2160,28 +2203,82 @@ class Assembly_TaskPanel:
 
         # ---- row 0: Text ----
         #Label:
-        self.Text_1_Label = QtGui.QLabel("1 - Select object to move")  
+        self.Text_1_Label = QtGui.QLabel("Select object to move")  
+        # Combo Box that have multiple choice
+        self.ComboBox_ObjSelection1 = QtGui.QComboBox()
+        self.TextObj = []
+        for i in range (len (FreeCAD.ActiveDocument.Objects)):
+            self.TextObj.append(FreeCAD.ActiveDocument.Objects[i].Name)
+        self.ComboBox_ObjSelection1.addItems(self.TextObj)
+        # Indicate inicial value in ComboBox
+        self.ComboBox_ObjSelection1.setCurrentIndex(0)
 
         # row 0, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Text_1_Label,0,0,1,1)
+        layout.addWidget(self.ComboBox_ObjSelection1,0,1,1,1)
 
-        """# ---- row 1: Text ----
+        # ---- row 1: Sel obj1 ----
         #Label:
-        self.Text_2_Label = QtGui.QLabel(" ")  
+        self.Text_Selection1 = QtGui.QLabel("Select")
+        # Combo Box that have multiple choice
+        self.ComboBox_Selection1 = QtGui.QComboBox()
+        self.TextSelection1 = ["Vertexes","Edges","Faces"]
+        self.ComboBox_Selection1.addItems(self.TextSelection1)
+        # Indicate inicial value in ComboBox
+        self.ComboBox_Selection1.setCurrentIndex(0)
+
 
         # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Text_2_Label,1,0,1,1)
-        """
+        layout.addWidget(self.Text_Selection1,1,0,1,1)
+        layout.addWidget(self.ComboBox_Selection1,1,1,1,1)
+
         # ---- row 2: Text ----
         #Label:
-        self.Text_3_Label = QtGui.QLabel("2 - After select the place")  
+        self.Text_2_Label = QtGui.QLabel("After select the place")  
+        # Combo Box that have multiple choice
+        self.ComboBox_ObjSelection2 = QtGui.QComboBox()
+        self.TextObj = []
+        for i in range (len (FreeCAD.ActiveDocument.Objects)):
+            self.TextObj.append(FreeCAD.ActiveDocument.Objects[i].Name)
+        self.ComboBox_ObjSelection2.addItems(self.TextObj)
+        # Indicate inicial value in ComboBox
+        self.ComboBox_ObjSelection2.setCurrentIndex(0)
 
         # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Text_3_Label,1,0,1,1)
+        layout.addWidget(self.Text_2_Label,2,0,1,1)
+        layout.addWidget(self.ComboBox_ObjSelection2,2,1,1,1)
+
+        # ---- row 3: Sel obj2 ----
+        #Label:
+        self.Text_Selection2 = QtGui.QLabel("Select")
+        # Combo Box that have multiple choice
+        self.ComboBox_Selection2 = QtGui.QComboBox()
+        self.TextSelection1 = ["Vertexes","Edges","Faces"]
+        self.ComboBox_Selection2.addItems(self.TextSelection1)
+        # Indicate inicial value in ComboBox
+        self.ComboBox_Selection2.setCurrentIndex(0)
+
+        # row 3, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Text_Selection2,3,0,1,1)
+        layout.addWidget(self.ComboBox_Selection2,3,1,1,1)
+
+        # ---- row 4: Note ----
+        # Label:
+        self.Text_Note = QtGui.QLabel("With Vertexes don't work properly")
+        # row 4, column 0, rowspan 1, colspan 1
+        layout.addWidget(self.Text_Note,4,0,1,1)
 
     def accept(self):
+        self.ObjSelection1 = FreeCAD.ActiveDocument.Objects[self.ComboBox_ObjSelection1.currentIndex()]
+        self.ObjSelection2 = FreeCAD.ActiveDocument.Objects[self.ComboBox_ObjSelection2.currentIndex()]
+        self.Selection1 = self.ComboBox_Selection1.currentIndex()
+        self.Selection2 = self.ComboBox_Selection2.currentIndex()
+        if len(FreeCADGui.Selection.getSelection()) == 0:
+            Assembly_TaskPanel.change_color(self, color = (0.0, 1.0, 0.0), size = 5)
+
         if len(FreeCADGui.Selection.getSelection()) == 2 :
             grafic.grafic()
+            Assembly_TaskPanel.change_color(self, color = (0.0, 0.0, 0.0), size = 2)
             FreeCADGui.Control.closeDialog() #close the dialog
         else:
             message = QtGui.QMessageBox()
@@ -2189,6 +2286,35 @@ class Assembly_TaskPanel:
             message.setStandardButtons(QtGui.QMessageBox.Ok)
             message.setDefaultButton(QtGui.QMessageBox.Ok)
             message.exec_()
+    
+    def reject(self):
+        FreeCADGui.Control.closeDialog()
+        Assembly_TaskPanel.change_color(self, color = (0.0, 0.0, 0.0), size = 2)
+
+    def change_color(self, color = (1.0, 1.0, 1.0), size = 2):
+        doc = FreeCADGui.ActiveDocument
+        if self.Selection1 == 0: #Vertexes 1 - Cambiamos su color para verlo mejor
+            doc.getObject(self.ObjSelection1.Name).PointColor = color
+            doc.getObject(self.ObjSelection1.Name).PointSize = size
+        if self.Selection2 == 0: #Vertexes 2
+            doc.getObject(self.ObjSelection2.Name).PointColor = color
+            doc.getObject(self.ObjSelection2.Name).PointSize = size
+
+        if self.Selection1 == 1: #Edges
+            doc.getObject(self.ObjSelection1.Name).LineColor = color
+            doc.getObject(self.ObjSelection1.Name).LineWidth = size
+        if self.Selection2 == 1: #Edges
+            doc.getObject(self.ObjSelection2.Name).LineColor = color
+            doc.getObject(self.ObjSelection2.Name).LineWidth = size
+            
+        if self.Selection1 == 2: #Faces
+            if color == (0.0, 0.0, 0.0):
+                color = (0.8, 0.8, 0.8)
+            doc.getObject(self.ObjSelection1.Name).ShapeColor = color
+        if self.Selection2 == 2: #Faces
+            if color == (0.0, 0.0, 0.0):
+                color = (0.8, 0.8, 0.8)
+            doc.getObject(self.ObjSelection2.Name).ShapeColor = color
 
 ###############################################################################
 #***********************************COMMANDS***********************************
@@ -2214,3 +2340,6 @@ FreeCADGui.addCommand('ChangePosExport',_ChangePosExportCmd())
 
 ## Assembly
 FreeCADGui.addCommand('Assembly',_AssemlyCmd())
+
+## Test
+FreeCADGui.addCommand('test', _testCmD())

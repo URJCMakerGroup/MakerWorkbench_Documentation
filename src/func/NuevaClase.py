@@ -24,42 +24,29 @@ class Obj3D (object):
     It is the parent class of other classes, no instantiation of this class
 
     These objects have their own coordinate axes:
-
     * axis_d: depth
     * axis_w: width
     * axis_h: height
 
     They have an origin point pos_o (created in a child class)
-    and have different interesting points:
-
+    and have different interesting points
     * d_o
     * w_o
     * h_o
 
-    and methods to get to them::
+    and methods to get to them
 
-        pos_o_adjustment: FreeCAD.Vector
-            if not V0 indicates that shape has not been placed at pos_o, so the FreeCAD object
-            will need to be placed at pos_o_adjust
+    pos_o_adjustment : FreeCAD.Vector
+        if not V0 indicates that shape has not been placed at pos_o, so the FreeCAD object
+        will need to be placed at pos_o_adjust
 
-    This object could be a FreeCAD Object or not::
-
-        fco: FreeCAD Object
-            fco = 1 create FreeCAD Object
-            fco = 0 not FreeCAD Object
+    This object could be a FreeCAD Object or not
+    fco: FreeCAD Object
+    * if fco = 1 create FreeCAD Object
+    * if fco = 0 not FreeCAD Object
             
     """
     def __init__(self, axis_d = None, axis_w = None, axis_h = None, name = None):
-        """
-        :param axis_d: Vector depth
-        :param axis_w: Vector width
-        :param axis_h: Vector height
-        :param name: Name of the object
-        :type axis_d: FreeCAD.Vector
-        :type axis_w: FreeCAD.Vector
-        :type axis_h: FreeCAD.Vector
-        :type name: str
-        """
         # the TopoShape has an origin, and distance vectors from it to 
         # the different points along the coordinate system  
         self.d_o = {}  # along axis_d
@@ -103,10 +90,12 @@ class Obj3D (object):
     def vec_d(self, d):
         """ creates a vector along axis_d (depth) with the length of argument d
 
-        :param d: depth: lenght of the vector along axis_d
-        :type d: float
-        :returns: FreeCAD.Vector
+        Returns a FreeCAD.Vector
 
+        Parameters
+        ----------
+        d : float
+            Depth: lenght of the vector along axis_d
         """
 
         # self.axis_d is normalized, so no need to use DraftVecUtils.scaleTo
@@ -117,9 +106,12 @@ class Obj3D (object):
     def vec_w(self, w):
         """ creates a vector along axis_w (width) with the length of argument w
 
-        :param w: width: lenght of the vector along axis_w
-        :type w: float
-        :returns: FreeCAD.Vector
+        Returns a FreeCAD.Vector
+
+        Parameters
+        ----------
+        w : float
+            Width: lenght of the vector along axis_w
         """
 
         # self.axis_w is normalized, so no need to use DraftVecUtils.scaleTo
@@ -130,9 +122,12 @@ class Obj3D (object):
     def vec_h(self, h):
         """ creates a vector along axis_h (height) with the length of argument h
 
-        :param h: width: height: lenght of the vector along axis_h
-        :type h: float
-        :returns: FreeCAD.Vector
+        Returns a FreeCAD.Vector
+
+        Parameters
+        ----------
+        h : float
+            Height: lenght of the vector along axis_h
         """
 
         # self.axis_h is normalized, so no need to use DraftVecUtils.scaleTo
@@ -141,14 +136,18 @@ class Obj3D (object):
 
     def vec_d_w_h(self, d, w, h):
         """ creates a vector with:
-        
-            * depth  : along axis_d
-            * width  : along axis_w
-            * height : along axis_h
+            depth  : along axis_d
+            width  : along axis_w
+            height : along axis_h
 
-        :param d, w, h: depth, widht and height
-        :type d, w, h: : float
-        :returns: FreeCAD.Vector
+        Parameters
+        ----------
+        d, w, h : float
+            Depth, widht and height
+
+        Returns
+        -------
+        FreeCAD.Vector
         """
 
         vec = self.vec_d(d) + self.vec_w(w) + self.vec_h(h)
@@ -158,12 +157,11 @@ class Obj3D (object):
         """ calculates the position of the origin, and saves it in
         attribute pos_o
 
-        :param adjust: 
-
-            * 1: If, when created, wasnt possible to set the piece at pos_o,
+        Parameters
+        ----------
+        adjust : int
+             1: If, when created, wasnt possible to set the piece at pos_o,
                 and it was placed at pos, then the position will be adjusted
-
-        :type adjust: int
         """
 
         vec_from_pos_o =  (  self.get_o_to_d(self.pos_d)
@@ -175,10 +173,10 @@ class Obj3D (object):
             self.pos_o_adjust = vec_to_pos_o # self.pos_o - self.pos
 
     def get_o_to_d(self, pos_d):
-        """If it is symmetrical along axis_d, pos_d == 0 will be at the middle
+        """ returns the vector from origin pos_o to pos_d
+        If it is symmetrical along axis_d, pos_d == 0 will be at the middle
         Then, pos_d > 0 will be the points on the positive side of axis_d
         and   pos_d < 0 will be the points on the negative side of axis_d
-
         ::
 
           d0_cen = 1
@@ -204,9 +202,6 @@ class Obj3D (object):
           |___________|......> axis_d
           0  1  2  3  4
 
-        :param pos_d: 
-        :type pos_d: int
-        :returns: Vector from origin pos_o to pos_d
         """
         abs_pos_d = abs(pos_d)
         if self.d0_cen == 1:
@@ -234,15 +229,11 @@ class Obj3D (object):
                 return vec
 
     def get_o_to_w(self, pos_w):
-        """ 
+        """ returns the vector from origin pos_o to pos_w
         If it is symmetrical along axis_w, pos_w == 0 will be at the middle
         Then, pos_w > 0 will be the points on the positive side of axis_w
         and   pos_w < 0 will be the points on the negative side of axis_w
         See get_o_to_d drawings
-
-        :param pos_w:
-        :type pos_w: int
-        :returns: The vector from origin pos_o to pos_w
         """
         abs_pos_w = abs(pos_w)
         if self.w0_cen == 1:
@@ -270,15 +261,11 @@ class Obj3D (object):
                 return vec
 
     def get_o_to_h(self, pos_h):
-        """
+        """ returns the vector from origin pos_o to pos_h
         If it is symmetrical along axis_h, pos_h == 0 will be at the middle
         Then, pos_h > 0 will be the points on the positive side of axis_h
         and   pos_h < 0 will be the points on the negative side of axis_h
         See get_o_to_d drawings
-
-        :param pos_h:
-        :type pos_h: int
-        :returns: The vector from origin pos_o to pos_h
         """
         abs_pos_h = abs(pos_h)
         if self.h0_cen == 1:
@@ -306,48 +293,41 @@ class Obj3D (object):
                 return vec
 
     def get_d_ab(self, pta, ptb):
-        """ 
-        :returns: The vector along axis_d from pos_d = pta to pos_d = ptb
+        """ returns the vector along axis_d from pos_d = pta to pos_d = ptb
         """
         vec = self.get_o_to_d(ptb).sub(self.get_o_to_d(pta))
         return vec
 
     def get_w_ab(self, pta, ptb):
-        """ 
-        :returns: The vector along axis_h from pos_w = pta to pos_w = ptb
+        """ returns the vector along axis_h from pos_w = pta to pos_w = ptb
         """
         vec = self.get_o_to_w(ptb).sub(self.get_o_to_w(pta))
         return vec
 
     def get_h_ab(self, pta, ptb):
-        """ 
-        :returns: The vector along axis_h from pos_h = pta to pos_h = ptb
+        """ returns the vector along axis_h from pos_h = pta to pos_h = ptb
         """
         vec = self.get_o_to_h(ptb).sub(self.get_o_to_h(pta))
         return vec
 
 
     def get_pos_d(self, pos_d):
-        """ 
-        :returns: The absolute position of the pos_d point
+        """ returns the absolute position of the pos_d point
         """
         return self.pos_o + self.get_o_to_d(pos_d)
 
     def get_pos_w(self, pos_w):
-        """ 
-        :returns: The absolute position of the pos_w point
+        """ returns the absolute position of the pos_w point
         """
         return self.pos_o + self.get_o_to_w(pos_w)
 
     def get_pos_h(self, pos_h):
-        """ 
-        :returns: The absolute position of the pos_h point
+        """ returns the absolute position of the pos_h point
         """
         return self.pos_o + self.get_o_to_h(pos_h)
 
     def get_pos_dwh(self, pos_d, pos_w, pos_h):
-        """ 
-        :returns: The absolute position of the pos_d, pos_w, pos_h point
+        """ returns the absolute position of the pos_d, pos_w, pos_h point
         """
         pos = (self.pos_o + self.get_o_to_d(pos_d)
                           + self.get_o_to_w(pos_w)
@@ -356,21 +336,22 @@ class Obj3D (object):
 
     def set_name (self, name = '', default_name = '', change = 0):
         """ Sets the name attribute to the value of parameter name
-        if name is empty, it will take default_name.
-        if change == 1, it will change the self.name attribute to name, 
-        default_name
-        if change == 0, if self.name is not empty, it will preserve it
+        
+        * if name is empty, it will take default_name.
+        * if change == 1, it will change the self.name attribute to name, 
+            default_name
+        * if change == 0, if self.name is not empty, it will preserve it
 
-        :param name: This is the name, but it can be empty.
-        :param default_name: This is the default_name, if not name
-        :param change:
-            
+        Parameters
+        ----------
+        name : str
+            This is the name, but it can be empty.
+        default_name : str
+            This is the default_name, if not name
+        change : int
             * 1: change the value of self.name
             * 0: preserve the value of self.name if it exists
 
-        :type name: str
-        :type default_name: str
-        :type change: int
         """
         # attribute name has not been created
         if (not hasattr(self, 'name') or  # attribute name has not been created
@@ -384,8 +365,11 @@ class Obj3D (object):
     def create_fco (self, name = ''):
         """ creates a FreeCAD object of the TopoShape in self.shp
 
-        :param name: it is optional if there is a self.name
-        :type name: str
+        Parameters
+        ----------
+        name : str
+            It is optional if there is a self.name
+
         """
         if not name:
             name = self.name
@@ -393,31 +377,63 @@ class Obj3D (object):
         fco = fcfun.add_fcobj(self.shp, name, self.doc)
         self.fco = fco
         try:
-            self.fco.addProperty("App::PropertyVector","axis_d","","",4)
-            self.fco.addProperty("App::PropertyVector","axis_w","","",4)
-            self.fco.addProperty("App::PropertyVector","axis_h","","",4)
-            self.fco.axis_d = self.axis_d
-            self.fco.axis_w = self.axis_w
-            self.fco.axis_h = self.axis_h
-
+            self.fco.addProperty("Part::PropertyPartShape","Shape",name, "Shape of the object",1)
+            self.fco.Shape = self.shp
         except:
-            print('Error al asignar la propiedad')
+            print('Error al asignar la propiedad shape')
+        try:
+            self.fco.addProperty("App::PropertyVector","axis_d",name,"Internal axis d",4).axis_d = self.axis_d
+        except:
+            print('Error al asignar la propiedad axis d')
+        
+        try: 
+            self.fco.addProperty("App::PropertyVector","axis_w",name,"Internal axis w",4).axis_w = self.axis_w
+        except:
+            print('Error al asignar la propiedad axis w')
+
+        try:
+            self.fco.addProperty("App::PropertyVector","axis_h",name,"Internal axis h",4).axis_h = self.axis_h
+        except:
+            print('Error al asignar la propiedad axis h')
+
+        try:
+            self.fco.addProperty("App::PropertyFloatList","d_o",name,"Points o to d",4).d_o = self.d_o
+        except:
+            print('Error al asignar la propiedad d_o')
+
+        try:
+            self.fco.addProperty("App::PropertyFloatList","w_o",name,"Points o to w",4).w_o = self.w_o
+        except:
+            print('Error al asignar la propiedad w_o')
+
+        try:
+            self.fco.addProperty("App::PropertyFloatList","h_o",name,"Points o to h",4).h_o = self.h_o
+        except:
+            print('Error al asignar la propiedad h_o')
+
+        try:
+            self.fco.addProperty("App::PropertyStringList","childs",name,"List of childs",4).childs = self.dict_child.keys()
+        except:
+            print('Error al asignar la propiedad childs')
+        
+        try:
+            self.fco.addProperty("App::PropertyStringList","childs_sum",name,"List of childs add",4).childs_sum = self.dict_child_sum.keys()
+        except:
+            print('Error al asignar la propiedad childs_sum')
+        
+        try:
+            self.fco.addProperty("App::PropertyStringList","childs_res",name,"List of childs res",4).childs_res = self.dict_child_res.keys()
+        except:
+            print('Error al asignar la propiedad childs_res')
 
     def add_child(self, child, child_sum = 1, child_name = None):
         """ add child with their features
 
-        :param child: Object part of other object
-        :param child_sum:
-            
+        Parameters
+        ----------
+        child_sum:
             * 1: the child adds volume to the model
             * 0: the child removes volume from the model
-        
-        :param child_name: Child's name
-
-        :type child: obj3D
-        :type child_sum: int
-        :type child_name: str
-        
         """
         #Creamos un diccionario para cada hijo que se añade con datos clave
         self.dict_child[child_name] = dict(child_d_o = child.d_o, child_w_o = child.w_o, child_h_o = child.h_o, child_shp = child.shp)
@@ -427,7 +443,7 @@ class Obj3D (object):
         else:
             self.dict_child_res[child_name] = dict(child_d_o = child.d_o, child_w_o = child.w_o, child_h_o = child.h_o, child_shp = child.shp)
     def get_child(self):
-        """ :returns: a dict of childs, could be an empty dict.
+        """ returns a dict of childs, could be an empty dict.
         """
         return self.dict_child
         
@@ -459,11 +475,11 @@ class Obj3D (object):
 ####################################################################################
 # Ejemplo de funcionamiento
 
-class Placa(Obj3D):
+class placa(Obj3D):
 
-    def __init__(self, L_d = 10, L_w = 10, L_h = 2, axis_d = VX, axis_w = VY, axis_h = VZ, name = 'placa base',pos = V0):
+    def __init__(self, L_d = 10, L_w = 10, L_h = 2, axis_d = VX, axis_w = VY, axis_h = VZ, name = 'placa base'):
         """
-        Create a basic shape ::
+        ::
 
             d_o[0] d_o[1]  d_o[2]
             :      :       :
@@ -478,7 +494,7 @@ class Placa(Obj3D):
             |____________|... w_o[0]
            o
         """
-        self.shp = fcfun.shp_boxcen(L_d, L_w, L_h, cx= False, cy=False, cz=False, pos=pos)
+        self.shp = fcfun.shp_boxcen(L_d, L_w, L_h, cx= False, cy=False, cz=False, pos=V0)
         self.name = name
         self.axis_d = axis_d
         self.axis_h = axis_h
@@ -499,11 +515,8 @@ class Placa(Obj3D):
         self.h_o[2] = L_h
 
         #Obj3D.create_fco(self, name)
-class Hole(Obj3D):
+class hole(Obj3D):
     def __init__(self, r = None, h = None, axis_d = VX, axis_w = VY, axis_h = VZ, pos = V0, name = None):
-        """
-        Create a basic shape
-        """
         self.shp = fcfun.shp_cyl(r, h, axis_h, pos)
         self.name = name
         self.axis_d = axis_d
@@ -524,9 +537,9 @@ class Hole(Obj3D):
         self.h_o[1] = h/2
         self.h_o[2] = h
 
-class PlacaPerforada(Obj3D):
+class placa_perforada(Obj3D):
     """
-    Create a shape with other shapes ::
+    ::
 
         d_o[0] d_o[1]  d_o[2]
         :      :       :
@@ -548,7 +561,7 @@ class PlacaPerforada(Obj3D):
         self.axis_h = VZ
         self.name = name
         
-        super().__init__(self, self.axis_d , self.axis_w , self.axis_h , self.name)
+        Obj3D.__init__(self, self.axis_d , self.axis_w , self.axis_h , self.name)
         
         self.d_o[0] = 0
         self.d_o[1] = d/2
@@ -563,20 +576,20 @@ class PlacaPerforada(Obj3D):
         self.h_o[2] = h
         
         # añadimos el hijo 1, añadiendo volumen
-        placa = Placa(d,w,h, pos = FreeCAD.Vector(self.d_o[0], self.w_o[0], self.h_o[0]))
-        self.add_child(placa, 1, 'placa') 
+        placa_ = placa(d,w,h)
+        Obj3D.add_child(self, placa_, 1, 'placa') 
         
         # añadimos el hijo 2, quitando volumen
-        hole = Hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(placa.d_o[1],placa.w_o[1],placa.h_o[0]))
-        self.add_child(hole, 0, 'hole')
+        hole_ = hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[1],self.w_o[1],self.h_o[0]))
+        Obj3D.add_child(self, hole_, 0, 'hole')
         # creamos al padre
-        self.make_parent(name)
+        Obj3D.make_parent(self, name)
         # creamos el fco
-        self.create_fco(name)
+        Obj3D.create_fco(self, name)
 
-class PlacaTornillos(Obj3D):
+class placa_tornillos(Obj3D):
     """
-    Create a shape with other shapes ::
+    ::
 
         d_o[0] d_o[2]  d_o[4]
         :  d_o[1]  d_o[3]
@@ -615,15 +628,15 @@ class PlacaTornillos(Obj3D):
         self.h_o[2] = h
         
         # añadimos el hijo 1, añadiendo volumen
-        Obj3D.add_child(self, Placa(d,w,h, pos= FreeCAD.Vector(self.d_o[0],self.w_o[0],self.h_o[0])),1, 'placa') 
+        Obj3D.add_child(self, placa(d,w,h),1, 'placa') 
         # añadimos el hijo 2, quitando volumen
-        Obj3D.add_child(self, Hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[1],self.w_o[1],self.h_o[0])), 0, 'tornillo1')
+        Obj3D.add_child(self, hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[1],self.w_o[1],self.h_o[0])), 0, 'tornillo1')
         # añadimos el hijo 3, quitando volumen
-        Obj3D.add_child(self, Hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[1],self.w_o[3],self.h_o[0])), 0, 'tornillo2')
+        Obj3D.add_child(self, hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[1],self.w_o[3],self.h_o[0])), 0, 'tornillo2')
         # añadimos el hijo 4, quitando volumen
-        Obj3D.add_child(self, Hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[3],self.w_o[3],self.h_o[0])), 0, 'tornillo3')
+        Obj3D.add_child(self, hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[3],self.w_o[3],self.h_o[0])), 0, 'tornillo3')
         # añadimos el hijo 5, quitando volumen
-        Obj3D.add_child(self, Hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[3],self.w_o[1],self.h_o[0])), 0, 'tornillo4')
+        Obj3D.add_child(self, hole(r, h+0.1, axis_d = VX, axis_w = VY, axis_h = VZ, pos = FreeCAD.Vector(self.d_o[3],self.w_o[1],self.h_o[0])), 0, 'tornillo4')
         # creamos al padre
         Obj3D.make_parent(self, name)
         # creamos el fco

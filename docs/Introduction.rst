@@ -4,49 +4,48 @@
 Introduccion
 ============
 
-Qué es Mechatronic
-------------------
-Mechatronic es un Workbench para FreeCAD que permite la modificaciones de los modelos paramétricos que incluye y
-facilita el ensamblaje y la composición. También facilita una librería de funciones con la que generar nuevos
-modelos paramétricos que se pondrá incluir en el Workbench.
+Mechatronic
+-----------
+Mechatronic is a Workbench for FreeCAD that allows the modification of parametric models that includes and
+facilitates assembly and composition. It also provides a library of functions with which to generate new
+parametric models to be included in the Workbench.
 
-Funcionamiento
---------------
-Mechatronic está enfocado a dos usuarios distintos:
+How it works
+------------
+Mechatronic is designed for two different users:
 
-**1.** Usuario básico: Usuario sin conocimientos de CAD o Programación que necesita realizar un diseño.
-Para este usuario está enfocada la parte gráfica. Los pasos a seguir serían:
+**1.** Basic User: User without CAD or Programming knowledge who needs to make a design.
+For this user is the graphic part. The steps to follow would be:
 
-   1. Selecciona la pieza
-   2. Introduce los valores deseados
-   3. Ya tiene la pieza deseada
-
-   .. note::
-      Proximamente disponible tutorial
+   1. Select the part
+   2. Enter the values you want to use
+   3. You already have the part you want.
    
-   Adicionalmente, este usuario puede querer combinar piezas entre sí. Para ello, está el módulo *Assembly* [#]_
-   que permite la colocación de unas piezas respecto a otras
+   .. note::
+      See the :ref:`Tutorial` section for more details
+
+   Additionally, this user may want to combine parts with each other. For this purpose, there is the *Assembly* module [#]_
+   that allows the placement of some pieces with respect to others
       
 
-**2.** Usuario avanzado: Usuario con conocimientos de programación que quiere diseñar modelos 3D parametrizables.
-Este usuario dispone de la :ref:`biblioteca de funciones` [#]_ para la realización de modelos 3D de manera sencilla.
-Puede consultar el diseño de clases (:ref:`UML`) si desea comprender mejor el funcionamiento
+**2.** Advanced user: User with programming knowledge who wants to design parameterizable 3D models.
+This user has the :ref:`functions library` [#]_ to make 3D models in a simple way.
+You can consult the class design (:ref:`UML`) if you wish to better understand the operation
 
-Historia
---------
-Mechatronic Workbench surge al realizar el proyecto Filter Stage. En este proyecto se realiza el diseño 
-de un soporte para el portamuestras de un microscopio para la URJC.
-Para poder modificar el diseño y adaptarlo a las dimensiones deseadas se realizó un diseño paramétrico.
-El diseño paramétrico requiere el uso de un lenguaje de programación para describir el modelo, en este caso
-Python.
+History
+-------
+Mechatronic Workbench started with the Filter Stage project. In this project, we designed a support for the 
+sample holder of a microscope to the URJC.
+To be able to modify the design and adapt it to the required dimensions, we chose to make a parametric design.
+Parametric design requires the use of a programming language to describe the model, in this case we use Python.
 
-En base a este diseño parametrizable surgió un trabajo final de grado para realizar un Workbench 
-donde se pudieran modificar los parámetros del sistema Filter Stage desde la interface de FreeCAD. 
+Based on this parameterizable design, a final degree work was conceived to create a Workbench 
+where the Filter Stage parameters could be modified from the FreeCAD interface. 
 
-Se decidió mejorar este primer Workbench añadiendo diseños usados normalmente en sistemas mecatrónicos y funciones para 
-facilitar la colocación de estos diseños
+It was decided to improve this first Workbench by adding designs commonly used in mechatronic systems and 
+functions to facilitate the placement of these designs
 
-.. rubric:: Notes
+.. rubric:: Footnotes
 
-.. [#] El módulo Assembly está pendiente de mejoras
-.. [#] La bliblioteca de funciones está en proceso y aún no se encuentra disponible
+.. [#] The Assembly module will be upgraded
+.. [#] The functions library is in process

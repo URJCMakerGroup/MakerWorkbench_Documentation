@@ -39,7 +39,8 @@ extensions = ['sphinx_rtd_theme', #tema
               'sphinx.ext.autodoc', #lectura automática desde la documentación en código
               'sphinx.ext.viewcode', #permite ir al código fuente
               'sphinx.ext.autosummary', #generación automática de tablas con la documentación
-              'sphinxcontrib.contentui'] #permite desplegables y cambio generación de bloque seleccionable
+              'sphinxcontrib.contentui', #permite desplegables -> Necesario¿?
+              'sphinx.ext.napoleon'] #leer documentación de python con estilo Python
 
 # The master toctree document.
 master_doc = 'index'

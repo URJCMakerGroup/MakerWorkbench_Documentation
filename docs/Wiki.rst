@@ -6,21 +6,21 @@ Wiki
 .. note:: 
     This is a basic view of the Wiki
 
-Biblioteca de modelos
-----------------------
+3D Model library
+----------------
 
-Soporte de eje
-^^^^^^^^^^^^^^
-    * Tamaño
-    * Perfil bajo: sólo para tamaño 8
+Shaft Holder
+^^^^^^^^^^^^^
+    * Size
+    * Low profile: Only in size 8
 
     .. image:: ../parts/img/sk08.png
         :height: 148px
-        :alt: Soporte de eje de tamaño 8
+        :alt: Shaft Support Size 8
 
     .. image:: ../parts/img/sk08_pillow.png
         :height: 148px
-        :alt: Soporte de eje de tamaño 8 de perfil bajo
+        :alt: Shaft Support Size 8 Low Profile
 
 .. toggle-header::
     :header: Details
@@ -29,18 +29,18 @@ Soporte de eje
     .. autosummary::
         Sk_dir    
 
-Soporte polea loca
-^^^^^^^^^^^^^^^^^^
+Idler Holder
+^^^^^^^^^^^^^
 
-    * Tamaño del perfil sobre el que se monta
-    * Métrica de los tornillos
-    * Altura
-    * Posición del sensor de final de carrera
-    * Altura del sensor de final de carrera
+    * Size of the profile on which it is mounted
+    * Bolt metrics
+    * Height
+    * Position of the limit switch sensor
+    * Height of the limit switch sensor
 
     ::
 
-        Pendiente de modificar el modelo para mayor eficiencia
+        The model will be modified for greater efficiency
 
 .. toggle-header::
     :header: Details
@@ -49,11 +49,11 @@ Soporte polea loca
     .. autosummary::
         IdlePulleyHolder
     
-Soporte final de carrera
-^^^^^^^^^^^^^^^^^^^^^^^^
+Limit Switches Holder
+^^^^^^^^^^^^^^^^^^^^^
 
-    * Tipo
-    * Distancia del carril
+    * Type
+    * Rail distance
 
     .. image:: ../parts/img/endstop_holder_30.png
         :height: 148px
@@ -70,14 +70,14 @@ Soporte final de carrera
     .. autosummary::
         SimpleEndstopHolder
 
-Soporte final
-^^^^^^^^^^^^^
+Hall stop
+^^^^^^^^^^^
 
-    * Ancho
-    * Espesor
-    * Métrica tornillo
-    * Tamaño perfil
-    * Refuerzo
+    * Width
+    * Thikness
+    * Metric nut
+    * Profile size
+    * Reinforce
       
 
     .. image:: ../parts/img/hall_stop_holder_21_10.png
@@ -91,21 +91,21 @@ Soporte final
     .. autosummary::
         hallestop_holder
 
-Bracket para perfiles
-^^^^^^^^^^^^^^^^^^^^^
+Bracket 
+^^^^^^^
 
-    * Tipo: 3 opciones distintas
-    * Tamaño primer perfil
-    * Tamaño segundo perfil
-    * Espesor
-    * Métrica tornillo primer perfil
-    * Métrica tornillo segundo perfil
-    * Número de tornillos
-    * Distancia entre tornillos
-    * Seleccion agujero
-    * Refuerzo: sólo para el primer tipo de bracket
-    * Flap: sólo para el segundo tipo de bracket
-    * Distancia entre perfiles: sólo para el tercer tipo de bracket
+    * Type: 3 options
+    * Size first profile
+    * Size second profile
+    * Thickness
+    * Metric nut first profile
+    * Metric nut second profile
+    * Number of nuts
+    * Distance betwen nuts
+    * Type of hole
+    * Reinforcement: first type only
+    * Flap: second type only
+    * Distance between profiles: third type only
  
     .. image:: ../parts/img/bracket_30x30_m6.png
         :height: 148px
@@ -128,12 +128,12 @@ Bracket para perfiles
         AluProfBracketPerpFlap
         AluProfBracketPerpTwin
 
-Soporte motor
+Motor holder
 ^^^^^^^^^^^^^
 
-    * Tamaño del soporte
-    * Altura del soporte
-    * Espesor de las paredes del soporte
+    * Size
+    * Height
+    * Thickness
 
     .. image:: ../parts/img/nema17_holder_rail25_8.png
         :height: 148px
@@ -150,10 +150,10 @@ Soporte motor
     .. autosummary::
         NemaMotorHolder
 
-Carcasa del rodamiento lineal
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Lin bear house
+^^^^^^^^^^^^^^
     
-    * Tipo
+    * Type
 
     .. image:: ../parts/img/thinlinbearhouse1rail_lm8.png
         :height: 148px
@@ -172,11 +172,11 @@ Carcasa del rodamiento lineal
         LinBearHouse
         ThinLinBearHouseAsim
 
-Soporte del filtro
-^^^^^^^^^^^^^^^^^^
+Filter holder
+^^^^^^^^^^^^^
 
-    * Largo
-    * Ancho
+    * Length
+    * Width
 
     .. image:: ../parts/img/filter_holder.png
         :height: 148px
@@ -189,13 +189,13 @@ Soporte del filtro
     .. autosummary::
         PartFilterHolder
 
-Tensionador de la polea
-^^^^^^^^^^^^^^^^^^^^^^^
+Tensioner
+^^^^^^^^^
 
-    * Altura de polea
-    * Ancho de base
-    * Espesor
-    * Métrica del tornillo
+    * Belt hight
+    * Base width
+    * Thickness
+    * Metric nut
 
     .. image:: ../parts/img/tensioner.png
         :height: 148px
@@ -208,13 +208,13 @@ Tensionador de la polea
     .. autosummary::
         TensionerSet
 
-Abrazadera de polea
-^^^^^^^^^^^^^^^^^^^
+Belt clamp
+^^^^^^^^^^
 
-    * Tipo
-    * Largo
-    * Ancho
-    * Métrica del tornillo
+    * Type
+    * Length
+    * Width
+    * Metric nut
  
     .. image:: ../parts/img/Belt_clamp_simple.png
         :height: 148px
@@ -232,10 +232,10 @@ Abrazadera de polea
         BeltClamp
         DoubleBeltClamp
 
-Perfil de aluminio
-^^^^^^^^^^^^^^^^^^
-    * Sección
-    * Longitud
+Aluminium profile
+^^^^^^^^^^^^^^^^^
+    * Section
+    * Length
         
     .. image:: ../parts/img/Profiles.png
         :height: 148px
@@ -248,12 +248,12 @@ Perfil de aluminio
     .. autosummary::
         PartAluProf
     
-Tornillos, Tuercas y Arandelas
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Bolts, Nuts & Washers
+^^^^^^^^^^^^^^^^^^^^^
 
-    * Tipo
-    * Métrica
-    * Longitud del tornillo
+    * Type
+    * Metric
+    * Bolt length
 
     .. image:: ../parts/img/Bolts.png
         :height: 148px
@@ -277,13 +277,32 @@ Tornillos, Tuercas y Arandelas
         Din9021Washer
         Din912Bolt
 
-.. Biblioteca de sistemas
-   ----------------------
+Systems library
+---------------
 
-.. _biblioteca de funciones:
+Filter Stage
+^^^^^^^^^^^^
 
-Biblioteca de funciones
------------------------
+    * Move distance
+    * Filter length
+    * Filter width
+    * Base width
+    * Tensioner stroke
+    * Tensioner thickness
+    * Metric nut
+    * Motor size
+    * Length rail motor holder
+    * Motor holder thickness
+
+    .. image:: ../parts/img/filter_stage.png
+        :height: 148 px
+        :alt: Filter Stage Picture
+    
+
+.. _functions library:
+
+Functions Library
+-----------------
 
 fcfun
 ^^^^^
@@ -392,14 +411,8 @@ fcfun
     wire_lgrail
     wire_sim_xy
 
-
-    
-
-
-
-
-Biblioteca de clases
------------------------
+Class library
+-------------
 
 Nueva Clase
 ^^^^^^^^^^^^
@@ -412,40 +425,35 @@ Nueva Clase
 
 UML
 ---
-.. Imagen dispuesta a la derecha del texto que se encuentra debajo
+
+The UML (Unified Modeling Language) is the base diagram for software development.
+It is a visual description of the relationships between class objects. 
 
 .. figure:: ../parts/img/UML_simplificado.jpg
     :width: 296 px
-    :align: right
 
-El UML (Unified Modeling Language) es el diagrama base para el desarrollo de software.
-Es una descripción visual de las relaciones entre las clases de objetos.
-Sería comparable al plano de un edificio. Algunos programadores consideran que hacer UML es 
-un gasto de tiempo, pero es muy útil cuando se debe trabajar en equipo, ya que todos parten 
-de un mismo diseño.
+The main class will be "*Obj3D*" which will contain the basic information of the model:
 
-La clase principal será "*Obj3D*" la cual contendrá la información básica del modelo:
-
-* Ejes interno:
+* Internal axis:
 
     * axis_d
     * axis_w
     * axis_h
 
-* Diccionario de hijos:
+* Children's dictionary:
 
     * dict_child
     * dict_child_sum
     * dict_child_res
 
-El resto de clases que generan los distintos modelos 3D se referenciarán a la clase *Obj3D*
+The rest of the classes that generate the different 3D models will be part of the *Obj3D* class
 
 |
 
 .. blank line - image bigger than text
 
-Detalle de modelos
-------------------
+3D model details
+----------------
 
 comps
 ^^^^^
@@ -469,7 +477,7 @@ parts
               LinBearHouse,
               ThinLinBearHouseAsim
 
-Detalle de funciones
+Functions details
 --------------------
 
 fcfun
@@ -478,12 +486,10 @@ fcfun
 .. automodule:: fcfun
     :members:
 
-Detalles de clases
+Class details
 ------------------
 
 Nueva Clase
 ^^^^^^^^^^^^
 .. automodule:: NuevaClase
     :members:
-    
-.. :special-members: __init__
