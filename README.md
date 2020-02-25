@@ -2,8 +2,7 @@
 
 ---
 
-All the documentation of Mechatronic is in the website https://davidmubernal.github.io/Mechatronic/
-
+All the documentation of Mechatronic is in the website https://mechatronic.readthedocs.io/en/test-web/
 
 Select your language:
 <details>
