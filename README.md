@@ -2,7 +2,7 @@
 
 ---
 
-All the documentation of Mechatronic is in the website https://mechatronic.readthedocs.io/en/test-web/
+All the documentation of Mechatronic is in the website https://mechatronic.readthedocs.io/en/master/
 
 Select your language:
 <details>
