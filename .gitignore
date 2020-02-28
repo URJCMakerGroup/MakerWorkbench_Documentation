@@ -9,5 +9,16 @@
 *.pyc
 
 # vs code
-*.vc
-*.vscode
+.vs/
+.vscode/
+
+# RST folders and files
+docs/_build/
+docs/_static/
+docs/_templates/
+docs/MakeFile
+docs/make.bat
+
+#files not interestings
+Empleo_Workbench_Mecatronica.pdf
+Utilizacion_Workbench_Mecatronica.docx
