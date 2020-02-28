@@ -53,8 +53,10 @@ logger = logging.getLogger(__name__)
 
 class AluProfBracketPerp (object):
 
-    """ Bracket to join 2 aluminum profiles that are perpendicular,
-        that is, they are not on the same plane
+    """ 
+    Bracket to join 2 aluminum profiles that are perpendicular,
+    that is, they are not on the same plane
+    ::
 
         aluprof_perp (perpendicular to the bracket)   
           /  / /  bracket (not drawn)
@@ -62,7 +64,6 @@ class AluProfBracketPerp (object):
         /  / /_____/|
        /__/ /______|/ aluprof_lin (it is in line with the bracket)
        |__|/
-
 
                      fc_perp_ax (is not the axis of the perpendicular
                        :         profile, but the axis of the bracket
@@ -73,53 +74,69 @@ class AluProfBracketPerp (object):
      alusize_lin +              aluprof_lin
                  :_______________
 
-
                          fc_perp_ax
                           :
                           :br_perp_thick
                           .+.
                       ....:__:
-                      :   |  |\
-        alusize_perp  +   |  |   \
+                      :   |  |\ 
+        alusize_perp  +   |  |   \ 
                       :   |  |______\..
                       :...|_________|..: br_lin_thick .........> fc_lin_ax
                           :.........:
                              
            
 
-    Arguments:
-        alusize_lin: width of the aluminum profile on the line
-        alusize_perp: width of the perpendicular aluminum profile
-        brack_thick: thickness of the bracket
-        bolt_lin_d: metric of the bolt 3, 4, ... (integer)
-        bolt_perp_d: metric of the bolt 3, 4, ... (integer) on the profile line
-            if 0, the same as bolt_lin_d
-        nbolts_lin: number of bolts one bolt on the fc_lin_ax, 
-                   number of bolts: two bolts on the fc_lin_ax
-        bolts_lin_dist = If more than one bolt on fc_lin_ax, defines the 
-                   distance between them.
-                   if zero, takes min distance
-        bolts_lin_rail = instead of bolt holes, it will be a rail
-                  it doesnt make sense to have number of bolts with this option
-                  it will work on 2 bolts or more. If nbolts_lin == 3, it 
-                  will make a rail between them. so it will be the same to have
-                  nbolts_lin = 2 and bolts_lin_dist = 20
-                  nbolts_lin = 3 and bolts_lin_dist = 10
-                  The rail will be 20, and it will look the same, it will be
-                  more clear to have the first option: 2 bolts
-        xtr_bolt_head : extra space for the bolt head length,
-                        and making a space for it
-        xtr_bolt_head_d : extra space for the bolt head diameter,
-                          and making a space for it. For the wall bolt
-        reinforce = 1, if it is reinforced on the sides of lin profile
-        fc_perp_ax: axis of the bracket on the perpendicular prof, see picture
-        fc_line_ax: axis of the bracket on the aligned profile, see picture
-        pos : position of the center of the bracket on the intersection
-        wfco: if 1: With FreeCad Object: a freecad object is created
-              if 0: only the shape
-        name: name of the freecad object, if created
-        
-
+    Parameters
+    ----------
+    alusize_lin : float
+        Width of the aluminum profile on the line
+    alusize_perp : float
+        Width of the perpendicular aluminum profile
+    br_lin_thick : float
+        Thickness of the line bracket
+    br_perp_thick : float
+        Thickness of the perpendicular bracket
+    bolt_lin_d : int
+        Metric of the bolt 3, 4, ... (integer)
+    bolt_perp_d : int
+        Metric of the bolt 3, 4, ... (integer) on the profile line
+        if 0, the same as bolt_lin_d
+    nbolts_lin : int
+        Number of bolts one bolt on the fc_lin_ax, 
+        number of bolts: two bolts on the fc_lin_ax
+    bolts_lin_dist : float
+        If more than one bolt on fc_lin_ax, defines the 
+        distance between them.
+        if zero, takes min distance
+    bolts_lin_rail : int
+        Instead of bolt holes, it will be a rail
+        it doesnt make sense to have number of bolts with this option
+        it will work on 2 bolts or more. If nbolts_lin == 3, it 
+        will make a rail between them. so it will be the same to have
+        nbolts_lin = 2 and bolts_lin_dist = 20
+        nbolts_lin = 3 and bolts_lin_dist = 10
+        The rail will be 20, and it will look the same, it will be
+        more clear to have the first option: 2 bolts
+    xtr_bolt_head : float
+        Extra space for the bolt head length,
+        and making a space for it
+    xtr_bolt_head_d : float
+        Extra space for the bolt head diameter,
+        and making a space for it. For the wall bolt
+    reinforce : int
+        1, if it is reinforced on the sides of lin profile
+    fc_perp_ax : FreeCAD.Vector
+        Axis of the bracket on the perpendicular prof, see picture
+    fc_lin_ax : FreeCAD.Vector
+        Axis of the bracket on the aligned profile, see picture
+    pos : FreeCAD.Vector
+        Position of the center of the bracket on the intersection
+    wfco : int
+        * if 1: With FreeCad Object: a freecad object is created
+        * if 0: only the shape
+    name : str
+        Name of the freecad object, if created
 
     """
 
@@ -478,10 +495,12 @@ class AluProfBracketPerp (object):
 
 class AluProfBracketPerpFlap (object):
 
-    """ Bracket to join 2 aluminum profiles that are perpendicular,
-        that is, they are not on the same plane
-        It is wide because it has 2 ears/flaps? on the sides, to attach
-        to the perpendicular profile
+    """ 
+    Bracket to join 2 aluminum profiles that are perpendicular,
+    that is, they are not on the same plane
+    It is wide because it has 2 ears/flaps? on the sides, to attach
+    to the perpendicular profile
+    ::
 
         aluprof_perp (perpendicular to the bracket)   
           /  / /  bracket (not drawn)
@@ -506,51 +525,67 @@ class AluProfBracketPerpFlap (object):
                           :br_perp_thick
                           .+.
                       ....:__:
-                      :   |  |\
-        alusize_perp  +   |  |   \
+                      :   |  |\ 
+        alusize_perp  +   |  |   \ 
                       :   |  |______\..
                       :...|__|______|..: br_lin_thick .........> fc_lin_ax
                           :.........:
                              
            
 
-    Arguments:
-        alusize_lin: width of the aluminum profile on the line
-        alusize_perp: width of the perpendicular aluminum profile
-        brack_thick: thickness of the bracket
-        bolt_lin_d: metric of the bolt 3, 4, ... (integer)
-        bolt_perp_d: metric of the bolt 3, 4, ... (integer) on the profile line
-            if 0, the same as bolt_lin_d
-        nbolts_lin: 1: just one bolt on the fc_lin_ax, or two bolts
-                   2: two bolts on the fc_lin_ax, or two bolts
-        bolts_lin_dist = If more than one bolt on fc_lin_ax, defines the 
-                   distance between them.
-                   if zero, takes min distance
-        bolts_lin_rail = instead of bolt holes, it will be a rail
-                  it doesnt make sense to have number of bolts with this option
-                  it will work on 2 bolts or more. If nbolts_lin == 3, it 
-                  will make a rail between them. so it will be the same to have
-                  nbolts_lin = 2 and bolts_lin_dist = 20
-                  nbolts_lin = 3 and bolts_lin_dist = 10
-                  The rail will be 20, and it will look the same, it will be
-                  more clear to have the first option: 2 bolts
-        xtr_bolt_head : extra space for the bolt head on the line to the wall
-                        (perpendicular)
-        sunk : 1: if the top part is removed,
-               0: just drilled
-               2: No reinforcement at all
-        flap : if it has flaps, if it hasnt flaps, it is kind of useless
-               because it is just the middle part without bolts on the
-               wall, but it can be used to make an union with other parts
-        fc_perp_ax: axis of the bracket on the perpendicular prof, see picture
-        fc_line_ax: axis of the bracket on the aligned profile, see picture
-        pos : position of the center of the bracket on the intersection
-        wfco: if 1: With FreeCad Object: a freecad object is created
-              if 0: only the shape
-        name: name of the freecad object, if created
-        
-
-
+    Parameters
+    ----------
+    alusize_lin : float
+        Width of the aluminum profile on the line
+    alusize_perp : float
+        Width of the perpendicular aluminum profile
+    br_lin_thick : float
+        Thickness of the line bracket
+    br_perp_thick : float
+        Thickness of the perpendicular bracket
+    bolt_lin_d : int
+        Metric of the bolt 3, 4, ... (integer)
+    bolt_perp_d : int
+        Metric of the bolt 3, 4, ... (integer) on the profile line
+        if 0, the same as bolt_lin_d
+    nbolts_lin : int
+        * 1: just one bolt on the fc_lin_ax, or two bolts
+        * 2: two bolts on the fc_lin_ax, or two bolts
+    bolts_lin_dist : float
+        If more than one bolt on fc_lin_ax, defines the 
+        distance between them.
+        if zero, takes min distance
+    bolts_lin_rail : int
+        Instead of bolt holes, it will be a rail
+        it doesnt make sense to have number of bolts with this option
+        it will work on 2 bolts or more. If nbolts_lin == 3, it 
+        will make a rail between them. so it will be the same to have
+        nbolts_lin = 2 and bolts_lin_dist = 20
+        nbolts_lin = 3 and bolts_lin_dist = 10
+        The rail will be 20, and it will look the same, it will be
+        more clear to have the first option: 2 bolts
+    xtr_bolt_head : float
+        Extra space for the bolt head on the line to the wall
+        (perpendicular)
+    sunk : int
+        * 0: just drilled
+        * 1: if the top part is removed,
+        * 2: No reinforcement at all
+    flap : int
+        If it has flaps, if it hasnt flaps, it is kind of useless
+        because it is just the middle part without bolts on the
+        wall, but it can be used to make an union with other parts
+    fc_perp_ax : FreeCAD.Vector
+        Axis of the bracket on the perpendicular prof, see picture
+    fc_lin_ax : FreeCAD.Vector
+        Axis of the bracket on the aligned profile, see picture
+    pos : FreeCAD.Vector
+        Position of the center of the bracket on the intersection
+    wfco :
+        * 1: With FreeCad Object: a freecad object is created
+        * 0: only the shape
+    name : str
+        Name of the freecad object, if created
     """
 
     def __init__(self, alusize_lin, alusize_perp,
@@ -917,9 +952,11 @@ class AluProfBracketPerpFlap (object):
 
 class AluProfBracketPerpTwin (object):
 
-    """ Bracket to join 3 aluminum profiles that are perpendicular,
-        that is, they are not on the same plane
-        to the perpendicular profile
+    """ 
+    Bracket to join 3 aluminum profiles that are perpendicular,
+    that is, they are not on the same plane
+    to the perpendicular profile
+    ::
 
         aluprof_perp (perpendicular to the bracket)   
                     . fc_wide_ax
@@ -951,8 +988,8 @@ class AluProfBracketPerpTwin (object):
                           :br_perp_thick
                           .+.
                       ....:__:
-                      :   |  |\
-        alusize_perp  +   |  |   \
+                      :   |  |\ 
+        alusize_perp  +   |  |   \ 
                       :   |  |______\..
                       :...|_________|..: br_lin_thick .........> fc_lin_ax
                           :.........:
@@ -970,46 +1007,64 @@ class AluProfBracketPerpTwin (object):
                                            alusize_lin         :   
                                                :..alu_sep......:
                              
-           
-
-    Arguments:
-        alusize_lin: width of the aluminum profile on the line
-        alusize_perp: width of the perpendicular aluminum profile
-        alu_sep: separation of the 2 paralell profiles, from their centers
-        brack_thick: thickness of the bracket
-        bolt_lin_d: metric of the bolt 3, 4, ... (integer)
-        bolt_perp_d: metric of the bolt 3, 4, ... (integer) on the profile line
-            if 0, the same as bolt_lin_d
-        nbolts_lin: 1: just one bolt on the fc_lin_ax, or two bolts
-                   2: two bolts on the fc_lin_ax, or two bolts
-        bolts_lin_dist = If more than one bolt on fc_lin_ax, defines the 
-                   distance between them.
-                   if zero, takes min distance
-        bolts_lin_rail = instead of bolt holes, it will be a rail
-                  it doesnt make sense to have number of bolts with this option
-                  it will work on 2 bolts or more. If nbolts_lin == 3, it 
-                  will make a rail between them. so it will be the same to have
-                  nbolts_lin = 2 and bolts_lin_dist = 20
-                  nbolts_lin = 3 and bolts_lin_dist = 10
-                  The rail will be 20, and it will look the same, it will be
-                  more clear to have the first option: 2 bolts
-        bolt_perp_line: 1: if it has a bolt on the wall (perp) but in line
-                   with the line aluminum profiles
-                   0: no bolt 
-        xtr_bolt_head : extra space for the bolt head, and making a space for it
-                   only makes sense if bolt_perp_line == 1
-        sunk : 0: No sunk, just drill holes: bolt_perp_line should be 0
-               1: sunk, but with reinforcement if possible
-               2: no reinforcement
-        fc_perp_ax: axis of the bracket on the perpendicular prof, see picture
-        fc_line_ax: axis of the bracket on the aligned profile, see picture
-        fc_wide_ax: axis of the bracket on wide direction, see picture
-           its direction shows where the other aligned profile is
-        pos : position of the center of the bracket on the intersection
-        wfco: if 1: With FreeCad Object: a freecad object is created
-              if 0: only the shape
-        name: name of the freecad object, if created
-        
+    Parameters
+    ----------
+    alusize_lin : float
+        Width of the aluminum profile on the line
+    alusize_perp : float
+        Width of the perpendicular aluminum profile
+    alu_sep : float
+        Separation of the 2 paralell profiles, from their centers
+    br_lin_thick : float
+        Thickness of the line bracket
+    br_perp_thick : float
+        Thickness of the perpendicular bracket
+    bolt_lin_d : int
+        Metric of the bolt 3, 4, ... (integer)
+    bolt_perp_d : int
+        Metric of the bolt 3, 4, ... (integer) on the profile line
+        if 0, the same as bolt_lin_d
+    nbolts_lin : int
+        * 1: just one bolt on the fc_lin_ax, or two bolts
+        * 2: two bolts on the fc_lin_ax, or two bolts
+    bolts_lin_dist : float
+        If more than one bolt on fc_lin_ax, defines the 
+        distance between them.
+        if zero, takes min distance
+    bolts_lin_rail : int
+        Instead of bolt holes, it will be a rail
+        it doesnt make sense to have number of bolts with this option
+        it will work on 2 bolts or more. If nbolts_lin == 3, it 
+        will make a rail between them. so it will be the same to have
+        nbolts_lin = 2 and bolts_lin_dist = 20
+        nbolts_lin = 3 and bolts_lin_dist = 10
+        The rail will be 20, and it will look the same, it will be
+        more clear to have the first option: 2 bolts
+    bolt_perp_line : int
+        * 1: if it has a bolt on the wall (perp) but in line
+          with the line aluminum profiles
+        * 0: no bolt 
+    xtr_bolt_head : float
+        Extra space for the bolt head, and making a space for it
+        only makes sense if bolt_perp_line == 1
+    sunk : int
+        * 0: No sunk, just drill holes: bolt_perp_line should be 0
+        * 1: sunk, but with reinforcement if possible
+        * 2: no reinforcement
+    fc_perp_ax : FreeCAD.Vector
+        Axis of the bracket on the perpendicular prof, see picture
+    fc_lin_ax : FreeCAD.Vector
+        Axis of the bracket on the aligned profile, see picture
+    fc_wide_ax : FreeCAD.Vector
+        Axis of the bracket on wide direction, see picture
+        its direction shows where the other aligned profile is
+    pos : FreeCAD.Vector
+        Position of the center of the bracket on the intersection
+    wfco : int 
+        * 1: With FreeCad Object: a freecad object is created
+        * 0: only the shape
+    name : str
+        Name of the freecad object, if created
     """
 
     def __init__(self, alusize_lin, alusize_perp,
@@ -1386,7 +1441,88 @@ class AluProfBracketPerpTwin (object):
 # fco      : cad object of the compound
 
 class IdlePulleyHolder (object):
+    """
+    Creates a holder for a IdlePulley. Usually made of bolts, washers and bearings
+    It may include a space for a endstop
+    It is centered at the idle pulley, but at the back, and at the profile height
+    ::
 
+              hole for endstop
+             /   []: hole for the nut
+           ________  ___ 
+          ||__|    |    + above_h
+       ___|     [] |____:__________  Z=0
+          |        |      :         aluminum profile
+          | O    O |      :
+          |________|      + profile_size
+       __________________:________
+     
+            O: holes for bolts to attach to the profile
+                     
+                   Z 
+                   :
+            _______:__ ...
+           /         /|   :
+          /________ / |   :
+          ||__|    |  |   + height
+          |     [] |  |   :
+          |        |  | ..:
+          | O    O | /    
+          |________|/.. + depth 
+          :        :
+          :........:
+              + width
+     
+       attach_dir = '-y'  enstop_side= 1     TOP VIEW
+     
+     
+                    Y
+                    :                
+                    :
+                  __:_________
+                 |  :   |__| |
+                 | (:)       |
+              ...|__:________|..... X
+
+    Parameters
+    ----------
+    profile_size : float
+        Size of the aluminum profile. 20mm, 30mm
+    pulleybolt_d : float
+        Diameter of the bolt used to hold the pulley
+    holdbolt_d : float
+        Diameter of the bolts used to attach this part to the aluminum
+        profile
+    above_h : float
+        Height of this piece above the aluminum profile
+    rail : float
+        Posibility of having a rail instead of holes for mounting the 
+        holder. It has been made fast, so there may be bugs
+    mindepth : float
+        If there is a minimum depth. Sometimes needed for the endstop
+        to reach its target
+    attach_dir : str
+        Normal vector to where the holder is attached:'x','-x','y','-y'
+        NOW ONLY -y IS SUPPORTED. YOU CAN ROTATE IT
+    endstop_side : int
+        -1, 0, 1. Side where the enstop will be
+        if attach_dir= 'x', this will be referred to the y axis 
+        if 0, there will be no endstop
+    endstop_h : float
+        Height of the endstop. If 0 it will be just on top of the profile
+
+    Attributes
+    ----------
+    depth : float
+        Depth of the holder
+    width : float
+        Width of the holder
+    height : float
+        Height of the holder
+    fcoFat : 
+        Cad object of the compound
+
+    """
     def __init__ (self, profile_size, pulleybolt_d, holdbolt_d, above_h,
                   rail = 0,
                   mindepth = 0,
@@ -1788,9 +1924,10 @@ def endstopholder_rail ():
 class SimpleEndstopHolder (object):
 
     """
-        Very simple endstop holder to be attached to a alu profile and
-        that can be adjusted
-
+    Very simple endstop holder to be attached to a alu profile and
+    that can be adjusted
+    ::
+    
               rail_l         fc_axis_w
            ...+....           :
           :        :          :
@@ -1832,40 +1969,69 @@ class SimpleEndstopHolder (object):
        | :..........:    : : |:.....
        |__:________:____:___:|:.....kcomp.NUT_D934_L[estp_bolt_d]+TOL
 
+    Parameters
+    ----------
+    d_endstop : 
+        Dictionary of the endstop
+    rail_l : float
+        Length of the rail, but only the internal length, not counting
+        the arches to make the semicircles for the bolts
+        just from semicircle center to the other semicircle center
+    h : float
+        Total height, if 0 it will be the minimum height
+    base_h : float
+        Height for the base (for the mounting bolts)
+    holder_out : float
+        The endstop holder can end a little bit before to avoid
+        it to be the endstop
+    mbolt_d : float
+        Diameter (metric) of the mounting bolts (for the holder
+        not for the endstop
+    endstop_nut_dist : 
+        Distance from the top to the endstop nut.
+        if zero
+    min_d : int
+        1: make the endstop axis_d dimension the minimum
+    fc_axis_d : FreeCAD Vector
+        Axis along the depth
+    fc_axis_w : FreeCAD Vector
+        Axis along the width
+    fc_axis_h : FreeCAD Vector
+        Axis along the height
+    ref_d : int
+        Reference (zero) of fc_axis_d
 
-        d_endstop: dictionary of the endstop
-        rail_l: length of the rail, but only the internal length, not counting
-               the arches to make the semicircles for the bolts
-               just from semicircle center to the other semicircle center
-        h: total height, if 0 it will be the minimum height
-        base_h: height for the base (for the mounting bolts)
-        holder_out: the endstop holder can end a little bit before to avoid
-               it to be the endstop
-        mbolt_d: diameter (metric) of the mounting bolts (for the holder
-               not for the endstop
-        endstop_nut_dist: distance from the top to the endstop nut.
-               if zero
-        min_d: 1: make the endstop axis_d dimension the minimum
-        ref_h: reference (zero) of fc_axis_h
-                1: at the bottom
-                2: on top
-        ref_d: reference (zero) of fc_axis_d
-               1 = at the end on the side of the rails
-               2 = at the circle center of one rail (closer to 1)
-               3 = at the circle center of the other rail, closer to endstop
-               4 = at the bolt of the endstop
-               5 = at the end of the endstop (the holder ends before that)
-        ref_w: reference on fc_axis_w. it is symmetrical, only the negative side
-               1 = centered
-               2 = at one endstop bolt
-                   the other endstop bolt will be on the direction of fc_axis_w
-               3 = at one rail center
-                   the rail center will be on the direction of fc_axis_w
-               4 = at the end
-                   the end will be on the direction of fc_axis_w
-        wfco: 1 a freecad object will be created
+            * 1 = at the end on the side of the rails
+            * 2 = at the circle center of one rail (closer to 1)
+            * 3 = at the circle center of the other rail, closer to endstop
+            * 4 = at the bolt of the endstop
+            * 5 = at the end of the endstop (the holder ends before that)
 
-        the rails can be countersunk to make space for the bolts
+    ref_w : int
+        Reference on fc_axis_w. it is symmetrical, only the negative side
+
+            * 1 = centered
+            * 2 = at one endstop bolt
+              the other endstop bolt will be on the direction of fc_axis_w
+            * 3 = at one rail center
+              the rail center will be on the direction of fc_axis_w
+            * 4 = at the end
+              the end will be on the direction of fc_axis_w
+
+    ref_h : int
+        Reference (zero) of fc_axis_h
+
+            * 1: at the bottom
+            * 2: on top
+
+    pos : FreeCAD.Vector
+        Object placement
+    wfco : int
+        1 a freecad object will be created
+    name : str
+        Name of the freecad object, if created
+
+    the rails can be countersunk to make space for the bolts
 
     """
 
@@ -2254,10 +2420,10 @@ class SimpleEndstopHolder (object):
 class ThinLinBearHouse1rail (object):
 
     """
-
-        Makes a housing for a linear bearing, but it is very thin
-        and intented to be attached to one rail, instead of 2
-        it has to parts, the lower and the upper part
+    Makes a housing for a linear bearing, but it is very thin
+    and intented to be attached to one rail, instead of 2
+    it has to parts, the lower and the upper part
+    ::
 
          ________                           ______________
         | ::...::|                         | ::........:: |
@@ -2300,27 +2466,40 @@ class ThinLinBearHouse1rail (object):
            mid_center =0
 
 
-    Arguments:
-        d_lbear: dictionary with the dimensions of the linear bearing
-        fc_slide_axis : FreeCAD.Vector with the direction of the slide
-        fc_bot_axis: FreCAD.Vector with the direction of the bottom
-        axis_center = See picture, indicates the reference point
-        mid_center  = See picture, indicates the reference point
-        pos = position of the reference point,
+    Parameters
+    ----------
+    d_lbear : dictionary
+        Dictionary with the dimensions of the linear bearing
+    fc_slide_axis : FreeCAD.Vector
+        Direction of the slide
+    fc_bot_axis : FreeCAD.Vector
+        Direction of the bottom
+    axis_center : int
+        See picture, indicates the reference point
+    mid_center : int
+        See picture, indicates the reference point
+    pos : FreeCAD.Vector
+        Position of the reference point,
 
-    Useful Attributes:
-        n1_slide_axis: FreeCAD.Vector
-        n1_bot_axis: FreeCAD.Vector
-        n1_perp: FreeCAD.Vector
-        axis_h: float
-        boltcen_axis_dist: float
-        boltcen_perp_dist: float
-        + --- Dimensions:
-        tot_h, tot_w, tot_l
-        housing_l, base_h
-        + --- FreeCAD objects
-        fco_top = top part of the linear bearing housing
-        fco_bot = bottom part of the linear bearing housing
+    Attributes
+    ----------
+    n1_slide_axis : FreeCAD.Vector
+    n1_bot_axis : FreeCAD.Vector
+    n1_perp : FreeCAD.Vector
+    axis_h : float
+    boltcen_axis_dist : float
+    boltcen_perp_dist : float
+
+
+    Dimensions:
+        * tot_h, tot_w, tot_l
+        * housing_l, base_h
+
+    FreeCAD objects:
+        * fco_top : Top part of the linear bearing housing
+        * fco_bot : Bottom part of the linear bearing housing
+
+    ::
 
            ________                           ______________
           | ::...::|                         | ::........:: |
@@ -2641,10 +2820,10 @@ class ThinLinBearHouse1rail (object):
 class ThinLinBearHouse (object):
 
     """
-
-        Makes a housing for a linear bearing, but it is very thin
-        and intented to be attached to 2 rail
-        it has to parts, the lower and the upper part
+    Makes a housing for a linear bearing, but it is very thin
+    and intented to be attached to 2 rail
+    it has to parts, the lower and the upper part
+    ::
 
          ________                           ______________
         | ::...::|                         | ::........:: |
@@ -2688,7 +2867,7 @@ class ThinLinBearHouse (object):
         5: bolt_center = 1
         6: bolt_center = 0
 
-          _________              
+         _________              
         |  5:6:   |             
         | :     : |
         | :     : |
@@ -2699,36 +2878,57 @@ class ThinLinBearHouse (object):
           mid_center =0
 
 
-    Arguments:
-        d_lbear: dictionary with the dimensions of the linear bearing
-        fc_slide_axis : FreeCAD.Vector with the direction of the slide
-        fc_bot_axis: FreCAD.Vector with the direction of the bottom
-        fc_perp_axis: FreCAD.Vector with the direction of the other
-            perpendicular direction. Not useful unless bolt_center == 1
-            if = V0 it doesn't matter
-        axis_h = distance from the bottom to the rod axis
-                0: take the minimum distance
-                X: (any value) take that value, if it is smaller than the 
-                   minimum it will raise an error and would not take that 
-                   value
-        axis_center = See picture, indicates the reference point
-        mid_center  = See picture, indicates the reference point
-        bolt_center  = See picture, indicates the reference point, if it is
-                       on the bolt or on the axis
-        pos = position of the reference point,
+    Parameters
+    ----------
+    d_lbear : dictionary
+        Dictionary with the dimensions of the linear bearing
+    fc_slide_axis : FreeCAD.Vector
+        Direction of the slide
+    fc_bot_axis : FreeCAD.Vector
+        Direction of the bottom
+    fc_perp_axis : FreeCAD.Vector
+        Direction of the other
+        perpendicular direction. Not useful unless bolt_center == 1
+        if = V0 it doesn't matter
+    axis_h : int
+        Distance from the bottom to the rod axis  
 
-    Useful Attributes:
-        n1_slide_axis: FreeCAD.Vector
-        n1_bot_axis: FreeCAD.Vector
-        n1_perp: FreeCAD.Vector
-        axis_h: float
-        boltcen_axis_dist: float
-        boltcen_perp_dist: float
-        + --- Dimensions:
-        H, W, L
-        + --- FreeCAD objects
-        fco_top = top part of the linear bearing housing
-        fco_bot = bottom part of the linear bearing housing
+            * 0: take the minimum distance
+            * X: (any value) take that value, if it is smaller than the 
+              minimum it will raise an error and would not take that 
+              value
+
+    bolts_side : int
+        See picture, indicates the side where is bolt
+    axis_center : int
+        See picture, indicates the reference point
+    mid_center : int
+        See picture, indicates the reference point
+    bolt_center : int
+        See picture, indicates the reference point, if it is
+        on the bolt or on the axis
+    pos : FreeCAD.Vector
+        Position of the reference point,
+
+    Attributes
+    ----------    
+    n1_slide_axis : FreeCAD.Vector
+    n1_bot_axis : FreeCAD.Vector
+    n1_perp : FreeCAD.Vector
+    axis_h : float
+    boltcen_axis_dist : float
+    boltcen_perp_dist : float
+
+
+    Dimensions:    
+        * H, W, L
+
+    FreeCAD objects:
+        * fco_top : Top part of the linear bearing housing
+        * fco_bot : Bottom part of the linear bearing housing
+
+
+    ::
 
            ________                           ______________
           | ::...::|                         | ::........:: |
@@ -2764,15 +2964,14 @@ class ThinLinBearHouse (object):
               + 
               W
 
-
-        bolts_side = 0            bolts_side = 1
-         _________                
-        |  0: :0  |                ___________ 
-        | :     : |               | 0:     :0 |
-        | :     : |               |  :     :  |
-        | :     : |               |  :     :  |
-        | :.....: |               |_0:_____:0_|
-        |__0:_:0__|
+         bolts_side = 0            bolts_side = 1
+          _________                
+         |  0: :0  |                ___________ 
+         | :     : |               | 0:     :0 |
+         | :     : |               |  :     :  |
+         | :     : |               |  :     :  |
+         | :.....: |               |_0:_____:0_|
+         |__0:_:0__|
  
 
     """
@@ -3098,10 +3297,11 @@ class ThinLinBearHouse (object):
 class LinBearHouse (object):
 
     """
-         Makes a housing for a linear bearing takes the dimensions
-         from a dictionary, like the one defined in kcomp.py
-         it has to parts, the lower and the upper part
- 
+    Makes a housing for a linear bearing takes the dimensions
+    from a dictionary, like the one defined in kcomp.py
+    it has to parts, the lower and the upper part
+    ::
+
           _____________                           ______________
          |::   ___   ::|                         |.::........::.|
          |:: /     \ ::|    Upper part           | ::        :: |
@@ -3353,27 +3553,34 @@ class LinBearHouse (object):
 class ThinLinBearHouseAsim (object):
 
     """
-    There are:
-        3 axis:          3 planes (normal to axis)   3 distances to plane
-        - fc_fro_ax      - fro: front                - D: dep: depth
-        - fc_bot_ax      - hor: horizontal)          - H: hei: height
-        - fc_sid_ax      - lat: lateral (medial)     - W: wid: width
+    There are
+    
+        +-------------+---------------------------+-----------------------+
+        |3 axis:      | 3 planes (normal to axis) |  3 distances to plane |
+        +=============+===========================+=======================+
+        | fc_fro_ax   |   fro: front              |   D: dep: depth       |
+        +-------------+---------------------------+-----------------------+
+        | fc_bot_ax   |   hor: horizontal)        |   H: hei: height      |
+        +-------------+---------------------------+-----------------------+
+        | fc_sid_ax   |   lat: lateral (medial)   |   W: wid: width       |
+        +-------------+---------------------------+-----------------------+
 
-        The planes are on the center of the slidding rod (height and width),
-        and on the middle of the piece (width)
+    The planes are on the center of the slidding rod (height and width),
+    and on the middle of the piece (width)
 
-        The 3 axis are perpendicular, but the cross product of 2 vectors may
-        result on the other vector or its negative.
+    The 3 axis are perpendicular, but the cross product of 2 vectors may
+    result on the other vector or its negative.
 
-        fc_fro_ax points to the front of the figure, but it is symmetrical
-           so it can point to the back
-        fc_bot_ax points to the bottom of the figure (not symmetrical)
-        fc_sid_ax points to the side of the figure. Not symmetrical if
-           bolt2cen_wid_n or bolt2cen_wid_p are not zero
+    fc_fro_ax points to the front of the figure, but it is symmetrical
+    so it can point to the back
+    fc_bot_ax points to the bottom of the figure (not symmetrical)
+    fc_sid_ax points to the side of the figure. Not symmetrical if
+    bolt2cen_wid_n or bolt2cen_wid_p are not zero
 
-        Makes a housing for a linear bearing, but it is very thin
-        and intented to be attached to 2 rail
-        it has to parts, the lower and the upper part
+    Makes a housing for a linear bearing, but it is very thin
+    and intented to be attached to 2 rail
+    it has to parts, the lower and the upper part
+    ::
 
          ________                           ______________
         | ::...::|                         | ::........:: |
@@ -3391,8 +3598,6 @@ class ThinLinBearHouseAsim (object):
         | :     : |
         | :.....: |
         |__0:_:0__|
- 
-        
          ________                           ______________
         | ::...::|                         | ::........:: |
         | ::   ::|    Upper part           |.::        ::.|
@@ -3427,7 +3632,7 @@ class ThinLinBearHouseAsim (object):
         5: refcen_wid = 0
         6: refcen_wid = 1
 
-          _________              
+         _________              
         |  5:6:   |             
         | :     : |
         | :     : |
@@ -3437,40 +3642,66 @@ class ThinLinBearHouseAsim (object):
         |__0:_:0__|
 
 
-    Arguments:
-        d_lbear: dictionary with the dimensions of the linear bearing
-        fc_fro_ax : FreeCAD.Vector with the direction of the slide
-        fc_bot_ax: FreCAD.Vector with the direction of the bottom
-        fc_sid_ax: FreCAD.Vector with the direction of the other
-            perpendicular direction. Not useful unless refcen_wid == 0
-            if = V0 it doesn't matter
-        axis_h = distance from the bottom to the rod axis
-                0: take the minimum distance
-                X: (any value) take that value, if it is smaller than the 
-                   minimum it will raise an error and would not take that 
-                   value
-        refcen_hei = See picture, indicates the reference point
-        refcen_dep  = See picture, indicates the reference point
-        refcen_wid  = See picture, indicates the reference point, if it is
-                       on the bolt or on the axis
-        pos = position of the reference point,
+    Parameters
+    ----------
+    d_lbear : dictionary
+        Dictionary with the dimensions of the linear bearing
+    fc_fro_ax : FreeCAD.Vector
+        Direction of the slide
+    fc_bot_ax : FreeCAD.Vector
+        Direction of the bottom
+    fc_sid_ax : FreeCAD.Vector
+        Direction of the other
+        perpendicular direction. Not useful unless refcen_wid == 0
+        if = V0 it doesn't matter
+    axis_h : float
+        Distance from the bottom to the rod axis
 
-    Useful Attributes:
-        nfro_ax: FreeCAD.Vector normalized fc_fro_ax
-        nbot_ax: FreeCAD.Vector normalized fc_bot_ax
-        nsid_ax: FreeCAD.Vector
-        axis_h: float
-        bolt2cen_dep: float
-        bolt2cen_wid_n: float
-        bolt2cen_wid_p: float
-        bolt2bolt_wid: bolt2cen_wid_n + bolt2cen_wid_p
-        + --- Dimensions:
-        D: housing_d
-        W: housing_w
-        H: housing_h
-        + --- FreeCAD objects
-        fco_top = top part of the linear bearing housing
-        fco_bot = bottom part of the linear bearing housing
+            * 0: take the minimum distance
+            * X: (any value) take that value, if it is smaller than the 
+              minimum it will raise an error and would not take that 
+              value
+
+    refcen_hei : int
+        See picture, indicates the reference point
+    refcen_dep : int
+        See picture, indicates the reference point
+    refcen_wid : int
+        See picture, indicates the reference point, if it is
+        on the bolt or on the axis
+    pos : FreeCAD.Vector
+        Position of the reference point,
+
+    Attributes
+    ----------
+    nfro_ax : FreeCAD.Vector normalized fc_fro_ax
+    nbot_ax : FreeCAD.Vector normalized fc_bot_ax
+    nsid_ax : FreeCAD.Vector
+    axis_h : float
+    bolt2cen_dep : float
+    bolt2cen_wid_n : float
+    bolt2cen_wid_p : float
+    bolt2bolt_wid : bolt2cen_wid_n + bolt2cen_wid_p
+
+
+    Dimensions:
+        * D : float
+
+            housing_d
+
+        * W : float
+            
+            housing_w
+
+        * H : float
+            
+            housing_h
+
+    FreeCAD objects:
+        * fco_top : Top part of the linear bearing housing
+        * fco_bot : Bottom part of the linear bearing housing
+            
+    ::
 
            ________                           ______________
           | ::...::|                         | ::........:: |
@@ -3512,15 +3743,14 @@ class ThinLinBearHouseAsim (object):
               W
 
 
-        bolts_side = 0            bolts_side = 1
-         _________                
-        |  0: :0  |                ___________ 
-        | :     : |               | 0:     :0 |
-        | :     : |               |  :     :  |
-        | :     : |               |  :     :  |
-        | :.....: |               |_0:_____:0_|
-        |__0:_:0__|
- 
+          bolts_side = 0            bolts_side = 1
+           _________                
+          |  0: :0  |                ___________ 
+          | :     : |               | 0:     :0 |
+          | :     : |               |  :     :  |
+          | :     : |               |  :     :  |
+          | :.....: |               |_0:_____:0_|
+          |__0:_:0__|
 
     """
 
@@ -3859,6 +4089,8 @@ class NemaMotorHolder (object):
 
     """
     Creates a holder for a Nema motor
+    ::
+
          __________________
         ||                ||
         || O     __     O ||
@@ -3883,7 +4115,6 @@ class NemaMotorHolder (object):
         ::                         :                 :
          + reinf_thick             :....tot_d........:
 
-
                 fc_axis_h
                  :
          ________:_________ ..................................
@@ -3904,62 +4135,66 @@ class NemaMotorHolder (object):
         :.....tot_w........:
                          ::
                           motor_xtr_space
-
         
        1: ref_axis = 1 & ref_bolt = 0 
        2: ref_axis = 0 & ref_bolt = 0 
        --3: ref_axis = 0 & ref_bolt = 0 
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     nema_size : int
-        size of the motor (NEMA)
-    wall_thick: float
-        thickness of the side where the holder will be screwed to
-    motor_thick: float
-        thickness of the top side where the motor will be screwed to
-    reinf_thick: float
-        thickness of the reinforcement walls
-    motor_min_h: float
-        distance of from the inner top side to the top hole of the bolts to 
+        Size of the motor (NEMA)
+    wall_thick : float
+        Thickness of the side where the holder will be screwed to
+    motor_thick : float
+        Thickness of the top side where the motor will be screwed to
+    reinf_thick : float
+        Thickness of the reinforcement walls
+    motor_min_h : float
+        Distance of from the inner top side to the top hole of the bolts to 
         attach the holder (see drawing)
-    motor_max_h: float
-        distance of from the inner top side to the bottom hole of the bolts to 
+    motor_max_h : float
+        Distance of from the inner top side to the bottom hole of the bolts to 
         attach the holder
-    rail: int
-        2: the rail goes all the way to the end, not closed
-        1: the holes for the bolts are not holes, there are 2 rails, from
-           motor_min_h to motor_max_h
-        0: just 2 pairs of holes. One pair at defined by motor_min_h and the
-           other defined by motor_max_h
-    motor_xtr_space: float
-        extra separation between the motor and the sides
-    motor_xtr_space_d: float
-        extra separation between the motor and the wall side (where the bolts)
+    rail : int
+        * 2: the rail goes all the way to the end, not closed
+        * 1: the holes for the bolts are not holes, there are 2 rails, from
+          motor_min_h to motor_max_h
+        * 0: just 2 pairs of holes. One pair at defined by motor_min_h and the
+          other defined by motor_max_h
+
+    motor_xtr_space : float
+        Extra separation between the motor and the sides
+    motor_xtr_space_d : float
+        Extra separation between the motor and the wall side (where the bolts)
         it didn't exist before, so for compatibility
-        -1: same has motor_xtr_space (compatibility), considering bolt head
-            length
-        0: no separation
-        >0: exact separation
-    bolt_wall_d: int/float
-        metric of the bolts to attach the holder
-    bolt_wall_sep: float
-        separation between the 2 bolt holes (or rails). Optional.
-    chmf_r: float
-        radius of the chamfer, whenever chamfer is done
-    fc_axis_h: FreeCAD Vector
-        axis along the axis of the motor
-    fc_axis_n: FreeCAD Vector
-        axis normal to surface where the holder will be attached to
-    ref_axis: int
-        1: the zero of the vertical axis (axis_h) is on the motor axis
-        0: the zero of the vertical axis (axis_h) is at the wall
-    pos: FreeCAD.Vector
-        position of the holder (considering ref_axis)
-    wfco: int
-        1: creates a FreeCAD object
-        0: only creates a shape
-    name: string
+        
+            * -1: same has motor_xtr_space (compatibility), considering bolt head
+              length
+            * 0: no separation
+            * >0: exact separation
+
+    bolt_wall_d : int/float
+        Metric of the bolts to attach the holder
+    bolt_wall_sep : float
+        Separation between the 2 bolt holes (or rails). Optional.
+    chmf_r : float
+        Radius of the chamfer, whenever chamfer is done
+    fc_axis_h : FreeCAD Vector
+        Axis along the axis of the motor
+    fc_axis_n : FreeCAD Vector
+        Axis normal to surface where the holder will be attached to
+    ref_axis : int
+        * 1: the zero of the vertical axis (axis_h) is on the motor axis
+        * 0: the zero of the vertical axis (axis_h) is at the wall
+
+    pos : FreeCAD.Vector
+        Position of the holder (considering ref_axis)
+    wfco : int
+        * 1: creates a FreeCAD object
+        * 0: only creates a shape
+
+    name : string
         Name of the FreeCAD object
 
     """
@@ -4313,6 +4548,7 @@ class ShpNemaMotorHolder (shp_clss.Obj3D):
     """
     Creates a holder for a Nema motor. Similar to NemaMotorHolder but creating
     the classes defined for shapes and parts. See shp_clss and fc_clss
+    ::
 
               axis_d
                  :
@@ -4383,18 +4619,18 @@ class ShpNemaMotorHolder (shp_clss.Obj3D):
     Parameters:
     -----------
     nema_size : int
-        size of the motor (NEMA)
+        Size of the motor (NEMA)
     wall_thick: float
-        thickness of the side where the holder will be screwed to
+        Thickness of the side where the holder will be screwed to
     motorside_thick: float
-        thickness of the top side where the motor will be screwed to
+        Thickness of the top side where the motor will be screwed to
     reinf_thick: float
-        thickness of the reinforcement walls
+        Thickness of the reinforcement walls
     motor_min_h: float
-        distance of from the inner top side to the top hole of the bolts to 
+        Distance of from the inner top side to the top hole of the bolts to 
         attach the holder (see drawing)
     motor_max_h: float
-        distance of from the inner top side to the bottom hole of the bolts to 
+        Distance of from the inner top side to the bottom hole of the bolts to 
         attach the holder
     rail: int
         1: the holes for the bolts are not holes, there are 2 rails, from
@@ -4402,22 +4638,22 @@ class ShpNemaMotorHolder (shp_clss.Obj3D):
         0: just 2 pairs of holes. One pair at defined by motor_min_h and the
            other defined by motor_max_h
     motor_xtr_space: float
-        extra separation between the motor and the wall side
+        Extra separation between the motor and the wall side
         and also between the motor and each of the sides
     bolt_wall_d: int/float
-        metric of the bolts to attach the holder
+        Metric of the bolts to attach the holder
     bolt_wall_sep: float
-        separation between the 2 bolt holes (or rails). Optional.
+        Separation between the 2 bolt holes (or rails). Optional.
     chmf_r: float
-        radius of the chamfer, whenever chamfer is done
+        Radius of the chamfer, whenever chamfer is done
     axis_h: FreeCAD Vector
-        axis along the axis of the motor
+        Axis along the axis of the motor
     axis_d: FreeCAD Vector
-        axis normal to surface where the holder will be attached to
+        Axis normal to surface where the holder will be attached to
     axis_w: FreeCAD Vector
-        axis perpendicular to axis_h and axis_d, symmetrical (not necessary)
+        Axis perpendicular to axis_h and axis_d, symmetrical (not necessary)
     pos_d : int
-        location of pos along axis_d (0,1,2,3,4,5)
+        Location of pos along axis_d (0,1,2,3,4,5)
         0: at the beginning, touching the wall where it is attached
         1: at the inner side of the side where it will be screwed
         2: bolts holes closed to the wall to attach the motor
@@ -4425,20 +4661,20 @@ class ShpNemaMotorHolder (shp_clss.Obj3D):
         4: bolts holes away from to the wall to attach the motor
         5: at the end of the piece
     pos_w : int
-        location of pos along axis_w (0,1,2,3). Symmetrical
+        Location of pos along axis_w (0,1,2,3). Symmetrical
         0: at the center of symmetry
         1: at the center of the rails (or holes) to attach the holder
         2: at the center of the holes to attach the motor
         3: at the end of the piece
     pos_h : int
-        location of pos along axis_h (0,1,2,3)
+        Location of pos along axis_h (0,1,2,3)
         0: at the top (on the side of the motor axis)
         1: inside the motor wall
         2: Top end of the rail
         3: Bottom end of the rail
         4: Bottom end of the piece
     pos : FreeCAD.Vector
-        position of the piece
+        Position of the piece
 
     """
 
@@ -4764,6 +5000,7 @@ class PartNemaMotorHolder(fc_clss.SinglePart, ShpNemaMotorHolder):
 #class ShpNemaMotorHolderVer (shp_clss.Obj3D):
     """
     Creates a VERTICAL holder for a Nema motor.
+    ::
 
               axis_h
                  :
@@ -4786,23 +5023,26 @@ class PartNemaMotorHolder(fc_clss.SinglePart, ShpNemaMotorHolder):
 
         0: just 2 pairs of holes. One pair at defined by motor_min_h and the
            other defined by motor_max_h
+
+    Parameters
+    ----------
     motor_xtr_space: float
-        extra separation between the motor and the wall side
+        Extra separation between the motor and the wall side
         and also between the motor and each of the sides
     bolt_wall_d: int/float
-        metric of the bolts to attach the holder
+        Metric of the bolts to attach the holder
     bolt_wall_sep: float
-        separation between the 2 bolt holes (or rails). Optional.
+        Separation between the 2 bolt holes (or rails). Optional.
     chmf_r: float
-        radius of the chamfer, whenever chamfer is done
+        Radius of the chamfer, whenever chamfer is done
     axis_h: FreeCAD Vector
-        axis along the axis of the motor
+        Axis along the axis of the motor
     axis_d: FreeCAD Vector
-        axis normal to surface where the holder will be attached to
+        Axis normal to surface where the holder will be attached to
     axis_w: FreeCAD Vector
-        axis perpendicular to axis_h and axis_d, symmetrical (not necessary)
+        Axis perpendicular to axis_h and axis_d, symmetrical (not necessary)
     pos_d : int
-        location of pos along axis_d (0,1,2,3,4,5)
+        Location of pos along axis_d (0,1,2,3,4,5)
         0: at the beginning, touching the wall where it is attached
         1: at the inner side of the side where it will be screwed
         2: bolts holes closed to the wall to attach the motor
@@ -4810,20 +5050,20 @@ class PartNemaMotorHolder(fc_clss.SinglePart, ShpNemaMotorHolder):
         4: bolts holes away from to the wall to attach the motor
         5: at the end of the piece
     pos_w : int
-        location of pos along axis_w (0,1,2,3). Symmetrical
+        Location of pos along axis_w (0,1,2,3). Symmetrical
         0: at the center of symmetry
         1: at the center of the rails (or holes) to attach the holder
         2: at the center of the holes to attach the motor
         3: at the end of the piece
     pos_h : int
-        location of pos along axis_h (0,1,2,3)
+        Location of pos along axis_h (0,1,2,3)
         0: at the top (on the side of the motor axis)
         1: inside the motor wall
         2: Top end of the rail
         3: Bottom end of the rail
         4: Bottom end of the piece
     pos : FreeCAD.Vector
-        position of the piece
+        Position of the piece
 
 
     def __init__ (self,
@@ -4841,25 +5081,6 @@ class PartNemaMotorHolder(fc_clss.SinglePart, ShpNemaMotorHolder):
                   pos = V0):
 
     """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class Plate3CageCubes (object):
 

@@ -84,6 +84,8 @@ class MechatronicWorkbench (Workbench):
             str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Modification")), modList)
         self.appendMenu(
             str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Machatronic Parts")), partsList)
+        self.appendMenu(
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Machatronic Functions")), modList)
         
         Log ('Loalding Mechatronic Workbench... done! \n')
     

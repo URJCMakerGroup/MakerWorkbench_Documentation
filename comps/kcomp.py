@@ -299,6 +299,7 @@ D912 = { 2.5: D912_M2_5,
 
 # the circumdiameter, min value
 NUT_D934_D =  {
+               1.6: 3.41,
                2:   4.32,
                2.5: 5.45,
                3:   6.01,
@@ -307,6 +308,7 @@ NUT_D934_D =  {
                6:  11.05}
 # double the apotheme, max value
 NUT_D934_2A = {
+               1.6: 3.2,
                2:   4.,
                2.5: 5.,
                3:   5.5,
@@ -315,6 +317,7 @@ NUT_D934_2A = {
                6:   10.0}
 # the heigth, max value
 NUT_D934_L  = {
+               1.6:  1.3,
                2:    1.6,
                2.5:  2.,
                3:    2.4,
@@ -1463,7 +1466,7 @@ ENDSTOP_B = { 'L': 12.7,
             'HT': 9.5,
             'BOLT_SEP' : 6.5,
             'BOLT_H' : 1.5,
-            'BOLT_D' : 1.8 }
+            'BOLT_D' : 1.6 }
 
 # d3v-162-1c25
 # the bolt holes are not aligned

@@ -487,100 +487,121 @@ def fco_topbeltclamp (railaxis = 'x', bot_norm = '-z', pos = V0, extra=1,
 
 class BeltClamp (object):
 
-    """ Similar to shp_topbeltclamp, but with any direction, and 
-        can have a base
-        Creates a shape of a belt clamp. Just the rail and the cylinder
-        and may have a rectangular base
-        just one way: 2 clamp blocks
-        It is referenced on the base of the clamp, but it may have 5 different
-        positions
+    """ 
+    Similar to shp_topbeltclamp, but with any direction, and 
+    can have a base
+    Creates a shape of a belt clamp. Just the rail and the cylinder
+    and may have a rectangular base
+    just one way: 2 clamp blocks
+    It is referenced on the base of the clamp, but it may have 5 different
+    positions
 
-    Arguments:
-        fc_fro_ax: FreeCAD.Vector pointing to the front, see pricture
-        fc_top_ax: FreeCAD.Vector pointing to the top, see pricture
-        base_h: height of the base,
-                if 0 and bolt_d=0: no base
-                if 0 and bolt_d!= 0: minimum base to have the bolt head and
-                not touching with the belt (countersunk) if bolt_csunk > 0
-        base_l: length of the base, if base_h not 0.
-                if 0 and bolt_d=0: will have the minimum length, defined by the
-                clamp
-                if 0 and bolt_d!=0: will have the minimum length, defined by
-                the clamp plus the minimum separation due to the bolt holes
-        base_w: width of the base, if base_h not 0.
-        bolt_d: diameter of the bolts, if zero, no bolts
-        bolt_csunk: if the bolt is countersunk
-                if >0: there is a whole to countersink the head of the bolt
-                      there will be an extra height if not enough
-                      bolt_d has to be > 0
-                if 0: no whole for the height, and no extra height
-                if >0, the size will determine the minimum height of the 
-                       base, below the countersink hole
-        ref: reference of the position (see picture below)
-        extra: if extra, it will have an extra height below the zero height,
-                this is to be joined to some other piece
-        wfco: if 1: With FreeCad Object: a freecad object is created
-             if 0: only the shape
-        intol : internal extra tolerance to the dimension CB_IW, substracting
-                to CB_W
-                if negative, makes CB_IW smaller.
-        name: name of the freecad object, if created
+    Parameters
+    ----------
+    fc_fro_ax : FreeCAD.Vector
+        FreeCAD.Vector pointing to the front, see pricture
+    fc_top_ax : FreeCAD.Vector
+        FreeCAD.Vector pointing to the top, see pricture
+    base_h : float
+        Height of the base,
 
+                * if 0 and bolt_d=0: no base
+                * if 0 and bolt_d!= 0: minimum base to have the bolt head and
+                  not touching with the belt (countersunk) if bolt_csunk > 0
 
-                                fc_top_ax
-                                   :
-                      _____       _:_ ..........
-                     |     |     | : |         + C_H
-                 ____|_____|_____|_:_|____.....:
-                | ::               :   :: |    + base_h
-    fc_fro_ax...|_::_______________*___::_|....:
-                           
-                 CLAMPBLOCK          
-                     CB            * ref
+    base_l : float
+        Length of the base, if base_h not 0.
+            
+            * if 0 and bolt_d=0: will have the minimum length, defined by the
+              clamp
+            * if 0 and bolt_d!=0: will have the minimum length, defined by
+              the clamp plus the minimum separation due to the bolt holes
 
-                 clamp2end             clamp2end
-                ..+...               ...+...
-                :     :              :     :
-                :   bolt2end         :    bolt2end 
-                :+..+.               :.+..+.
-                :  :  :              :  :  :
-                :__:__:______________:__:__:...................
-                |  :   ____       ___      |                  :
-       CB_W  {  |  :  |____|     /   \     |                  :
-       CB_IW {  |  O   ____      | * |  O  | CCYL: CLAMPCYL   + base_w
-       CB_W  {  |     |____|     \___/     |                  :
-                |__________________________|..................:
-                :     :    :     : :       :
-                :     :CB_L:.CS..:.:       :
-                :                 +        :
-                :                 CCYL_R   :
-                :......... base_l .........:
+    base_w : float
+        Width of the base, if base_h not 0.
+    bolt_d : float
+        Diameter of the bolts, if zero, no bolts
+    bolt_csunk : float
+        If the bolt is countersunk
 
-                 __________________________
-                |      ____       ___      |
-       CB_W  {  |     |____|     /   \     |
-       CB_IW {  4  3  2____      | 1 |  5  6 CCYL: CLAMPCYL  
-       CB_W  {  |     |____|     \___/     |
-                |__________________________|
-                      :    :
-                      :CB_L:.CS.:
+            * if >0: there is a whole to countersink the head of the bolt
+              there will be an extra height if not enough
+              bolt_d has to be > 0
+            * if 0: no whole for the height, and no extra height
+            * if >0, the size will determine the minimum height of the 
+              base, below the countersink hole
 
-       References:
-       1: cencyl: center of cylinder
-       2: frontclamp: front of the clamps
-       3: frontbolt
-       4: frontbase
-       5: backbolt
-       6: backbase
+    ref : int
+        Reference of the position (see picture below)
+    extra : float
+        If extra, it will have an extra height below the zero height,
+        this is to be joined to some other piece
+    wfco : int 
+        * if 1: With FreeCad Object: a freecad object is created
+        * if 0: only the shape
+    intol : float
+        Internal extra tolerance to the dimension CB_IW, substracting
+        to CB_W. If negative, makes CB_IW smaller.
+    name : str
+        Name of the freecad object, if created
 
 
-                                fc_top_ax
-                                   :
-                      _____       _:_
-                     |     |     | : |
-                 ____|_____|_____|_:_|____
-                |:..:              :  :..:|..... 
-    fc_fro_ax...|_::_______________*___::_|....+ bolt_csunk (if not 0)
+    ::
+
+                                 fc_top_ax
+                                    :
+                       _____       _:_ ..........
+                      |     |     | : |         + C_H
+                  ____|_____|_____|_:_|____.....:
+                 | ::               :   :: |    + base_h
+     fc_fro_ax...|_::_______________*___::_|....:
+                            
+                  CLAMPBLOCK          
+                      CB            * ref
+ 
+                  clamp2end             clamp2end
+                 ..+...               ...+...
+                 :     :              :     :
+                 :   bolt2end         :    bolt2end 
+                 :+..+.               :.+..+.
+                 :  :  :              :  :  :
+                 :__:__:______________:__:__:...................
+                 |  :   ____       ___      |                  :
+        CB_W  {  |  :  |____|     /   \     |                  :
+        CB_IW {  |  O   ____      | * |  O  | CCYL: CLAMPCYL   + base_w
+        CB_W  {  |     |____|     \___/     |                  :
+                 |__________________________|..................:
+                 :     :    :     : :       :
+                 :     :CB_L:.CS..:.:       :
+                 :                 +        :
+                 :                 CCYL_R   :
+                 :......... base_l .........:
+ 
+                  __________________________
+                 |      ____       ___      |
+        CB_W  {  |     |____|     /   \     |
+        CB_IW {  4  3  2____      | 1 |  5  6 CCYL: CLAMPCYL  
+        CB_W  {  |     |____|     \___/     |
+                 |__________________________|
+                       :    :
+                       :CB_L:.CS.:
+ 
+        References:
+        1: cencyl: center of cylinder
+        2: frontclamp: front of the clamps
+        3: frontbolt
+        4: frontbase
+        5: backbolt
+        6: backbase
+
+
+                                 fc_top_ax
+                                    :
+                       _____       _:_
+                      |     |     | : |
+                  ____|_____|_____|_:_|____
+                 |:..:              :  :..:|..... 
+     fc_fro_ax...|_::_______________*___::_|....+ bolt_csunk (if not 0)
 
     """
     # minimum base 
@@ -1309,6 +1330,62 @@ class PartBeltClamped (fc_clss.SinglePart, ShpBeltClamped):
 
 class DoubleBeltClamp (shp_clss.Obj3D):
     """
+    Similar to BeltClamp, but in two ways
+    Creates a shape of a double belt clamp.
+    positions
+
+    Parameters
+    ----------
+    fc_fro_ax : FreeCAD.Vector
+        FreeCAD.Vector pointing to the front, see pricture
+    fc_top_ax : FreeCAD.Vector
+        FreeCAD.Vector pointing to the top, see pricture
+    base_h : float
+        Height of the base,
+
+                * if 0 and bolt_d=0: no base
+                * if 0 and bolt_d!= 0: minimum base to have the bolt head and
+                  not touching with the belt (countersunk) if bolt_csunk > 0
+
+    base_l : float
+        Length of the base, if base_h not 0.
+            
+            * if 0 and bolt_d=0: will have the minimum length, defined by the
+              clamp
+            * if 0 and bolt_d!=0: will have the minimum length, defined by
+              the clamp plus the minimum separation due to the bolt holes
+
+    base_w : float
+        Width of the base, if base_h not 0.
+    bolt_d : float
+        Diameter of the bolts, if zero, no bolts
+    bolt_csunk : float
+        If the bolt is countersunk
+
+            * if >0: there is a whole to countersink the head of the bolt
+              there will be an extra height if not enough
+              bolt_d has to be > 0
+            * if 0: no whole for the height, and no extra height
+            * if >0, the size will determine the minimum height of the 
+              base, below the countersink hole
+
+    ref : int
+        Reference of the position (see picture below)
+    extra : float
+        If extra, it will have an extra height below the zero height,
+        this is to be joined to some other piece
+    wfco : int 
+        * if 1: With FreeCad Object: a freecad object is created
+        * if 0: only the shape
+    intol : float
+        Internal extra tolerance to the dimension CB_IW, substracting
+        to CB_W. If negative, makes CB_IW smaller.
+    name : str
+        Name of the freecad object, if created
+
+
+    ::
+
                                     axis_h
                                    :
                       _____       _:_           _:_       _____ ..........

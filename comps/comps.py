@@ -300,52 +300,78 @@ class Sk (object):
 
 
 class Sk_dir (object):
+# Similar to Sk, but in any direction
 
     """
-     Similar to Sk, but in any direction
-     SK dimensions:
-     dictionary for the dimensions
-     mbolt: is mounting bolt. it corresponds to its metric
-     tbolt: is the tightening bolt.
-    SK12 = { 'd':12.0, 'H':37.5, 'W':42.0, 'L':14.0, 'B':32.0, 'S':5.5,
-             'h':23.0, 'A':21.0, 'b': 5.0, 'g':6.0,  'I':20.0,
-              'mbolt': 5, 'tbolt': 4} 
+    SK dimensions:
+    dictionary for the dimensions
+    ::
+    
+        mbolt: is mounting bolt. it corresponds to its metric
+        tbolt: is the tightening bolt.
+        SK12 = { 'd':12.0, 'H':37.5, 'W':42.0, 'L':14.0, 'B':32.0, 'S':5.5,
+                 'h':23.0, 'A':21.0, 'b': 5.0, 'g':6.0,  'I':20.0,
+                 'mbolt': 5, 'tbolt': 4} 
 
+    ::
 
-            fc_axis_h
-            :
-         ___:___       _______________________________  tot_h 
-        |  ___  |                     
-        | /   \ |      __________ HoleH = h
-        | \___/ |  __
-      __|       |__ /| __
-     |_____________|/  __ TotD = L ___________________
- 
-          ___:___                     ___
-         |  ___  |                   |...|       
-         | / 2 \ |                   3 1 |.....> fc_axis_d
-         | \_*_/ |                   |...|
-     ____|       |____               |___|
-    8_:5_____4_____::_|..fc_axis_w   6_7_|....... fc_axis_d
-    :                 :              :   :
-    :... tot_w .......:              :...:
+             fc_axis_h
+             :
+          ___:___       _______________________________  tot_h 
+         |  ___  |                     
+         | /   \ |      __________ HoleH = h
+         | \___/ |  __
+       __|       |__ /| __
+      |_____________|/  __ TotD = L ___________________
+  
+           ___:___                     ___
+          |  ___  |                   |...|       
+          | / 2 \ |                   3 1 |.....> fc_axis_d
+          | \_*_/ |                   |...|
+      ____|       |____               |___|
+     8_:5_____4_____::_|..fc_axis_w   6_7_|....... fc_axis_d
+     :                 :              :   :
+     :... tot_w .......:              :...:
                                        tot_d
  
-    fc_axis_h = axis on the height direction
-    fc_axis_d = axis on the depth (rod) direction
-    fc_axis_w = width (perpendicular) dimension, only useful if I finally
-                include the tightening bolt, or if ref_wc != 1
-    ref_hr : 1: reference at the Rod Height dimension (rod center):
-                points 1, 2, 3
-             0: reference at the base: points 4, 5
-    ref_wc: 1: reference at the center on the width dimension (fc_axis_w)
-                   points: 2, 4,
-            0, reference at one of the bolt holes, point 5
-            -1, reference at one end. point 8
-    ref_dc: 1: reference at the center of the depth dimension
-                   (fc_axis_d) points: 1,7
-                0: reference at one of the ends on the depth dimension
-                   points 3, 6
+    Parameters
+    ----------
+    fc_axis_h : FreeCAD.Vector
+        Axis on the height direction
+    fc_axis_d : FreeCAD.Vector
+        Axis on the depth (rod) direction
+    fc_axis_w : FreeCAD.Vector
+        Width (perpendicular) dimension, only useful if I finally
+        include the tightening bolt, or if ref_wc != 1
+    ref_hr : int
+        * 1: reference at the Rod Height dimension (rod center):
+          points 1, 2, 3
+        * 0: reference at the base: points 4, 5
+    ref_wc : int
+        * 1: reference at the center on the width dimension (fc_axis_w)
+          points: 2, 4,
+        * 0: reference at one of the bolt holes, point 5
+        * -1: reference at one end. point 8
+    ref_dc : int
+        * 1: reference at the center of the depth dimension
+          (fc_axis_d) points: 1,7
+        * 0: reference at one of the ends on the depth dimension
+          points 3, 6
+    pillow : int
+        * 1 to make it the same height of a pillow block
+    pos : FreeCAD.Vector
+        Placement
+    wfco : int
+        * 1 to create a FreeCAD Object
+    tol : float
+        Tolerance of the axis
+    name : str
+        FreeCAD Object name
+        
+    Returns
+    -------
+    FreeCAD Object
+        FreeCAD Object of a shaft holder
 
     """
 
@@ -1043,6 +1069,8 @@ class AluProf_dir (object):
 
     """
     Creates a generic aluminum profile in any direction
+    ::
+
          :----- width ----:
          :       slot     :
          :      :--:      :
@@ -1057,42 +1085,67 @@ class AluProf_dir (object):
          | |/ /_    _\ \| | .... 
          |______|  |______| ....thick
    
-    width:    the Width of the profile, it is squared
-    length:   the length of the bar, the extrusion 
-    thick: the thickness of the side
-    slot: the width of the rail 
-    insquare: the width of the inner square
-    indiam: the diameter of the inner hole. If 0, there is no hole
-    fc_axis_l = axis on the length direction
-    fc_axis_w = axis on the width direction
-    fc_axis_p = axis on the other width direction (perpendicular)
-            can be V0 if ref_p = 1
-    ref_l: reference (zero) on the fc_axis_l
-            1: reference at the center
-            2: reference at the end, the other end will be on the direction of
-               fc_axis_l
-    ref_w: reference (zero) on the fc_axis_w
-            1: reference at the center
-            2: reference at the side, the other end side will be on the
-               direction of fc_axis_w
-    ref_p: reference (zero) on the fc_axis_p
-            1: reference at the center
-            2: reference at the side, the other end side will be on the
-               direction of fc_axis_p
-    xtr_l: if >0 it will be that extra length on the direction of fc_axis_l
-           I dont think it is useful for a profile, but since it is easy to
-           do, I just do it
-    xtr_nl: if >0 it will be that extra height on the opositve direction of
-             fc_axis_l
-    pos : FreeCAD vector of the position 
-    wfco: 1 a freecad object will be created. 0: only a shape
-    name: name of the freecad object
-    attributes:
-    the arguments and
-    face     : the face that has been extruded
-    shp      : the shape
-    fco      : the freecad object
+    Parameters
+    ----------
+    width : float
+        The Width of the profile, it is squared
+    length : float
+        The length of the bar, the extrusion 
+    thick : float
+        The thickness of the side
+    slot : float
+        The width of the rail 
+    insquare : float
+        The width of the inner square
+    indiam : float
+        The diameter of the inner hole. If 0, there is no hole
+    fc_axis_l : FreeCAD.Vector
+         axis on the length direction
+    fc_axis_w : FreeCAD.Vector
+         axis on the width direction
+    fc_axis_p : FreeCAD.Vector
+         axis on the other width direction (perpendicular)
+         can be V0 if ref_p = 1
+    ref_l : int
+        Reference (zero) on the fc_axis_l
+        * 1: reference at the center
+        * 2: reference at the end, the other end will be on the direction of
+           fc_axis_l
+    ref_w : int
+        Reference (zero) on the fc_axis_w
+        * 1: reference at the center
+        * 2: reference at the side, the other end side will be on the
+           direction of fc_axis_w
+    ref_p : int
+        Reference (zero) on the fc_axis_p
+        * 1: reference at the center
+        * 2: reference at the side, the other end side will be on the
+           direction of fc_axis_p
+    xtr_l : float
+        if >0 it will be that extra length on the direction of fc_axis_l
+        I dont think it is useful for a profile, but since it is easy to
+        do, I just do it
+    xtr_nl : float
+        if >0 it will be that extra height on the opositve direction of
+        fc_axis_l
+    pos : FreeCAD.Vector
+        FreeCAD vector of the position 
+    wfco : int
+        1 a freecad object will be created. 0: only a shape
+    name : str
+        Name of the freecad object
+    
+    Attributes
+    ----------
+    face : 
+        The face that has been extruded
+    shp : 
+        The shape
+    fco : 
+        The freecad object
    
+    ::
+
      ref_w = 1  ; ref_p = 1
 
                 fc_axis_w
@@ -1350,6 +1403,7 @@ class ShpAluProf (shp_clss.Obj3D):
 
     """
     Creates a shape of a generic aluminum profile in any direction
+    ::
 
          :----- width ----:
          :       slot     :
@@ -1372,45 +1426,45 @@ class ShpAluProf (shp_clss.Obj3D):
     depth: float
         (depth) length of the bar, the extrusion 
     thick: float
-        thickness of the side
+        Thickness of the side
     slot: float
-        width of the rail slot
+        Width of the rail slot
     insquare: float
-        width of the inner square
+        Width of the inner square
     indiam: float
-        diameter of the inner hole. If 0, there is no hole
+        Diameter of the inner hole. If 0, there is no hole
     xtr_d: float
-        if >0 it will be that extra depth (length) on the direction of axis_d
+        If >0 it will be that extra depth (length) on the direction of axis_d
     xtr_nd: float
-        if >0 it will be that extra depth (length) on the opositve direction of
+        If >0 it will be that extra depth (length) on the opositve direction of
         axis_d
-       can be V0 if pos_h = 0
+        can be V0 if pos_h = 0
     axis_d : FreeCAD.Vector
-        axis along the length (depth) direction
+        Axis along the length (depth) direction
     axis_w : FreeCAD.Vector
-        axis along the width direction
+        Axis along the width direction
     axis_h = axis on the other width direction (perpendicular)
-        axis along the width direction
+        Axis along the width direction
     pos_d: int
-        location of pos along axis_d (see drawing)
+        Location of pos along axis_d (see drawing)
         0: start point, counting xtr_nd,
            if xtr_nd == 0 -> pos_d 0 and 1 will be the same
-        1: start point, not counting xtr_nd
-        2: middle point not conunting xtr_nd and xtr_d
-        3: middle point conunting xtr_nd and xtr_d
-        4: end point, not counting xtr_d
-        5: end point considering xtr_d
+        * 1: start point, not counting xtr_nd
+        * 2: middle point not conunting xtr_nd and xtr_d
+        * 3: middle point conunting xtr_nd and xtr_d
+        * 4: end point, not counting xtr_d
+        * 5: end point considering xtr_d
     pos_w: int
-        location of pos along axis_w (see drawing). Symmetric, negative indexes
+        Location of pos along axis_w (see drawing). Symmetric, negative indexes
         means the other side
-        0: at the center of symmetry
-        1: at the inner square
-        2: at the interior side of the outer part of the rail (thickness of the4           side
-        3: at the end of the profile along axis_w 
+        * 0: at the center of symmetry
+        * 1: at the inner square
+        * 2: at the interior side of the outer part of the rail (thickness of the4           side
+        * 3: at the end of the profile along axis_w 
     pos_h: int
         Same as pos_w 
     pos : FreeCAD.Vector
-        position of point defined by pos_d, pos_w, pos_h
+        Position of point defined by pos_d, pos_w, pos_h
    
     Attributes:
     -----------
@@ -1418,6 +1472,7 @@ class ShpAluProf (shp_clss.Obj3D):
         origin, at pos_d=pos_w=pos_h = 0
         Shown in the drawing with a o
 
+    ::
 
             axis_h
             :               xtr_nd       depth       xtr_d
@@ -1546,57 +1601,64 @@ class ShpAluProf (shp_clss.Obj3D):
         self.shp = shp_aluprof
 
 class PartAluProf (fc_clss.SinglePart, ShpAluProf):
-    """ Integration of a ShpAluProf object into a PartAluProf
+    """ 
+    Integration of a ShpAluProf object into a PartAluProf
     object, so it is a FreeCAD object that can be visualized in FreeCAD
     Instead of using all the arguments of ShpAluProf, it will use
     a dictionary
 
+    Parameters
+    ----------
     depth : float
         (depth) length of the bar, the extrusion 
     aluprof_dict : dictionary
-        dictionary with all the information about the profile
+        Dictionary with all the information about the profile
         in kcomp.py there are some dictionaries that can be used, they are
-        not exact
-    -- same as ShpAluProf:
-    xtr_d: float
-        if >0 it will be that extra depth (length) on the direction of axis_d
-    xtr_nd: float
-        if >0 it will be that extra depth (length) on the opositve direction of
-        axis_d
-       can be V0 if pos_h = 0
+        not exact -- same as ShpAluProf
+    xtr_d : float
+        If >0 it will be that extra depth (length) on the direction of axis_d
+    xtr_nd : float
+        If >0 it will be that extra depth (length) on the opositve direction of
+        axis_d can be V0 if pos_h = 0
     axis_d : FreeCAD.Vector
-        axis along the length (depth) direction
+        Axis along the length (depth) direction
     axis_w : FreeCAD.Vector
-        axis along the width direction
-    axis_h = axis on the other width direction (perpendicular)
-        axis along the width direction
-    pos_d: int
-        location of pos along axis_d (see drawing)
-        0: start point, counting xtr_nd,
-           if xtr_nd == 0 -> pos_d 0 and 1 will be the same
-        1: start point, not counting xtr_nd
-        2: middle point not conunting xtr_nd and xtr_d
-        3: middle point conunting xtr_nd and xtr_d
-        4: end point, not counting xtr_d
-        5: end point considering xtr_d
-    pos_w: int
-        location of pos along axis_w (see drawing). Symmetric, negative indexes
+        Axis along the width direction
+    axis_h : FreeCAD.Vector
+        Axis along the width direction
+    pos_d : int
+        Location of pos along axis_d (see drawing)
+
+            * 0: start point, counting xtr_nd,
+              if xtr_nd == 0 -> pos_d 0 and 1 will be the same
+            * 1: start point, not counting xtr_nd
+            * 2: middle point not conunting xtr_nd and xtr_d
+            * 3: middle point conunting xtr_nd and xtr_d
+            * 4: end point, not counting xtr_d
+            * 5: end point considering xtr_d
+
+    pos_w : int
+        Location of pos along axis_w (see drawing). Symmetric, negative indexes
         means the other side
-        0: at the center of symmetry
-        1: at the inner square
-        2: at the interior side of the outer part of the rail (thickness of the4           side
-        3: at the end of the profile along axis_w 
-    pos_h: int
+        
+            * 0: at the center of symmetry
+            * 1: at the inner square
+            * 2: at the interior side of the outer part of the rail (thickness of the4 side)
+            * 3: at the end of the profile along axis_w 
+
+    pos_h : int
         Same as pos_w 
     pos : FreeCAD.Vector
-        position of point defined by pos_d, pos_w, pos_h
+        Position of point defined by pos_d, pos_w, pos_h
     model_type : int
-        kind of model
-        1: dimensional model: it can be printed to assemble a model,but the part
-           will not work as defined. For example, if printed this aluminum
-           profile will not work as defined, and also, it is not exact
-    name : string
-        name of the object
+        Kind of model
+        
+            * 1: dimensional model: it can be printed to assemble a model,but the part
+              will not work as defined. For example, if printed this aluminum
+              profile will not work as defined, and also, it is not exact
+
+    name : str
+        Name of the object
 
     """
 
@@ -1967,7 +2029,7 @@ class NemaMotor (object):
 class ShpNemaMotor (shp_clss.Obj3D):
     """ Creates a shape of a Nema Motor
     It can be a shape to cut the piece where it may be embedded
-
+    ::
 
                axis_h
                   :
@@ -2012,64 +2074,66 @@ class ShpNemaMotor (shp_clss.Obj3D):
                motor_w (same as d): Nema size in inches /10
 
 
-    pos_o (origin) is at pos_h=0, pos_d=pos_w=0
+     pos_o (origin) is at pos_h=0, pos_d=pos_w=0
 
     Parameters:
     -----------
     nema_size : int
-        nema size of the motor. Nema 17 means that the front is 1.7 inches
+        Nema size of the motor. Nema 17 means that the front is 1.7 inches
         each side (it is a square)
     base_l : float,
-        length (height) of the base
+        Length (height) of the base
     shaft_l = float,
-        length (height) of the shaft, including the small cylinder (circle)
+        Length (height) of the shaft, including the small cylinder (circle)
         at the base
     shaft_r = float,
-        radius of the shaft, if not defined, it will take the dimension defined
+        Radius of the shaft, if not defined, it will take the dimension defined
         in kcomp
     circle_r : float,
-        radius of the cylinder (circle) at the base of the shaft
+        Radius of the cylinder (circle) at the base of the shaft
         if 0 or circle_h = 0 -> no cylinder
     circle_h : float,
-        height of the cylinder at the base of the shaft
+        Height of the cylinder at the base of the shaft
         if 0 or circle_r = 0 -> no cylinder
     chmf_r : float, 
-        chamfer radius of the chamfer along the base length (height)
+        Chamfer radius of the chamfer along the base length (height)
     rear_shaft_l : float,
-        length of the rear shaft, 0 : no rear shaft
+        Length of the rear shaft, 0 : no rear shaft
     bolt_depth : 3.,
-        depth of the bolt holes of the motor
+        Depth of the bolt holes of the motor
     bolt_out : 0,
-        length of the bolts to be outside (to make holes), in case of a shape
+        Length of the bolts to be outside (to make holes), in case of a shape
         to cut
     cut_extra : 0,
         In case that the shape is to make a hole for the motor, it will have
         an extra size to make it fit. If 0, no extra size
     axis_d : FreeCAD.Vector
-        depth vector of coordinate system
+        Depth vector of coordinate system
     axis_w : FreeCAD.Vector
-        width vector of coordinate system
+        Width vector of coordinate system
     axis_h : FreeCAD.Vector
-        height vector of coordinate system
+        Height vector of coordinate system
     pos_d : int
-        location of pos along the axis_d (0,1,2,3,4), see drawing
-        0: at the axis of the shaft
-        1: at the radius of the shaft
-        2: at the end of the circle(cylinder) at the base of the shaft
-        3: at the bolts
-        4: at the end of the piece
+        Location of pos along the axis_d (0,1,2,3,4), see drawing
+            * 0: at the axis of the shaft
+            * 1: at the radius of the shaft
+            * 2: at the end of the circle(cylinder) at the base of the shaft
+            * 3: at the bolts
+            * 4: at the end of the piece
+
     pos_w : int
-        same as pos_d
+        Same as pos_d
     pos_h : int
-        location of pos along the axis_h (0,1,2,3,4,5), see drawing
-        0: at the base of the shaft (not including the circle at the base
-           of the shaft)
-        1: at the end of the circle at the base of the shaft
-        2: at the end of the shaft
-        3: at the end of the bolt holes
-        4: at the bottom base
-        5: at the end of the rear shaft, if no rear shaft, it will be
-           the same as pos_h = 4
+        Location of pos along the axis_h (0,1,2,3,4,5), see drawing
+            * 0: at the base of the shaft (not including the circle at the base
+               of the shaft)
+            * 1: at the end of the circle at the base of the shaft
+            * 2: at the end of the shaft
+            * 3: at the end of the bolt holes
+            * 4: at the bottom base
+            * 5: at the end of the rear shaft, if no rear shaft, it will be
+               the same as pos_h = 4
+
     pos : FreeCAD.Vector
         Position of the motor, at the point defined by pos_d, pos_w, pos_h
 
@@ -3298,6 +3362,7 @@ class ShpLinGuideRail (shp_clss.Obj3D):
     """ Creates a shape of a linear guide rail
     The linear guide rail has a dent, but it is just to show the shape, 
     the dimensions are not exact
+    ::
 
                       axis_h
                         :
@@ -3356,51 +3421,54 @@ class ShpLinGuideRail (shp_clss.Obj3D):
     Parameters:
     -----------
     rail_d : float
-        length (depth) of the rail
+        Length (depth) of the rail
     rail_w : float
-        width of the rail
+        Width of the rail
     rail_h : float
-        height of the rail
+        Height of the rail
     bolt_lsep : float
-        separation between bolts on the depth (length) dimension
+        Separation between bolts on the depth (length) dimension
     bolt_wsep : float
-        separation between bolts on the width dimension,
+        Separation between bolts on the width dimension,
         0: there is only one bolt
     bolt_d : float
-        diameter of the hole for the bolt
+        Diameter of the hole for the bolt
     bolth_d : float
-        diameter of the hole for the head of the bolt
+        Diameter of the hole for the head of the bolt
     bolth_h : float
-        heigth of the hole for the head of the bolt
+        Heigth of the hole for the head of the bolt
     boltend_sep : float
-        separation on one end, from the bolt to the end
+        Separation on one end, from the bolt to the end
         0: evenly distributed
     axis_d : FreeCAD.Vector
-        the axis along the depth (lenght) of the rail 
+        The axis along the depth (lenght) of the rail 
     axis_w : FreeCAD.Vector
-        the axis along the width of the rail
+        The axis along the width of the rail
     axis_h : FreeCAD.Vector
-        the axis along the height of the rail, pointing up
+        The axis along the height of the rail, pointing up
     pos_d : int
-        location of pos along axis_d (see drawing)
+        Location of pos along axis_d (see drawing)
         0: at the beginning of the rail
         1: at the first bolt hole
         2: at the middle of the rail (not necessary at a bolt hole)
         3: at the last bolt hole
         4: at the end of the rail
+
     pos_w : int
-        location of pos along axis_w (see drawing). Symmetric, negative indexes
+        Location of pos along axis_w (see drawing). Symmetric, negative indexes
         means the other side
         0: at the center of symmetry
         1: at the bolt holes (only make sense if there are 2 bolt holes)
            otherwise it will be like pos_w = 0
         2: at the end of the rail along axis_w
+
     pos_h : int
-        location of pos along axis_h (see drawing)
+        Location of pos along axis_h (see drawing)
         0: at the bottom
         1: at the middle (it is not a specific place)
         1: at the bolt head
         3: at the top end
+
     pos : FreeCAD.Vector
         Position at the point defined by pos_d, pos_w, pos_h
 
@@ -3539,43 +3607,47 @@ class PartLinGuideRail (fc_clss.SinglePart, ShpLinGuideRail):
     Parameters:
     -----------
     rail_d : float
-        length (depth) of the rail
+        Length (depth) of the rail
     rail_dict : dictionary
-        dictionary with all the information about the rail
+        Dictionary with all the information about the rail
         in kcomp.py there are some dictionaries of linear guide rails that
         can be used
     boltend_sep : float
-        separation on one end, from the bolt to the end
+        Separation on one end, from the bolt to the end
         it can be given by the dictionary as a default value
         >0: the value that will be take
         0: evenly distributed
         <0: value from the dictionary
+
     axis_d : FreeCAD.Vector
-        the axis along the depth (lenght) of the rail 
+        The axis along the depth (lenght) of the rail 
     axis_w : FreeCAD.Vector
-        the axis along the width of the rail
+        The axis along the width of the rail
     axis_h : FreeCAD.Vector
-        the axis along the height of the rail, pointing up
+        The axis along the height of the rail, pointing up
     pos_d : int
-        location of pos along axis_d (see drawing of ShpLinGuideRail)
+        Location of pos along axis_d (see drawing of ShpLinGuideRail)
         0: at the beginning of the rail
         1: at the first bolt hole
         2: at the middle of the rail (not necessary at a bolt hole)
         3: at the last bolt hole
         4: at the end of the rail
+
     pos_w : int
-        location of pos along axis_w (see drawing). Symmetric, negative indexes
+        Location of pos along axis_w (see drawing). Symmetric, negative indexes
         means the other side
         0: at the center of symmetry
         1: at the bolt holes (only make sense if there are 2 bolt holes)
            otherwise it will be like pos_w = 0
         2: at the end of the rail along axis_w
+
     pos_h : int
-        location of pos along axis_h (see drawing of ShpLinGuideRail)
+        Location of pos along axis_h (see drawing of ShpLinGuideRail)
         0: at the bottom
         1: at the middle (it is not a specific place)
         1: at the bolt head
         3: at the top end
+
     pos : FreeCAD.Vector
         Position at the point defined by pos_d, pos_w, pos_h
     """
@@ -3960,6 +4032,7 @@ class LinGuide(object):
 class ShpLinGuideBlock (shp_clss.Obj3D):
     """ Creates a shape of a linear guide rail
     Creates a hole for the rail, no exact shape
+    ::
 
                        axis_h
                           :
@@ -4002,7 +4075,7 @@ class ShpLinGuideBlock (shp_clss.Obj3D):
              :....... block_w ........:
 
 
-    Origin at pos_o: pos_d = pos_w = pos_h = 0
+     Origin at pos_o: pos_d = pos_w = pos_h = 0
 
     Parameters:
     -----------
@@ -4018,13 +4091,13 @@ class ShpLinGuideBlock (shp_clss.Obj3D):
     block_h: float
         Height of the block
     bolt_dsep: float
-        separation of the bolts, on the depth (length) direction
+        Separation of the bolts, on the depth (length) direction
     bolt_wsep: float
-        separation of the bolts, on the width direction
+        Separation of the bolts, on the width direction
     bolt_d: float
-        diameter of the hole of the bolt
+        Diameter of the hole of the bolt
     bolt_l: float
-        length of the hole. if 0, it is a thru-hole
+        Length of the hole. if 0, it is a thru-hole
     linguide_h: float
         Height of the linear guide. Total, Rail + Block
         if 0: there will be internal hole for the rail
@@ -4032,40 +4105,44 @@ class ShpLinGuideBlock (shp_clss.Obj3D):
         Height of the rail
         if 0: there will be internal hole for the rail
     rail_w: float
-        width of the rail
+        Width of the rail
         if 0: there will be internal hole for the rail
     axis_d : FreeCAD.Vector
-        the axis along the depth (lenght) of the block (and rail) 
+        The axis along the depth (lenght) of the block (and rail) 
     axis_w : FreeCAD.Vector
-        the axis along the width of the block
+        The axis along the width of the block
     axis_h : FreeCAD.Vector
-        the axis along the height of the block, pointing up
+        The axis along the height of the block, pointing up
     pos_d : int
-        location of pos along axis_d (see drawing). Symmetric, negative indexes
+        Location of pos along axis_d (see drawing). Symmetric, negative indexes
         means the other side
         0: at the center (symmetric)
         1: at the bolt hole
         2: at the end of the smaller part of the block
         3: at the end of the end of the block
+
     pos_w : int
-        location of pos along axis_w (see drawing). Symmetric, negative indexes
+        Location of pos along axis_w (see drawing). Symmetric, negative indexes
         means the other side
         0: at the center of symmetry
         1: at the inner hole of the rail
         2: at the bolt holes (it can be after the smaller part of the block)
         3: at the end of the smaller part of the block
         4: at the end of the end of the block
+
     pos_h : int
-        location of pos along axis_h (see drawing)
+        Location of pos along axis_h (see drawing)
         0: at the bottom (could make more sense to have 0 at the top instead
         1: at the top of the rail hole
         2: at the bottom of the bolt holes, if thruholes, same as 0
         3: at the top end
         4: at the bottom of the rail (not the block), if the rail has been
            defined
+
     pos : FreeCAD.Vector
         Position at the point defined by pos_d, pos_w, pos_h
 
+    ::
 
                       axis_h
                           :
@@ -4263,40 +4340,43 @@ class PartLinGuideBlock (fc_clss.SinglePart, ShpLinGuideBlock):
     Parameters:
     -----------
     block_dict : dictionary
-        dictionary with the information about the block
+        Dictionary with the information about the block
     rail_dict : dictionary
-        dictionary with the information about the rail,
+        Dictionary with the information about the rail,
         it is not necessary, but if not provided, the block will not have
         the rail hole
     axis_d : FreeCAD.Vector
-        the axis along the depth (lenght) of the block (and rail) 
+        The axis along the depth (lenght) of the block (and rail) 
     axis_w : FreeCAD.Vector
-        the axis along the width of the block
+        The axis along the width of the block
     axis_h : FreeCAD.Vector
-        the axis along the height of the block, pointing up
+        The axis along the height of the block, pointing up
     pos_d : int
-        location of pos along axis_d (see drawing). Symmetric, negative indexes
+        Location of pos along axis_d (see drawing). Symmetric, negative indexes
         means the other side
         0: at the center (symmetric)
         1: at the bolt hole
         2: at the end of the smaller part of the block
         3: at the end of the end of the block
+
     pos_w : int
-        location of pos along axis_w (see drawing). Symmetric, negative indexes
+        Location of pos along axis_w (see drawing). Symmetric, negative indexes
         means the other side
         0: at the center of symmetry
         1: at the inner hole of the rail
         2: at the bolt holes (it can be after the smaller part of the block)
         3: at the end of the smaller part of the block
         4: at the end of the end of the block
+
     pos_h : int
-        location of pos along axis_h (see drawing)
+        Location of pos along axis_h (see drawing)
         0: at the bottom (could make more sense to have 0 at the top instead
         1: at the top of the rail hole
         2: at the bottom of the bolt holes, if thruholes, same as 0
         3: at the top end
         4: at the bottom of the rail (not the block), if the rail has been
            defined
+
     pos : FreeCAD.Vector
         Position at the point defined by pos_d, pos_w, pos_h
 
@@ -4377,7 +4457,7 @@ class PartLinGuideBlock (fc_clss.SinglePart, ShpLinGuideBlock):
 
 class ShpGtPulley (shp_clss.Obj3D):
     """ Creates a GT pulley, no exact dimensions, just for the model
-
+    ::
  
              flange_d
           ......+......
@@ -4405,62 +4485,63 @@ class ShpGtPulley (shp_clss.Obj3D):
     Parameters:
     -----------
     pitch : float/int
-        distance between teeth: Typically 2mm, or 3mm
+        Distance between teeth: Typically 2mm, or 3mm
     n_teeth: int
-        number of teeth of the pulley
+        Number of teeth of the pulley
     toothed_h: float
-        height of the toothed part of the pulley
+        Height of the toothed part of the pulley
     top_flange_h: float
-        height (thickness) of the top flange, if 0, no top flange
+        Height (thickness) of the top flange, if 0, no top flange
     bot_flange_h: float
-        height (thickness) of the bot flange, if 0, no bottom flange
+        Height (thickness) of the bot flange, if 0, no bottom flange
     tot_h: float
-        total height of the pulley
+        Total height of the pulley
     flange_d: float
-        flange diameter, if 0, it will be the same as the base_d
+        Flange diameter, if 0, it will be the same as the base_d
     base_d: float
-        base diameter
+        Base diameter
     shaft_d: float
-        shaft diameter
+        Shaft diameter
     tol: float
-        tolerance for radius (it will substracted to the radius)
+        Tolerance for radius (it will substracted to the radius)
         twice for the diameter. Or added if a shape to substract
     axis_h : FreeCAD.Vector
-        height vector of coordinate system (this is required)
+        Height vector of coordinate system (this is required)
     axis_d : FreeCAD.Vector
-        depth vector of coordinate system (perpendicular to the height)
+        Depth vector of coordinate system (perpendicular to the height)
         can be NULL
     axis_w : FreeCAD.Vector
-        width vector of coordinate system
+        Width vector of coordinate system
         if V0: it will be calculated using the cross product: axis_h x axis_d
     pos_h : int
-        location of pos along the axis_h (0,1,2,3,4,5)
-        0: at the base
-        1: at the base of the bottom flange
-        2: at the base of the toothed part
-        3: at the center of the toothed part
-        4: at the end (top) of the toothed part
-        5: at the end (top) of the pulley
+        Location of pos along the axis_h (0,1,2,3,4,5)
+        * 0: at the base
+        * 1: at the base of the bottom flange
+        * 2: at the base of the toothed part
+        * 3: at the center of the toothed part
+        * 4: at the end (top) of the toothed part
+        * 5: at the end (top) of the pulley
     pos_d : int
-        location of pos along the axis_d (0,1,2,3,4,5,6)
-        0: at the center of symmetry
-        1: at the shaft radius
-        2: at the inner radius
-        3: at the external radius
-        4: at the pitch radius (outside the toothed part)
-        5: at the end of the base (not the toothed part)
-        6: at the end of the flange (V0 is no flange)
+        Location of pos along the axis_d (0,1,2,3,4,5,6)
+        * 0: at the center of symmetry
+        * 1: at the shaft radius
+        * 2: at the inner radius
+        * 3: at the external radius
+        * 4: at the pitch radius (outside the toothed part)
+        * 5: at the end of the base (not the toothed part)
+        * 6: at the end of the flange (V0 is no flange)
+        
     pos_w : int
-        location of pos along the axis_w (0,1,2,3,4,5,6)
+        Location of pos along the axis_w (0,1,2,3,4,5,6)
         same as pos_d
     pos : FreeCAD.Vector
-        position of the piece
+        Position of the piece
 
 
     The toothed part of the pulley has 2 diameters, besides there also is
     the pitch diameter that is external to the outer diameter (related to
     the belt pitch)
-
+    ::
 
                  tooth_outd : external diameter of the toothed part
                .....+.....    of the pulley

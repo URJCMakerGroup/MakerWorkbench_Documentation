@@ -101,7 +101,8 @@ COS45 = 0.707
 
 
 
-def RotateView(axisX=1.0,axisY=0.0,axisZ=0.0,angle=45.0):
+def rotateview(axisX=1.0,axisY=0.0,axisZ=0.0,angle=45.0):
+    """Rotate the camara"""
     import math
     from pivy import coin
     try:
@@ -119,6 +120,7 @@ def RotateView(axisX=1.0,axisY=0.0,axisZ=0.0,angle=45.0):
 # to compare numbers that they are almost the same, but because of 
 # floating point calculations they are not exactly the same
 def equ (x,y):
+    """Compare numbers that are the same but not exactly the same"""
 
     p = DraftVecUtils.precision()
     if round(x,p) == round(y,p):
@@ -131,12 +133,19 @@ def equ (x,y):
 
 def fc_isperp (fc1, fc2):
 
-    """ return 1 if fc1 and fc2 are perpendicular, 0 if they are not
-    Args:
-        fc1: FreeCAD.Vector
-        fc2: FreeCAD.Vector
-    Return:
-         1 if fc1 and fc2 are perpendicular, 0 if they are not 
+    """ Return 1 if fc1 and fc2 are perpendicular, 0 if they are not
+
+    Parameters
+    ----------
+    fc1 : FreeCAD.Vector
+        Firs vector
+    fc2 : FreeCAD.Vector
+        Second vector
+    
+    Returns
+    -------
+        * 1 if fc1 and fc2 are perpendicular
+        * 0 if they are not 
     """
 
     if DraftVecUtils.isNull(fc1) == 1 or DraftVecUtils.isNull(fc2) == 1:
@@ -153,12 +162,19 @@ def fc_isperp (fc1, fc2):
 
 def fc_isparal (fc1, fc2):
 
-    """ return 1 if fc1 and fc2 are paralell (colinear), 0 if they are not
-    Args:
-        fc1: FreeCAD.Vector
-        fc2: FreeCAD.Vector
-    Return:
-         1 if fc1 and fc2 are parallel, 0 if they are not 
+    """ Return 1 if fc1 and fc2 are paralell (colinear), 0 if they are not
+
+    Parameters
+    ----------
+    fc1 : FreeCAD.Vector
+        Firs vector
+    fc2 : FreeCAD.Vector
+        Second vector
+    
+    Returns
+    -------
+        * 1 if fc1 and fc2 are parallel
+        * 0 if they are not 
     """
 
     if DraftVecUtils.isNull(fc1) == 1 or DraftVecUtils.isNull(fc2) == 1:
@@ -181,11 +197,18 @@ def fc_isparal_nrm (fc1, fc2):
     Very similar to fc_isparal, but in this case the arguments are normalized
     so, less operations to do.
     return 1 if fc1 and fc2 are paralell (colinear), 0 if they are not
-    Args:
-        fc1: FreeCAD.Vector
-        fc2: FreeCAD.Vector
-    Return:
-         1 if fc1 and fc2 are parallel, 0 if they are not 
+
+    Parameters
+    ----------
+    fc1 : FreeCAD.Vector
+        Firs vector
+    fc2 : FreeCAD.Vector
+        Second vector
+    
+    Returns
+    -------
+        * 1 if fc1 and fc2 are parallel
+        * 0 if they are not 
     """
 
     if DraftVecUtils.isNull(fc1) == 1 or DraftVecUtils.isNull(fc2) == 1:
@@ -201,9 +224,9 @@ def fc_isparal_nrm (fc1, fc2):
 
 
 def fc_isonbase (fcv):
-
-    """ just tells if a vector has 2 of the coordinates zero
-        So it is on just a base vector
+    """ 
+    Just tells if a vector has 2 of the coordinates zero
+    so it is on just a base vector
     """
 
     if fcv.x == 0:
@@ -231,9 +254,15 @@ def fc_isonbase (fcv):
 def get_fc_perpend1(fcv):
     """ gets a 'random' perpendicular FreeCAD.Vector
 
-    Parameters:
-    -----------
-        fcv : FreeCAD.Vector
+    Parameters
+    ----------
+    fcv : FreeCAD.Vector
+        Vector from which to get perpendicular vector
+    
+    Returns
+    -------
+    FreeCAD.Vector
+        Random perpendicular vector
     """
 
     if DraftVecUtils.isNull(fcv):
@@ -260,44 +289,22 @@ def get_tangent_circle_pt (ext_pt,
                            rad,
                            axis_n,
                            axis_side = None):
-    """ If axis_side is not given:
-        - returns a list with the 2 points that each point forms a line tangent
-          to the circle. The 2 lines are defined by one of each point and the 
-          external point.
-        If axis_side is given:
-        - Only returns a point (FreeCAD.Vector) with the tangent point defined
-          by the direction of axis_side
-        If there is an error it will return 0
+    """ 
+    Get the point of the tangent to the circle
+    ::
 
-    (difficult to draw in using ASCII text)
+            (difficult to draw in using ASCII text)
 
-          external point
-           :     tangent point 1
-           *---  _
-            \  /   \
-             \(     ) circle
-       tangent \ _ /
-        point 2
-
-    Parameters:
-    -----------
-    ext_pt : FreeCAD.Vector
-        external point
-    center_pt : FreeCAD.Vector
-        center of the circle
-    rad : float
-        radius of the circle
-    axis_n : FreeCAD.Vector
-        direction of the normal of the circle
-    axis_side : FreeCAD.Vector
-        direction to the side of the tangent point, if not given,
-        it will return both points
-        The 2 tangent points will be at each side of axis_c. The smaller than
-        90 degree angle between axis_side and the 2 possible axis_p
-        
-
-    The 3 points: center(C), ext_pt(E) and tangent_pt(T) form a
-    rectangle triangle
+               external point
+                :     tangent point 1
+                *---  _
+                 \  /   \ 
+                  \(     ) circle
+            tangent \ _ /
+             point 2
+                
+        The 3 points: center(C), ext_pt(E) and tangent_pt(T) form a
+        rectangle triangle
 
                         axis_p
                            :    axis_side
@@ -317,16 +324,44 @@ def get_tangent_circle_pt (ext_pt,
          :                       :
          :.......................:
                      +
-              EC_d (hypotenuse)
+              EC_d (hypotenuse)   
 
-    Interesting variables:
-    -----------
-    axis_p : FreeCAD.Vecrtor
-        vector of the circle plane, perpendicular to axis_d. It can have
+    Parameters
+    ----------
+    ext_pt : FreeCAD.Vector
+        External point
+    center_pt : FreeCAD.Vector
+        Center of the circle
+    rad : float
+        Radius of the circle
+    axis_n : FreeCAD.Vector
+        Direction of the normal of the circle
+    axis_side : FreeCAD.Vector
+        Direction to the side of the tangent point, if not given, it will return both points
+        The 2 tangent points will be at each side of axis_c. The smaller than 90 degree angle
+        between axis_side and the 2 possible axis_p
+
+    Returns
+    -------
+        If axis_side is not given:
+          returns a list with the 2 points that each point forms a line tangent
+          to the circle. The 2 lines are defined by one of each point and the 
+          external point.
+        If axis_side is given:
+          Only returns a point (FreeCAD.Vector) with the tangent point defined
+          by the direction of axis_side
+
+        If there is an error it will return 0
+
+    Notes
+    -----
+    **Interesting Parameters**  
+
+    axis_p (FreeCAD.Vector)
+
+        Vector of the circle plane, perpendicular to axis_d. It can have
         to possible directions. If paremeter axis_side is defined, it will
         have the direction that has less than 90 degress related to axis_side
-      
-   
     """
     # normalize axis_n vector (just in case)
     axis_n = DraftVecUtils.scaleTo(axis_n,1)
@@ -410,21 +445,12 @@ def get_tangent_2circles (center1_pt,
                           rad2,
                           axis_n,
                           axis_side = None):
-    """ Returns a list of lists (matrix) with the 2 tangent points for each
-        of the 2 tangent lines
-        If axis_side is given:
-        - Returns a list of lists (matrix)
-          Element [0][0] is the point tangent to circle 1 at side axis_side
-          Element [0][1] is the point tangent to circle 2 at side axis_side
-          Element [1][0] is the point tangent to circle 1 at opposite side of
-                         direction of axis_side
-          Element [1][1] is the point tangent to circle 2 at opposite side of
-                         direction of axis_side
-        If axis_side is not given, the order of the list of the lines is
-                          arbitrary
-        If there is an error it will return 0
+    """ 
+    Returns a list of lists (matrix) with the 2 tangent points for each
+    of the 2 tangent lines
+    ::
 
-    (difficult to draw in using ASCII text)
+        (difficult to draw in using ASCII text)
 
 
                         axis_p
@@ -461,33 +487,51 @@ def get_tangent_2circles (center1_pt,
           T1_c = C1_c - r1 * cos(beta) 
           T1_p = C1_p - r1 * sin(beta) 
 
-
-    Parameters:
-    -----------
+    Parameters
+    ----------
     center1_pt : FreeCAD.Vector
-        center of the circle 1
+        Center of the circle 1
     center2_pt : FreeCAD.Vector
-        center of the circle 2
+        Center of the circle 2
     rad1 : float
-        radius of the circle 1
+        Radius of the circle 1
     rad2 : float
-        radius of the circle 2
+        Radius of the circle 2
     axis_n : FreeCAD.Vector
-        direction of the normal of the circle
+        Direction of the normal of the circle
     axis_side : FreeCAD.Vector
-        direction to the side of the tangent line, if not given,
+        Direction to the side of the tangent line, if not given,
         it will return the 2 points of both lines
         The 2 tangent lines will be at each side of axis_c. The smaller than
         90 degree angle between axis_side and the 2 possible axis_p
+    
+    Returns
+    -------
+        * If axis_side is given:  
+
+            - Returns a list of lists (matrix)
+
+                * Element [0][0] is the point tangent to circle 1 at side axis_side
+                * Element [0][1] is the point tangent to circle 2 at side axis_side
+                * Element [1][0] is the point tangent to circle 1 at opposite side of
+                  direction of axis_side
+                * Element [1][1] is the point tangent to circle 2 at opposite side of
+                  direction of axis_side
         
-    Interesting variables:
-    -----------
-    axis_p : FreeCAD.Vecrtor
-        vector of the circle plane, perpendicular to axis_d. It can have
+        * If axis_side is not given, the order of the list of the lines is
+          arbitrary
+        * If there is an error it will return 0
+    
+    Notes
+    -----
+    **Interesting variables**
+
+    axis_p (FreeCAD.Vecrtor)
+
+        Vector of the circle plane, perpendicular to axis_d. It can have
         to possible directions. If paremeter axis_side is defined, it will
         have the direction that has less than 90 degress related to axis_side
-      
-   
+
     """
     # normalize axis_n vector (just in case)
     axis_n = DraftVecUtils.scaleTo(axis_n,1)
@@ -593,10 +637,11 @@ def get_tangent_2circles (center1_pt,
 
 def fuseshplist (shp_list):
 
-    """ since multifuse methods needs to be done by a shape and a list,
-        and usually I have a list that I want to fuse, I make this function
-        to save the inconvenience of doing everytime what I will do here
-        Fuse multiFuse
+    """ 
+    Since multifuse methods needs to be done by a shape and a list,
+    and usually I have a list that I want to fuse, I make this function
+    to save the inconvenience of doing everytime what I will do here
+    Fuse multiFuse
     """
 
     if len(shp_list) > 0:
@@ -617,7 +662,7 @@ def fuseshplist (shp_list):
 
 
 def add_fcobj(shp, name, doc = None):
-    """ just creates a freeCAD object of the shape, just to save one line"""
+    """ Just creates a freeCAD object of the shape, just to save one line"""
     if doc is None:
         doc = FreeCAD.ActiveDocument
     fcobj = doc.addObject("Part::Feature", name)
@@ -626,6 +671,30 @@ def add_fcobj(shp, name, doc = None):
   
 
 def addBox(x, y, z, name, cx= False, cy=False):
+    """
+    Adds a box, centered on the specified axis x and/or y, with its
+    Placement and Rotation at zero. So it can be referenced absolutely from
+    its given position
+
+    Parameters
+    ----------
+    x : float
+        Length
+    y : float
+        Width
+    z : float
+        Height
+    name : str
+        Object Name
+    cx : Boolean
+        Centered in axis x
+    cy : Boolean
+        Centered in axis y
+    Returns
+    -------
+    FreeCAD.Object
+        FreeCAD.Object with the shape of a box
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
     box =  doc.addObject("Part::Box",name)
@@ -648,6 +717,33 @@ def addBox(x, y, z, name, cx= False, cy=False):
 # its given position
 
 def addBox_cen(x, y, z, name, cx= False, cy=False, cz=False):
+    """
+    Adds a box, centered on the specified axis, with its
+    Placement and Rotation at zero. So it can be referenced absolutely from
+    its given position
+
+    Parameters
+    ----------
+    x : float
+        Length
+    y : float
+        Width
+    z : float
+        Height
+    name : str
+        Object Name
+    cx : Boolean
+        Centered in the X axis
+    cy : Boolean
+        Centered in the Y axis
+    cz : Boolean
+        Centered in the Z axis
+
+    Returns
+    -------
+    FreeCAD.Object
+        FreeCAD.Object with the shape of a box
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
 
@@ -692,6 +788,35 @@ def addBox_cen(x, y, z, name, cx= False, cy=False, cz=False):
 # its given position
 
 def shp_boxcen(x, y, z, cx= False, cy=False, cz=False, pos=V0):
+    """
+    Adds a shape of box, referenced on the specified axis, with its
+    Placement and Rotation at zero. So it can be referenced absolutely from
+    its given position
+
+    Parameters
+    ----------
+    x : float
+        Length
+    y : float
+        Width
+    z : float
+        Height
+    name : str
+        Object Name
+    cx : boolean
+        Center in the length or not
+    cy : boolean
+        Center in the or width not
+    cz : boolean
+        Center in the height or not
+    pos : FreeCAD.Vector
+        Placement 
+
+    Returns
+    --------
+    TopoShape
+        Shape of a box
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
 
@@ -755,6 +880,58 @@ def shp_boxcenxtr(x, y, z, cx= False, cy=False, cz=False,
                   xtr_ny = 0, xtr_y = 0,
                   xtr_nz = 0, xtr_z = 0,
                   pos=V0):
+    """
+    The same as shp_boxcen, but when it is used to cut. So sometimes it is 
+    useful to leave an extra 1mm on some sides to avoid making cuts sharing
+    faces. The extra part is added but not influences on the reference
+
+    ::
+
+                    | Y    cy=1, xtr_ny=1
+                    |
+               1    |
+               _________
+              | |       |
+              | |       |
+              | |       |
+              | |       |
+              |_|_______|
+
+    Parameters
+    ----------
+    x : float
+        Length
+    y : float
+        Width
+    z : float
+        Height
+    cx : int
+        Center in the length or not
+    cy : int
+        Center in the or width not
+    cz : int
+        Center in the height or not
+    xtr_x : float
+        Extra mm to add in positive axis of length
+    xtr_nx : float
+        Extra mm to add in negative axis of length
+    xtr_y : float
+        Extra mm to add in positive axis of width
+    xtr_ny : float
+        Extra mm to add in negative axis of width
+    xtr_z : float
+        Extra mm to add in positive axis of height
+    xtr_nz : float
+        Extra mm to add in negative axis of height
+    pos : FreeCAD.Vector
+        Placement 
+
+    Returns
+    --------
+    TopoShape
+        Shape of a box
+
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
 
@@ -793,6 +970,40 @@ def shp_boxcenxtr(x, y, z, cx= False, cy=False, cz=False,
 def shp_boxcenfill (x, y, z, fillrad,
                    fx=False, fy=False, fz=True,
                    cx= False, cy=False, cz=False, pos=V0):
+    """
+    Same as shp_boxcen but with a filleted dimension
+
+    Parameters
+    ----------
+    x : float
+        Length
+    y : float
+        Width
+    z : float
+        Height
+    fillrad : float
+        Fillet size
+    fx : boolean
+        Fillet in x dimension
+    fy : boolean
+        Fillet in y dimension
+    fz : boolean
+        Fillet in z dimension
+    cx : boolean
+        Center in the length or not
+    cy : boolean
+        Center in the or width not
+    cz : boolean
+        Center in the height or not
+    pos : FreeCAD.Vector
+        Placement 
+
+    Returns
+    --------
+    TopoShape
+        Shape of a box
+    """
+
 
     shp_box = shp_boxcen (x=x, y=y, z=z, cx=cx, cy=cy, cz=cz, pos=pos)
     edg_list = []
@@ -815,6 +1026,40 @@ def shp_boxcenfill (x, y, z, fillrad,
 def shp_boxcenchmf (x, y, z, chmfrad,
                    fx=False, fy=False, fz=True,
                    cx= False, cy=False, cz=False, pos=V0):
+    """
+    Same as shp_boxcen but with a chamfered dimension
+
+    Parameters
+    ----------
+    x : float
+        Length
+    y : float
+        Width
+    z : float
+        Height
+    fillrad : float
+        Fillet size
+    fx : boolean
+        Fillet in x dimension
+    fy : boolean
+        Fillet in y dimension
+    fz : boolean
+        Fillet in z dimension
+    cx : boolean
+        Center in the length or not
+    cy : boolean
+        Center in the or width not
+    cz : boolean
+        Center in the height or not
+    pos : FreeCAD.Vector
+        Placement 
+
+    Returns
+    --------
+    TopoShape
+        Shape of a box
+    """
+
 
     shp_box = shp_boxcen (x=x, y=y, z=z, cx=cx, cy=cy, cz=cz, pos=pos)
     edg_list = []
@@ -846,6 +1091,33 @@ def shp_boxcenchmf (x, y, z, chmfrad,
 # check if it makes sense to have this small function
 def shp_box_rot (box_w, box_d, box_h,
                   axis_w = 'x', axis_nh = '-z', cw=1, cd=1, ch=1 ):
+    """
+    Makes a box with width, depth, heigth and then rotation will be referred to 
+    *axis_w  = (1,0,0)* and *axis_nh = (0,0,-1)*. Can be centered on any of the dimensions.
+    
+    Parameters
+    ----------
+    box_w : float
+        The width is X
+    box_d : float
+        The depth is Y
+    box_h : float
+        The height is Z
+    cw : int
+        If *1* is centered
+    cd : int
+        If *1* is centered
+    ch : int
+        If *1* is centered
+    axis_w : str
+        Can be: *x, -x, y, -y, z, -z*
+    axis_nh : str
+        Can be: *x, -x, y, -y, z, -z*
+
+    Notes
+    -----
+    Check if it makes sense to have this small function
+    """
 
 
     shp_box = shp_boxcen(x=box_w, y=box_d, z=box_h,
@@ -858,73 +1130,108 @@ def shp_box_rot (box_w, box_d, box_h,
 
 def shp_box_dir (box_w, box_d, box_h,
                     fc_axis_w = V0,
-                    fc_axis_h =VZ,
                     fc_axis_d = VY,
+                    fc_axis_h =VZ,
                     cw=1, cd=1, ch=1,
                     pos=V0):
 
-    """"
+    """
     Makes a shape of a box given its 3 dimensions: width, depth and height
     and the direction of the height and depth dimensions.
     The position of the box is given and also if the position is given
     by a corner or its center
-             ________
-            |\       \
+    ::
+
+             ________ 
+            |\       \ 
             | \       \  
             |  \_______\  
              \ |       |
               \|_______|
 
 
-     Example of not centered on origin
+        Example of not centered on origin
 
-       Z=fc_axis_h      . Y = fc_axis_d
-             :         .     
-             :   __________
-             :  /:   .   / |
-             : / :  .   /  | h
-             :/________/   |
-             |   :.....|...|3
-             |  / 4    |  /
-             | /       | /  d
-             |/________|/.....................X
-             1          2
-                   w
+          Z=fc_axis_h      . Y = fc_axis_d
+                :         .     
+                :   __________
+                :  /:   .   / |
+                : / :  .   /  | h
+                :/________/   |
+                |   :.....|...|3
+                |  / 4    |  /
+                | /       | /  d
+                |/________|/.....................X
+                1          2
+                      w
 
 
-     Example of centered on origin
+        Example of centered on origin
 
-       Z=fc_axis_h               Y  = fc_axis_d
-                    :           .     
-                 __________   .
-                /:  :    / |.
-               / :  :   / .| h
-              /__:_____/.  |
-             |   :.....|...|3
-             |  / 4 :..|../........................X
-             | /       | /  d
-             |/________|/
-             1          2
-                   w
+          Z=fc_axis_h               Y  = fc_axis_d
+                       :           .     
+                    __________   .
+                   /:  :    / |.
+                  / :  :   / .| h
+                 /__:_____/.  |
+                |   :.....|...|3
+                |  / 4 :..|../........................X
+                | /       | /  d
+                |/________|/
+                1          2
+                      w
 
-    Args:
-        box_w: width of the box
-        box_d: depth of the box
-        box_h: heiht of the box
-        fc_axis_h: FreeCAD vector that has the direction of the height
-        fc_axis_d: FreeCAD vector that has the direction of the depth
-        fc_axis_w: FreeCAD vector that has the direction of the width
-                   Not necessary, unless cw=0, then it indicates the 
-                   direction of w, it has to be perpendicular to the previous
-                   if = V0, the perpendicular will be calculated
-        cw: 1 the width dimension is centered, 0 it is not
-        cd: 1 the depth is centered, 0 it is not
-        ch: 1 the height dimension is centered, 0 it is not
-        pos: FreeCAD.Vector of the position of the box, it can be the center
-             one corner, or a point centered in the dimensions given by
-             cw, cd, ch
+    Parameters
+    ----------
+    box_w : float
+        Width of the box    
+    box_d : float
+        Depth of the box    
+    box_h : float
+        Height of the box    
+    fc_axis_w : FreeCAD.Vector
+        Direction of the width
+    fc_axis_d : FreeCAD.Vector
+        Direction of the depth
+    fc_axis_h : FreeCAD.Vector
+        Direction of the height
+    cw : int
+        * 1: the width dimension is centered
+        * 0: it is not centered
 
+    cd : int
+        * 1: the depth dimension is centered
+        * 0: it is not centered
+
+    ch : int 
+        * 1: the height dimension is centered
+        * 0: it is not centered
+
+    pos : FreeCAD.Vector
+        Position of the box, it can be the center one corner,
+        or a point centered in the dimensions given by cw, cd, ch
+
+    Returns
+    --------
+    TopoShape
+        Shape of a box
     """
+        # box_w: width of the box
+        # box_d: depth of the box
+        # box_h: heiht of the box
+        # fc_axis_h: FreeCAD vector that has the direction of the height
+        # fc_axis_d: FreeCAD vector that has the direction of the depth
+        # fc_axis_w: FreeCAD vector that has the direction of the width
+        #            Not necessary, unless cw=0, then it indicates the 
+        #            direction of w, it has to be perpendicular to the previous
+        #            if = V0, the perpendicular will be calculated
+        # cw: 1 the width dimension is centered, 0 it is not
+        # cd: 1 the depth is centered, 0 it is not
+        # ch: 1 the height dimension is centered, 0 it is not
+        # pos: FreeCAD.Vector of the position of the box, it can be the center
+        #      one corner, or a point centered in the dimensions given by
+        #      cw, cd, ch
+
     # normalize the axis, just in case:
     axis_h = DraftVecUtils.scaleTo(fc_axis_h,1)
     axis_d = DraftVecUtils.scaleTo(fc_axis_d,1)
@@ -983,21 +1290,21 @@ def shp_box_dir_xtr (box_w, box_d, box_h,
                      xtr_w = 0, xtr_nw = 0,
                      pos=V0):
 
-    """"
+    """
     Makes a shape of a box given its 3 dimensions: width, depth and height
     and the direction of the height and depth dimensions.
     The position of the box is given and also if the position is given
-    by a corner or its center
-    extra mm to make cuts
-             ________
-            |\       \
+    by a corner or its center. Extra mm to make cuts
+    ::
+
+             ________ 
+            |\       \ 
             | \       \  
             |  \_______\  
              \ |       |
               \|_______|
 
-
-     Example of not centered on origin
+      Example of not centered on origin
 
        Z=fc_axis_h      . Y = fc_axis_d
              :         .     
@@ -1012,8 +1319,7 @@ def shp_box_dir_xtr (box_w, box_d, box_h,
              1          2
                    w
 
-
-     Example of centered on origin
+      Example of centered on origin
 
        Z=fc_axis_h               Y  = fc_axis_d
                     :           .     
@@ -1028,24 +1334,63 @@ def shp_box_dir_xtr (box_w, box_d, box_h,
              1          2
                    w
 
-    Args:
-        box_w: width of the box
-        box_d: depth of the box
-        box_h: heiht of the box
-        fc_axis_h: FreeCAD vector that has the direction of the height
-        fc_axis_d: FreeCAD vector that has the direction of the depth
-        fc_axis_w: FreeCAD vector that has the direction of the width
-                   Not necessary, unless cw=0, then it indicates the 
-                   direction of w, it has to be perpendicular to the previous
-        cw: 1 the width dimension is centered, 0 it is not
-        cd: 1 the depth is centered, 0 it is not
-        ch: 1 the height dimension is centered, 0 it is not
-        xtr_w, xtr_nw, xtr_d, xtr_nd, xtr_h , xtr_nh:   
-            if an extra mm will be added, the number will determine the size
-            useful to make cuts
-        pos: FreeCAD.Vector of the position of the box, it can be the center
-             one corner, or a point centered in the dimensions given by
-             cw, cd, ch
+    Parameters
+    ----------
+    box_w : float
+        Width of the box    
+    box_d : float
+        Depth of the box    
+    box_h : float
+        Heiht of the box    
+    fc_axis_h : FreeCAD.Vector
+        Direction of the height
+    fc_axis_d : FreeCAD.Vector
+        Direction of the depth
+    fc_axis_w : FreeCAD.Vector
+        Direction of the width
+    cw : int
+        * 1 the width dimension is centered
+        * 0 it is not centered        
+
+    cd : int 
+        * 1 the depth dimension is centered
+        * 0 it is not centered     
+
+    ch : int 
+        * 1 the height dimension is centered
+        * 0 it is not centered
+
+    xtr_w : float
+        If an extra mm will be added, the number will determine the size
+        useful to make cuts
+    xtr_nw : float
+        If an extra mm will be added, the number will determine the size
+        useful to make cuts
+    xtr_d : float
+        If an extra mm will be added, the number will determine the size
+        useful to make cuts
+    xtr_nd : float
+        If an extra mm will be added, the number will determine the size
+        useful to make cuts
+    xtr_h : float
+        If an extra mm will be added, the number will determine the size
+        useful to make cuts
+    xtr_nh : float
+        If an extra mm will be added, the number will determine the size
+        useful to make cuts
+    pos : FreeCAD.Vector
+        Position of the box, it can be the center one corner, or a point centered 
+        in the dimensions given by cw, cd, ch
+
+    Returns
+    -------- 
+    TopoShape
+        FreeCAD.Object with a shape of a box
+
+    Notes
+    -----
+    **fc_axis_w** not necessary, unless cw=0, then it indicates the 
+    direction of w, it has to be perpendicular to the previous
 
     """
     # normalize the axis, just in case:
@@ -1112,6 +1457,7 @@ def shp_boxdir_fillchmfplane (
                      pos=V0):
     """
     Creates a box shape (cuboid) along 3 axis.
+
     The shape will be filleted or chamfered on the edges of the plane defined
     by the plane_fill vector. If both_planes == 1, both faces will be
     filleted/chamfered
@@ -1119,6 +1465,8 @@ def shp_boxdir_fillchmfplane (
     outwards
     if edge_dir has an edge direction, only those edges in that direction will
     be filleted/chamfered
+
+    ::
 
      Example of not centered on origin: cd=0, cw=0, ch=0
 
@@ -1202,23 +1550,21 @@ def shp_boxdir_fillchmfplane (
              V
            plane_fill = axis_h.negative()
 
-
-
-    Parameters:
-    -----------
+    Parameters
+    ----------
     box_d : positive float
-        depth of the box
+        Depth of the box
     box_w : positive float
-        width of the box
+        Width of the box
     box_h : positive float
-        height of the box
+        Height of the box
     axis_d : FreeCAD.Vector
-        depth vector of the coordinate system
+        Depth vector of the coordinate system
     axis_w : FreeCAD.Vector
-        width vector of the coordinate system, can be V0 if centered
+        Width vector of the coordinate system, can be V0 if centered
         and will be perpendicular to axis_d and axis_w
     axis_h : FreeCAD.Vector
-        height vector of the coordinate system
+        Height vector of the coordinate system
     cw : int
         1: centered along axis_w
     cd : int
@@ -1226,39 +1572,43 @@ def shp_boxdir_fillchmfplane (
     ch : int
         1: centered along axis_h
     xtr_d : float, >= 0
-        extra depth, if there is an extra depth along axis_d
+        Extra depth, if there is an extra depth along axis_d
     xtr_nd : float, >= 0
-        extra depth, if there is an extra depth along axis_d.negative
+        Extra depth, if there is an extra depth along axis_d.negative
     xtr_w : float, >= 0
-        extra width, if there is an extra width along axis_w
+        Extra width, if there is an extra width along axis_w
     xtr_nw : float, >= 0
-        extra width, if there is an extra width along axis_w.negative
+        Extra width, if there is an extra width along axis_w.negative
     xtr_h : float, >= 0
-        extra height, if there is an extra height along axis_h
+        Extra height, if there is an extra height along axis_h
     xtr_nh : float, >= 0
-        extra height, if there is an extra height along axis_h.negative
+        Extra height, if there is an extra height along axis_h.negative
     fillet : int
-        1: to fillet the edges
-        0: to chamfer the edges
+        * 1: to fillet the edges
+        * 0: to chamfer the edges
+
     radius : float >= 0
         radius of the fillet/chamfer
-    plane_fill = FreeCAD.Vector
+    plane_fill : FreeCAD.Vector
         Vector perpendicular to the face that is going to be filleted/chamfered
     both_planes : int
-        0: fillet/chamfer only the edges on the face perpendicular to
-           plane_fill and on the face that plane_fill goes outwards. See drawing
-        1: fillet/chamfer the edges on both faces perpendicular to
-           plane_fill 
+        * 0: fillet/chamfer only the edges on the face perpendicular to
+          plane_fill and on the face that plane_fill goes outwards. See drawing
+        * 1: fillet/chamfer the edges on both faces perpendicular to
+          plane_fill 
+
     edge_dir : FreeCAD.Vector
-        V0: fillet/chamfer all the edges of that/those faces
-        axis: fillet/chamfer only the edges of that/those faces that are
-              paralell to this axis
+        * V0: fillet/chamfer all the edges of that/those faces
+        * Axis: fillet/chamfer only the edges of that/those faces that are
+          paralell to this axis
+
     pos : FreeCAD.Vector
         Position of the box
 
-    Returns:
-    -----------
-    Shape of the filleted/chamfered box
+    Returns
+    --------
+    TopoShape
+        Shape of the filleted/chamfered box
 
     """
 
@@ -1387,6 +1737,39 @@ def shp_boxdir_fillchmfplane (
 #                                 1
 
 def shp_face_lgrail (rail_w, rail_h, axis_l = 'x', axis_b = '-z'):
+    """
+    Adds a shape of the profile (face) of a linear guide rail, the dent is just
+    rough, to be able to see that it is a profile
+    ::
+
+     It will be centered on the width axis, and zero on the length and height
+                      Z
+                      |
+              _________________ 5
+             |                 | 4
+              \             3 /   A little dent to see that it is a rail
+              /               \ 2
+             |                 |
+             |                 |
+             |_________________|  _____________ Y
+                                1
+    
+    Parameters
+    ----------
+    rail_w : float
+        Width of the rail
+    rail_h : float
+        Height of the rail
+    axis_l : str
+        Axis where the lenght of the rail is: 'x', 'y', 'z'
+    axis_b : str
+        Axis where the base of the rail is poingint:
+        'x', 'y', 'z', '-x', '-y', '-z',
+    Returns
+    --------
+    Shape 
+        FreeCAD Shape Face of a rail
+    """
 
     #First we do it on like it is axis_l = 'x' and axis_h = 'z' 
     #so we draw width on Y and height on Z
@@ -1421,61 +1804,68 @@ def wire_lgrail (rail_w,  rail_h,
                  pos_w = 0,   pos_h = 0,
                  pos = V0):
     """
-    creates a wire of a linear guide rail, the dent is just
+    
+    Creates a wire of a linear guide rail, the dent is just
     rough, to be able to see that it is a profile
 
-    Parameters:
-    -----------
-    rail_w : float
-        width of the rail
-    rail_h : float
-        height of the rail
-    axis_w : FreeCAD.Vector
-        the axis where the width of the rail is
-    axis_h : FreeCAD.Vector
-        the axis where the height of the rail is
-    pos_w : int
-        location of pos along axis_w
-        0 : center of symmetry
-        1 : end of the rail
-    pos_h : int
-        location of pos along axis_h
-        0 : bottom
-        1 : middle point (this is kind of non-sense)
-        2 : top point
-    pos: FreeCAD.Vector
-        Position, at the point defined by pos_w and pos_h
+    ::
 
                       axis_h
                         :
              ne ________2________ e
                |                 |
              nd|                 | d
-                \nc           c /   A little dent to see that it is a rail
+                \ nc          c /   A little dent to see that it is a rail
              nb /       1       \ b
                |                 |
                |                 |
                |                 |
              na|________o________|a ...... axis_w
                         0        1
-
-
+         
                                rail_h/8
                         :      : :
              ne ________2______:_:....
                |                 |   :+ rail_h/4
              nd|                 |.................
-                \nc           c / ....  rail_h/8   + rail_h/4
+                \ nc          c / ....  rail_h/8   + rail_h/4
              nb /       1       \ ....  rail_h/8...:
                |                 |    :
                |                 |    + rail_h/2
                |                 |    :
              na|________o________|a ..:............ axis_w
                         0        1
+         
+        pos_o (origin) is at pos_w = 0, pos_h = 0
 
+    Parameters
+    ----------
+    rail_w : float
+        Width of the rail
+    rail_h : float
+        Height of the rail
+    axis_w : FreeCAD.Vector
+        The axis where the width of the rail is
+    axis_h : FreeCAD.Vector
+        The axis where the height of the rail is
+    pos_w : int
+        Location of pos along axis_w
+        * 0 : center of symmetry
+        * 1 : end of the rail
 
+    pos_h : int
+        Location of pos along axis_h
+        * 0 : bottom
+        * 1 : middle point (this is kind of non-sense)
+        * 2 : top point
 
-    pos_o (origin) is at pos_w = 0, pos_h = 0
+    pos : FreeCAD.Vector
+        Position, at the point defined by pos_w and pos_h
+
+    Returns
+    -------
+    FreeCAD Wire
+        Wire of a rail
 
     """
 
@@ -1556,6 +1946,57 @@ def shp_face_rail (rail_w, rail_ws, rail_h,
                    offs_w = 0, offs_h = 0,
                    axis_l = 'x', axis_b = '-z',
                    hole_d = 0, hole_relpos_z=0.4):
+    """
+    Adds a shape of the profile (face) of a rail
+    
+    ::
+    
+                       Z
+                      |
+                 ___________ 4 ___________
+                |           | ____________ rail_h_plus
+                |           |        |
+                |           | 3      + rail_h
+               /     ___     \       |
+              /     /   \     \ 2    | _______ hole_relpos_z*rail_h
+             |      \___/      |     |
+             |_________________|  _____________ Y
+                                1
+                 |--rail_ws-| 
+             |----  rail_w ----| 
+
+    Parameters
+    ----------
+    rail_w : float
+        Width of the rail
+    rail_ws : float 
+        Small width of the rail
+    rail_h : float
+        Height of the rail
+    rail_h_plus : float
+        Above the rail can be some height to attach, o whatever
+        it is not inluded on rail_h
+    offs_w : float
+        Offset on the width, to make the hole
+    offs_h : float
+        Offset on the heigth, to make the hole
+    axis_l : str
+        The axis where the lenght of the rail is: 'x', 'y', 'z'
+    axis_b : str
+        The axis where the base of the rail is poingint:
+        'x', 'y', 'z', '-x', '-y', '-z',
+        It will be centered on the width axis, and zero on the length and height 
+    hole_d : float
+        Diameter of a hole inside the rail. To have a leadscrew
+    hole_relpos_z : float
+        Relative position of the center of the hole, relative
+        to the height (the rail_h, not the total height (rail_h+rail_h_plus)
+    
+    Returns
+    -------- 
+    Shape 
+        FreeCAD Shape Face of a rail
+    """
 # hole_relpos_z is the relative position referenced to rail_h
 
     #First we do it on like it is axis_l = 'x' and axis_h = 'z' 
@@ -1611,6 +2052,21 @@ def shp_face_rail (rail_w, rail_ws, rail_h,
 
 # Add cylinder r: radius, h: height 
 def addCyl (r, h, name):
+    """
+    Add cylinder 
+
+    Parameters
+    ----------
+    r : float
+        Radius
+    h : float
+        Height 
+
+    Returns
+    --------
+    FreeCAD Object
+        Cylinder
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
     cyl =  doc.addObject("Part::Cylinder",name)
@@ -1632,6 +2088,35 @@ def addCyl (r, h, name):
 #             if 0, the base of the cylinder will be on the plane
 #             if -h/2: the plane will be cutting h/2
 def addCyl_pos (r, h, name, axis = 'z', h_disp = 0):
+    """
+    Add cylinder in a position. So it is in a certain position, with its
+    Placement and Rotation at zero. So it can be referenced absolutely from
+    its given position
+
+    Parameters
+    ----------
+    r : float
+        Radius
+    h : float
+        Height 
+    name : str
+        Name 
+    axis : str
+        'x', 'y' or 'z'
+            * 'x' will along the x axis
+            * 'y' will along the y axis
+            * 'z' will be vertical
+
+    h_disp : int
+        Displacement on the height. 
+            * if 0, the base of the cylinder will be on the plane
+            * if -h/2: the plane will be cutting h/2
+
+    Returns
+    --------
+    FreeCAD Object
+        Cylinder
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
     cir =  doc.addObject("Part::Circle", name + "_circ")
@@ -1675,6 +2160,28 @@ def addCyl_pos (r, h, name, axis = 'z', h_disp = 0):
 #     pos: position of the cylinder
 
 def addCylPos (r, h, name, normal = VZ, pos = V0):
+    """
+    Same as addCyl_pos, but avoiding the creation of many FreeCAD objects
+    
+    Parameters
+    ----------
+    r : float
+        Radius,
+    h : float
+        Height 
+    name : str
+        Objet name
+    normal : FreeCAD.Vector
+        FreeCAD.Vector pointing to the normal (if its module is not one,
+        the height will be larger than h
+    pos : FreeCAD.Vector
+        Position of the cylinder
+
+    Returns
+    --------
+    FreeCAD Object
+        Cylinder
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
 
@@ -1705,7 +2212,27 @@ def addCylPos (r, h, name, normal = VZ, pos = V0):
 #     pos: position of the cylinder
 
 def shp_cyl (r, h, normal = VZ, pos = V0):
+    """
+    Same as addCylPos, but just creates the shape
 
+    Parameters
+    ----------
+    r : float
+        Radius,
+    h : float
+        Height 
+    normal : FreeCAD.Vectot
+        FreeCAD.Vector pointing to the normal (if its module is not one,
+        the height will be larger than h
+    pos : FreeCAD.Vector
+        Position of the cylinder
+
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a cylinder
+
+    """
     cir =  Part.makeCircle (r,   # Radius
                             pos,     # Position
                             normal)  # direction
@@ -1734,7 +2261,32 @@ def shp_cyl (r, h, normal = VZ, pos = V0):
 
 def shp_cylcenxtr (r, h, normal = VZ,
                          ch = 1, xtr_top=0, xtr_bot=0, pos = V0):
+    """
+    Add cylinder, can be centered on the position, and also can have an extra
+    mm on top and bottom to make cuts
+    
+    Parameters
+    ----------
+    r : float
+        Radius
+    h : float
+        Height 
+    normal : FreeCAD.Vector
+        FreeCAD.Vector pointing to the normal 
+    ch : int
+        Centered on the middle, of the height
+    xtr_top : float
+        Extra on top (but does not influence the centering)
+    xtr_bot : float
+        Extra on bottom (but does not influence the centering)
+    pos : FreeCAD.Vector
+        Position of the cylinder
 
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a cylinder
+    """
     # Normalize the normal, in case it is not one:
     nnormal = DraftVecUtils.scaleTo(normal, 1)
     if ch == 1: # we have to move the circle half the height down + xtr_bot
@@ -1766,57 +2318,10 @@ def shp_cyl_gen (r, h, axis_h = VZ,
     Makes a cylinder in any position and direction, with optional extra
     heights and radius, and various locations in the cylinder
 
-    Returns: a TopoShape
+    ::
 
-    Parameters:
-    -----------
-    r : float
-        radius of the cylinder
-    h : float
-        height of the cylinder
-    axis_h : FreeCAD.Vector
-        vector along the cylinder height
-    axis_ra : FreeCAD.Vector
-        vector along the cylinder radius, a direction perpendicular to axis_h
-        only make sense if pos_ra = 1.
-        It can be None.
-    axis_rb : FreeCAD.Vector
-        vector along the cylinder radius,
-        a direction perpendicular to axis_h and axis_rb
-        only make sense if pos_rb = 1
-        It can be None
-    pos_h : int
-        location of pos along axis_h (0, 1)
-        0: the cylinder pos is centered along its height
-        1: the cylinder pos is at its base (not considering xtr_h)
-    pos_ra : int
-        location of pos along axis_ra (0, 1)
-        0: pos is at the circunference center
-        1: pos is at the circunsference, on axis_ra, at r from the circle center
-           (not at r + xtr_r)
-    pos_rb : int
-        location of pos along axis_rb (0, 1)
-        0: pos is at the circunference center
-        1: pos is at the circunsference, on axis_rb, at r from the circle center
-           (not at r + xtr_r)
-    xtr_top : float
-        Extra height on top, it is not taken under consideration when
-        calculating the cylinder center along the height
-    xtr_bot : float
-        Extra height at the bottom, it is not taken under consideration when
-        calculating the cylinder center along the height or the position of
-        the base
-    xtr_r : float
-        Extra length of the radius, it is not taken under consideration when
-        calculating pos_ra or pos_rb
-    pos : FreeCAD.Vector
-        Position of the cylinder, taking into account where the center is
-
-
-
-    
-    pos_h = 1, pos_ra = 0, pos_rb = 0
-    pos at 1:
+     pos_h = 1, pos_ra = 0, pos_rb = 0
+     pos at 1:
             axis_rb
               :
               :
@@ -1840,9 +2345,8 @@ def shp_cyl_gen (r, h, axis_h = VZ,
          |____1____|...............> axis_ra
          :....o....:....: xtr_bot             This o will be pos_o
 
-
-    pos_h = 0, pos_ra = 1, pos_rb = 0
-    pos at x:
+     pos_h = 0, pos_ra = 1, pos_rb = 0
+     pos at x:
 
        axis_rb
          :
@@ -1867,9 +2371,8 @@ def shp_cyl_gen (r, h, axis_h = VZ,
          |_________|.....
          :....o....:....: xtr_bot        This o will be pos_o
 
-
-    pos_h = 0, pos_ra = 1, pos_rb = 1
-    pos at x:
+     pos_h = 0, pos_ra = 1, pos_rb = 1
+     pos at x:
 
        axis_rb
          :
@@ -1896,6 +2399,61 @@ def shp_cyl_gen (r, h, axis_h = VZ,
         :;
         xtr_r
 
+    Parameters
+    ----------
+    r : float
+        Radius of the cylinder
+    h : float
+        Height of the cylinder
+    axis_h : FreeCAD.Vector
+        Vector along the cylinder height
+    axis_ra : FreeCAD.Vector
+        Vector along the cylinder radius, a direction perpendicular to axis_h
+        only make sense if pos_ra = 1.
+        It can be None.
+    axis_rb : FreeCAD.Vector
+        Vector along the cylinder radius,
+        a direction perpendicular to axis_h and axis_rb
+        only make sense if pos_rb = 1
+        It can be None
+    pos_h : int
+        Location of pos along axis_h (0, 1)
+
+            * 0: the cylinder pos is centered along its height
+            * 1: the cylinder pos is at its base (not considering xtr_h)
+
+    pos_ra : int
+        Location of pos along axis_ra (0, 1)
+
+            * 0: pos is at the circunference center
+            * 1: pos is at the circunsference, on axis_ra, at r from the circle center
+              (not at r + xtr_r)
+
+    pos_rb : int
+        Location of pos along axis_rb (0, 1)
+
+            * 0: pos is at the circunference center
+            * 1: pos is at the circunsference, on axis_rb, at r from the circle center
+              (not at r + xtr_r)
+
+    xtr_top : float
+        Extra height on top, it is not taken under consideration when
+        calculating the cylinder center along the height
+    xtr_bot : float
+        Extra height at the bottom, it is not taken under consideration when
+        calculating the cylinder center along the height or the position of
+        the base
+    xtr_r : float
+        Extra length of the radius, it is not taken under consideration when
+        calculating pos_ra or pos_rb
+
+    pos : FreeCAD.Vector
+        Position of the cylinder, taking into account where the center is
+
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a cylinder
    """
    
 
@@ -1964,6 +2522,35 @@ def shp_cyl_gen (r, h, axis_h = VZ,
 #             if -h/2: the plane will be cutting h/2
 
 def addCylHole (r_ext, r_int, h, name, axis = 'z', h_disp = 0):
+    """
+    Add cylinder, with inner hole:
+    
+    Parameters
+    ----------
+    r_ext : float
+        External radius,
+    r_int : float
+        Internal radius,
+    h : float
+        Height 
+    name : str
+        Object name
+    axis : str
+        'x', 'y' or 'z'
+            * 'x' will along the x axis
+            * 'y' will along the y axis
+            * 'z' will be vertical
+
+    h_disp : int
+        Displacement on the height. 
+            * if 0, the base of the cylinder will be on the plane
+            * if -h/2: the plane will be cutting h/2
+    
+    Returns
+    -------- 
+    FreeCAD.Object
+        Cylinder with hole
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
     cyl_ext =  addCyl (r_ext, h, name + "_ext")
@@ -2005,6 +2592,37 @@ def addCylHole (r_ext, r_int, h, name, axis = 'z', h_disp = 0):
 #             if -h/2: the plane will be cutting h/2
 
 def shp_cylhole (r_ext, r_int, h, axis = 'z', h_disp = 0.):
+    """
+    Same as addCylHole, but just a shape
+
+    Add cylinder, with inner hole:
+    
+    Parameters
+    ----------
+    r_ext : float
+        External radius,
+    r_int : float
+        Internal radius,
+    h : float
+        Height 
+    axis : str
+        'x', 'y' or 'z'
+
+            * 'x' will along the x axis
+            * 'y' will along the y axis
+            * 'z' will be vertical
+
+    h_disp : int
+        Displacement on the height. 
+
+            * if 0, the base of the cylinder will be on the plane
+            * if -h/2: the plane will be cutting h/2
+    
+    Returns
+    -------
+    Shape
+        FreeCAD Shape of a cylinder with hole
+    """
 
     normal = getfcvecofname(axis)
     pos_ext = DraftVecUtils.scaleTo(normal, h_disp)
@@ -2029,6 +2647,33 @@ def shp_cylhole (r_ext, r_int, h, axis = 'z', h_disp = 0.):
 #     pos: position of the cylinder
 
 def addCylHolePos (r_out, r_in, h, name, normal = VZ, pos = V0):
+    """
+    Same as addCylHole, but avoiding the creation of many FreeCAD objects
+
+    Add cylinder, with inner hole
+
+    Parameters
+    ----------
+    r_out : float
+        Outside radius
+    r_in : float
+        Inside radius
+    h : float
+        Height 
+    name : str
+        Object name
+    normal : FreeCAD.Vector
+        FreeCAD.Vector pointing to the normal (if its module is not one,
+        the height will be larger than h
+    pos : FreeCAD.Vector
+        Position of the cylinder
+
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape of a cylinder with hole
+    """
+
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
 
@@ -2059,19 +2704,29 @@ def addCylHolePos (r_out, r_in, h, name, normal = VZ, pos = V0):
 
 
 def shp_cylholedir (r_out, r_in, h, normal = VZ, pos = V0):
-
     """
-        same as addCylHolePos, but just a shape
-        same as shp_cylhole, but this one accepts any normal
-    Arguments
-        r_out: outside radius,
-        r_in : inside radius,
-        h: height 
-        normal: FreeCAD.Vector pointing to the normal (if its module is not one,
-                the height will be larger than h
-        pos: position of the cylinder
-    """
+    Same as addCylHolePos, but just a shape
+    Same as shp_cylhole, but this one accepts any normal
+    
+    Parameters
+    ----------
+    r_out : float
+        Outside radius
+    r_in : float
+        Inside radius
+    h : float
+        Height 
+    normal : FreeCAD.Vector 
+        FreeCAD.Vector pointing to the normal (if its module is not one,
+        the height will be larger than h
+    pos : FreeCAD.Vector 
+        Position of the cylinder
 
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape of a cylinder with hole
+    """
 
     cir_out =  Part.makeCircle (r_out,   # Radius
                                 pos,     # Position
@@ -2105,68 +2760,10 @@ def shp_cylhole_gen (r_out, r_in, h,
     Makes a hollow cylinder in any position and direction, with optional extra
     heights, and inner and outer radius, and various locations in the cylinder
 
-    Returns: a TopoShape
+    ::
 
-    Parameters:
-    -----------
-    r_out : float
-        radius of the outside cylinder
-    r_in : float
-        radius of the inner hole of the cylinder
-    h : float
-        height of the cylinder
-    axis_h : FreeCAD.Vector
-        vector along the cylinder height
-    axis_ra : FreeCAD.Vector
-        vector along the cylinder radius, a direction perpendicular to axis_h
-        it is not necessary if pos_ra == 0
-        It can be None, but if None, axis_rb has to be None
-    axis_rb : FreeCAD.Vector
-        vector along the cylinder radius,
-        a direction perpendicular to axis_h and axis_ra
-        it is not necessary if pos_ra == 0
-        It can be None
-    pos_h : int
-        location of pos along axis_h (0, 1)
-        0: the cylinder pos is centered along its height, not considering
-           xtr_top, xtr_bot
-        1: the cylinder pos is at its base (not considering xtr_h)
-    pos_ra : int
-        location of pos along axis_ra (0, 1)
-        0: pos is at the circunference center
-        1: pos is at the inner circunsference, on axis_ra, at r_in from the
-           circle center (not at r_in + xtr_r_in)
-        2: pos is at the outer circunsference, on axis_ra, at r_out from the
-           circle center (not at r_out + xtr_r_out)
-    pos_rb : int
-        location of pos along axis_ra (0, 1)
-        0: pos is at the circunference center
-        1: pos is at the inner circunsference, on axis_rb, at r_in from the
-           circle center (not at r_in + xtr_r_in)
-        2: pos is at the outer circunsference, on axis_rb, at r_out from the
-           circle center (not at r_out + xtr_r_out)
-    xtr_top : float
-        Extra height on top, it is not taken under consideration when
-        calculating the cylinder center along the height
-    xtr_bot : float
-        Extra height at the bottom, it is not taken under consideration when
-        calculating the cylinder center along the height or the position of
-        the base
-    xtr_r_in : float
-        Extra length of the inner radius (hollow cylinder),
-        it is not taken under consideration when calculating pos_ra or pos_rb.
-        It can be negative, so this inner radius would be smaller
-    xtr_r_out : float
-        Extra length of the outer radius
-        it is not taken under consideration when calculating pos_ra or pos_rb.
-        It can be negative, so this outer radius would be smaller
-    pos : FreeCAD.Vector
-        Position of the cylinder, taking into account where the center is
-
-
-    
-    pos_h = 1, pos_ra = 0, pos_rb = 0
-    pos at 1:
+     pos_h = 1, pos_ra = 0, pos_rb = 0
+     pos at 1:
             axis_rb
               :
               :
@@ -2199,7 +2796,7 @@ def shp_cylhole_gen (r_out, r_in, h,
           r_out
          
 
-    Values for pos_ra  (similar to pos_rb along it axis)
+     Values for pos_ra  (similar to pos_rb along it axis)
 
 
            axis_h
@@ -2224,9 +2821,74 @@ def shp_cylhole_gen (r_out, r_in, h,
            +
           r_out
 
+    Parameters
+    ----------
+    r_out : float
+        Radius of the outside cylinder
+    r_in : float
+        Radius of the inner hole of the cylinder
+    h : float
+        Height of the cylinder
+    axis_h : FreeCAD.Vector
+        Vector along the cylinder height
+    axis_ra : FreeCAD.Vector
+        Vector along the cylinder radius, a direction perpendicular to axis_h
+        it is not necessary if pos_ra == 0
+        It can be None, but if None, axis_rb has to be None
+    axis_rb : FreeCAD.Vector
+        Vector along the cylinder radius,
+        a direction perpendicular to axis_h and axis_ra
+        it is not necessary if pos_ra == 0
+        It can be None
+    pos_h : int
+        Location of pos along axis_h (0, 1)
+
+            * 0: the cylinder pos is centered along its height, not considering
+              xtr_top, xtr_bot
+            * 1: the cylinder pos is at its base (not considering xtr_h)
+
+    pos_ra : int
+        Location of pos along axis_ra (0, 1)
+
+            * 0: pos is at the circunference center
+            * 1: pos is at the inner circunsference, on axis_ra, at r_in from the
+              circle center (not at r_in + xtr_r_in)
+            * 2: pos is at the outer circunsference, on axis_ra, at r_out from the
+              circle center (not at r_out + xtr_r_out)
+
+    pos_rb : int
+        Location of pos along axis_ra (0, 1)
+
+            * 0: pos is at the circunference center
+            * 1: pos is at the inner circunsference, on axis_rb, at r_in from the
+              circle center (not at r_in + xtr_r_in)
+            * 2: pos is at the outer circunsference, on axis_rb, at r_out from the
+              circle center (not at r_out + xtr_r_out)
+
+    xtr_top : float
+        Extra height on top, it is not taken under consideration when
+        calculating the cylinder center along the height
+    xtr_bot : float
+        Extra height at the bottom, it is not taken under consideration when
+        calculating the cylinder center along the height or the position of
+        the base
+    xtr_r_in : float
+        Extra length of the inner radius (hollow cylinder),
+        it is not taken under consideration when calculating pos_ra or pos_rb.
+        It can be negative, so this inner radius would be smaller
+    xtr_r_out : float
+        Extra length of the outer radius
+        it is not taken under consideration when calculating pos_ra or pos_rb.
+        It can be negative, so this outer radius would be smaller
+    pos: FreeCAD.Vector
+        Position of the cylinder, taking into account where the center is
+
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape of a cylinder with hole
    """
    
-
     # calculate pos_o, which is at the center of the circle and at the base
     # counting xtr_bot it is is > 0
     axis_h = DraftVecUtils.scaleTo(axis_h, 1)
@@ -2279,25 +2941,6 @@ def shp_cylhole_gen (r_out, r_in, h,
 #                       #pos = FreeCAD.Vector(1,2,3))
 #Part.show(cyl)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def shp_cylhole_arc (r_out, r_in, h,
                      axis_h = VZ, axis_ra = None, axis_rb = None,
                      end_angle = 360,
@@ -2306,78 +2949,17 @@ def shp_cylhole_arc (r_out, r_in, h,
                      xtr_r_out=0, xtr_r_in=0,
                      pos = V0):
     """
-    This is similar to make shp_cylhole_gen but not for a whole, just an arc
+    This is similar to make shp_cylhole_gen but not for a whole, just an arc.
     I don't know how where makeCircle starts its startangle and end angle
     That is why I use this way
 
     Makes a hollow cylinder in any position and direction, with optional extra
     heights, and inner and outer radius, and various locations in the cylinder
 
-    Returns: a TopoShape
-
-    Parameters:
-    -----------
-    r_out : float
-        radius of the outside cylinder
-    r_in : float
-        radius of the inner hole of the cylinder
-    h : float
-        height of the cylinder
-    axis_h : FreeCAD.Vector
-        vector along the cylinder height
-    axis_ra : FreeCAD.Vector
-        vector along the cylinder radius, a direction perpendicular to axis_h
-        it is not necessary if pos_ra == 0
-        It can be None, but if None, axis_rb has to be None
-        Defines the starting angle
-    axis_rb : FreeCAD.Vector
-        vector along the cylinder radius,
-        a direction perpendicular to axis_h and axis_ra
-        it is not necessary if pos_ra == 0
-        It can be None
-    end_angle : float (in degrees)
-        rotating from axis_ra in the direction determined by axis_h 
-    pos_h : int
-        location of pos along axis_h (0, 1)
-        0: the cylinder pos is centered along its height, not considering
-           xtr_top, xtr_bot
-        1: the cylinder pos is at its base (not considering xtr_h)
-    pos_ra : int
-        location of pos along axis_ra (0, 1)
-        0: pos is at the circunference center
-        1: pos is at the inner circunsference, on axis_ra, at r_in from the
-           circle center (not at r_in + xtr_r_in)
-        2: pos is at the outer circunsference, on axis_ra, at r_out from the
-           circle center (not at r_out + xtr_r_out)
-    pos_rb : int
-        location of pos along axis_ra (0, 1)
-        0: pos is at the circunference center
-        1: pos is at the inner circunsference, on axis_rb, at r_in from the
-           circle center (not at r_in + xtr_r_in)
-        2: pos is at the outer circunsference, on axis_rb, at r_out from the
-           circle center (not at r_out + xtr_r_out)
-    xtr_top : float
-        Extra height on top, it is not taken under consideration when
-        calculating the cylinder center along the height
-    xtr_bot : float
-        Extra height at the bottom, it is not taken under consideration when
-        calculating the cylinder center along the height or the position of
-        the base
-    xtr_r_in : float
-        Extra length of the inner radius (hollow cylinder),
-        it is not taken under consideration when calculating pos_ra or pos_rb.
-        It can be negative, so this inner radius would be smaller
-    xtr_r_out : float
-        Extra length of the outer radius
-        it is not taken under consideration when calculating pos_ra or pos_rb.
-        It can be negative, so this outer radius would be smaller
-    pos : FreeCAD.Vector
-        Position of the cylinder, taking into account where the center is
-
-
+    ::
     
-    pos_h = 1, pos_ra = 0, pos_rb = 0
-    pos at 1:
+     pos_h = 1, pos_ra = 0, pos_rb = 0
+     pos at 1:
             axis_rb
               :
               :
@@ -2410,7 +2992,7 @@ def shp_cylhole_arc (r_out, r_in, h,
           r_out
          
 
-    Values for pos_ra  (similar to pos_rb along it axis)
+     Values for pos_ra  (similar to pos_rb along it axis)
 
 
            axis_h
@@ -2434,10 +3016,78 @@ def shp_cylhole_arc (r_out, r_in, h,
          :....:
            +
           r_out
+    
+    Parameters
+    ----------
+    r_out : float
+        Radius of the outside cylinder
+    r_in : float
+        Radius of the inner hole of the cylinder
+    h : float
+        Height of the cylinder
+    axis_h : FreeCAD.Vector
+        Vector along the cylinder height
+    axis_ra : FreeCAD.Vector
+        Vector along the cylinder radius, a direction perpendicular to axis_h
+        it is not necessary if pos_ra == 0
+        It can be None, but if None, axis_rb has to be None
+        Defines the starting angle
+    axis_rb : FreeCAD.Vector
+        Vector along the cylinder radius,
+        a direction perpendicular to axis_h and axis_ra
+        it is not necessary if pos_ra == 0
+        It can be None
+    end_angle : float (in degrees)
+        Rotating from axis_ra in the direction determined by axis_h 
+    pos_h : int
+        Location of pos along axis_h (0, 1)
 
+            * 0: the cylinder pos is centered along its height, not considering
+              xtr_top, xtr_bot
+            * 1: the cylinder pos is at its base (not considering xtr_h)
+
+    pos_ra : int
+        Location of pos along axis_ra (0, 1)
+
+            * 0: pos is at the circunference center
+            * 1: pos is at the inner circunsference, on axis_ra, at r_in from the
+              circle center (not at r_in + xtr_r_in)
+            * 2: pos is at the outer circunsference, on axis_ra, at r_out from the
+              circle center (not at r_out + xtr_r_out)
+
+    pos_rb : int
+        Location of pos along axis_ra (0, 1)
+
+            * 0: pos is at the circunference center
+            * 1: pos is at the inner circunsference, on axis_rb, at r_in from the
+              circle center (not at r_in + xtr_r_in)
+            * 2: pos is at the outer circunsference, on axis_rb, at r_out from the
+              circle center (not at r_out + xtr_r_out)
+
+    xtr_top : float
+        Extra height on top, it is not taken under consideration when
+        calculating the cylinder center along the height
+    xtr_bot : float
+        Extra height at the bottom, it is not taken under consideration when
+        calculating the cylinder center along the height or the position of
+        the base
+    xtr_r_in : float
+        Extra length of the inner radius (hollow cylinder),
+        it is not taken under consideration when calculating pos_ra or pos_rb.
+        It can be negative, so this inner radius would be smaller
+    xtr_r_out : float
+        Extra length of the outer radius
+        it is not taken under consideration when calculating pos_ra or pos_rb.
+        It can be negative, so this outer radius would be smaller
+    pos : FreeCAD.Vector
+        Position of the cylinder, taking into account where the center is
+
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape of a arc of the cylinder
    """
    
-
     # calculate pos_o, which is at the center of the circle and at the base
     # counting xtr_bot it is is > 0
     axis_h = DraftVecUtils.scaleTo(axis_h, 1)
@@ -2595,29 +3245,13 @@ def shp_cylhole_arc (r_out, r_in, h,
                        #pos = FreeCAD.Vector(1,2,3))
 #Part.show(cyl)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def add2CylsHole (r1, h1, r2, h2, thick,
                   normal = VZ, pos = V0):
 
-    """ Creates a piece formed by 2 hollow cylinders
+    """
+    Creates a piece formed by 2 hollow cylinders
+
+    ::
 
               :.. h1 .....+..h2..:
               :           :      :
@@ -2632,15 +3266,29 @@ def add2CylsHole (r1, h1, r2, h2, thick,
               |.........: |           :
               |___________|...........:
 
-    Arguments:
-        r1: radius of the 1st cylinder. The first cylinder relative to 
-            the position pos
-        h1: height of the 1st cylinder (seen from outside)
-        r2: radius of the 2nd cylinder
-        h2: height of the 2nd cylinder (seen from outside)
-        normal: direction of the height
-        pos: position of the center
+    
+    Parameters
+    ----------
+    r1 : float
+        Radius of the 1st cylinder. The first cylinder relative to 
+        the position pos
+    h1 : float
+        Height of the 1st cylinder (seen from outside)
+    r2 : float
+        Radius of the 2nd cylinder
+    h2 : float
+        Height of the 2nd cylinder (seen from outside)
 
+    normal : FreeCAD.Vector
+        Direction of the height
+
+    pos : FreeCAD.Vector
+        Position of the center
+
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a two cylinders
     """
 
     # normalize de axis just in case:
@@ -2701,12 +3349,13 @@ def add2CylsHole (r1, h1, r2, h2, thick,
 def add3CylsHole (r1, h1, r2, h2, rring, hring, thick,
                   normal = VZ, pos = V0):
 
-    """ Creates a piece formed by 2 hollow cylinders, and a ring
-        on the side of the larger cylinder
+    """ 
+    Creates a piece formed by 2 hollow cylinders, and a ring
+    on the side of the larger cylinder
+
+    ::
 
         ref
-
-
                _:.. h1 .....+..h2..:
               | |           :      :
            ...| |___________:      :
@@ -2724,18 +3373,33 @@ def add3CylsHole (r1, h1, r2, h2, rring, hring, thick,
               : :
                + hring
 
-    Arguments:
-        r1: radius of the 1st cylinder. The first cylinder relative to 
-            the position pos (if this is larger than r2, the ring will go first)
-        h1: height of the 1st cylinder (seen from outside)
-        r2: radius of the 2nd cylinder
-        h2: height of the 2nd cylinder (seen from outside)
-        rring: radius of the ring, it has to be larger than r1, and r2
-        hring: height of the ring, it has to be larger than r1, and r2
-        thick: thickness of the walls, excluding the ring
-        normal: direction of the height
-        pos: position of the center
+    
+    Parameters
+    ----------
+    r1 : float
+        Radius of the 1st cylinder. The first cylinder relative to 
+        the position pos (if this is larger than r2, the ring will go first)
+    h1 : float
+        Height of the 1st cylinder (seen from outside)
+    r2 : float
+        Radius of the 2nd cylinder
+    h2 : float
+        Height of the 2nd cylinder (seen from outside)
+    rring : float
+        Radius of the ring, it has to be larger than r1, and r2
+    hring : float
+        Height of the ring, it has to be larger than r1, and r2
+    thick : float
+        Thickness of the walls, excluding the ring
+    normal : FreeCAD.Vector
+        Direction of the height
+    pos : FreeCAD.Vector
+        Position of the center
 
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a three cylinders
     """
 
     # normalize de axis just in case:
@@ -2815,6 +3479,35 @@ def add3CylsHole (r1, h1, r2, h2, rring, hring, thick,
 # pos_z: position on the Z axis
 
 def shp_stadium_wire (l, r, axis_rect='x', pos_z=0):
+    """
+    Creates a wire (shape), that is a rectangle with semicircles at a pair of
+    opposite sides. Also called discorectangle
+    it will be centered on XY
+    ::
+
+                             Y
+             _____ .. r      |_X
+            (_____)--
+             :   :
+             :.l.:
+
+    Parameters
+    ----------
+    l : float
+        Length of the parallels (from center to center)
+    r : float
+        Radius of the semicircles
+    axis_rect : str
+        'x' the parallels are on axis X (as in the drawing)
+        'y' the parallels are on axis Y
+    pos_z : float
+        Position on the Z axis
+
+    Returns
+    --------
+    Shape Wire
+        FreeCAD Wire of a stadium
+    """
 
     # considering axis_rect == 'x', if not, later it is rotated
     # center points of the semicircles:
@@ -2844,6 +3537,26 @@ def shp_stadium_wire (l, r, axis_rect='x', pos_z=0):
 
 # same as shp_stadium_wire, but returns a face
 def shp_stadium_face (l, r, axis_rect='x', pos_z=0):
+    """
+    Same as shp_stadium_wire, but returns a face
+
+    Parameters
+    ----------
+    l : float
+        Length of the parallels (from center to center)
+    r : float
+        Radius of the semicircles
+    axis_rect : str
+        'x' the parallels are on axis X (as in the drawing)
+        'y' the parallels are on axis Y
+    pos_z : float
+        Position on the Z axis
+
+    Returns
+    --------
+    Shape Face
+        FreeCAD Face of a stadium
+    """
 
     shpStadiumWire = shp_stadium_wire (l, r, axis_rect, pos_z)
     shpStadiumFace = Part.Face (shpStadiumWire)
@@ -2863,7 +3576,8 @@ def shp_stadium_wire_dir (length, radius, fc_axis_l = VX,
     """
     Same as shp_stadium_wire but in any direction
     Also called discorectangle
-  
+    ::
+
                                    fc_axis_s
                                     |
                _____ .. radius      |--> fc_axis_l
@@ -2871,35 +3585,49 @@ def shp_stadium_wire_dir (length, radius, fc_axis_l = VX,
                :   :
                :.l.:
                length
- 
-    Arguments:
-    length: length of the parallels (distance between semcircle centers)
-    radius: Radius of the semicircles
-    fc_axis_l: vector on the direction of the paralles
-    fc_axis_s: vector on the direction perpendicular to the paralles
-    ref_l: reference (zero) of the fc_axis_l
-            1: reference on the center (makes axis_s symmetrical)
-            2: reference at one of the semicircle centers (point 2)
-               the other circle center will be on the direction of fc_axis_l
-            3: reference at the end (point 3)
-               the other end will be on the direction of fc_axis_l
-    ref_s: reference (zero) of the fc_axis_s
-            1: reference at the center (makes axis_l symmetrical): p 1,2,3
-            2: reference at the parallels lines: p: 4, 5 
-               the other parallel will be on the direction of fc_axis_s
-    pos: FreeCAD vector of the position of the reference
-
-
+        
           fc_axis_s              in this drawing, 
            :  p_edge             the zero is on point 2
            :_________           ref_l = 2, ref_s = 1
-          /          \
+          /          \ 
          3 2    1     ) -------> fc_axis_l
-          \5____4____/   n_edge
+         5\_____4____/   n_edge
              n_edge        
      n circle        p circle
+ 
+    Parameters
+    ----------
+    length : float
+        Length of the parallels (distance between semcircle centers)
+    radius : float
+        Radius of the semicircles
+    fc_axis_l : FreeCAD.Vector
+        Vector on the direction of the paralles
+    fc_axis_s : FreeCAD.Vector
+        Vector on the direction perpendicular to the paralles
+    ref_l : int
+        Reference (zero) of the fc_axis_l
 
-    returns the shape of the wire
+            * 1 reference on the center (makes axis_s symmetrical)
+            * 2 reference at one of the semicircle centers (point 2)
+              the other circle center will be on the direction of fc_axis_l
+            * 3 reference at the end (point 3)
+              the other end will be on the direction of fc_axis_l
+
+    ref_s : int
+        Reference (zero) of the fc_axis_s
+
+            * 1 reference at the center (makes axis_l symmetrical): p 1,2,3
+            * 2 reference at the parallels lines: p: 4, 5 
+              the other parallel will be on the direction of fc_axis_s
+
+    pos : FreeCAD.Vector
+        FreeCAD vector of the position of the reference
+
+    Returns
+    --------
+    Shape Wire
+        FreeCAD Wire of a stadium
     """
 
     # normalize the axis
@@ -3010,38 +3738,15 @@ def shp_stadium_dir (
                      pos=V0):
 
     """ 
-    makes a stadium shape in any direction
-    see shp_stadium_wire_dir for the arguments
-
-    length: length of the parallels (distance between semcircle centers)
-    height: height the stadium
-    fc_axis_s: direction on the short axis, not necessary if ref_s == 1
-         it will be the perpendicular of the other 2 vectors
-    fc_axis_h: vector on the height direction
-    ref_l: reference (zero) of the fc_axis_l
-            1: reference on the center (makes axis_s symmetrical)
-            2: reference at one of the semicircle centers (point 2)
-               the other circle center will be on the direction of fc_axis_l
-            3: reference at the end (point 3)
-               the other end will be on the direction of fc_axis_l
-    ref_s: reference (zero) of the fc_axis_s
-            1: reference at the center (makes axis_l symmetrical): p 1,2,3
-            2: reference at the parallels lines: p: 4, 5 
-               the other parallel will be on the direction of fc_axis_s
-    ref_h: 1: reference is at the center of the height
-           2: reference is at the bottom
-    xtr_h: if >0 it will be that extra height on the direction of fc_axis_h
-    xtr_nh: if >0 it will be that extra height on the opositve direction of
-             fc_axis_h
-        
-
+    Makes a stadium shape in any direction
+    ::
 
         fc_axis_s
           :
           :_________           ref_l = 2, ref_s = 1
-          /          \
+          /          \ 
          3 2    1     ) -------> fc_axis_l
-          \5____4____/ 
+         5\_____4____/ 
 
         fc_axis_h
          _:___________ ............................
@@ -3051,6 +3756,50 @@ def shp_stadium_dir (
         |             |                            :
         |______2______|.......> fc_axis_l .........:  ref_h=2
 
+
+    Parameters
+    ----------
+    length : float
+        Length of the parallels (distance between semcircle centers)
+    height : float
+        Height the stadium
+    fc_axis_s : FreeCAD.Vector
+        Direction on the short axis, not necessary if ref_s == 1
+        it will be the perpendicular of the other 2 vectors
+    fc_axis_h : FreeCAD.Vector
+        Vector on the height direction
+    ref_l : int
+        Reference (zero) of the fc_axis_l
+
+            * 1: reference on the center (makes axis_s symmetrical)
+            * 2: reference at one of the semicircle centers (point 2)
+              the other circle center will be on the direction of fc_axis_l
+            * 3: reference at the end (point 3)
+              the other end will be on the direction of fc_axis_l
+
+    ref_s : int
+        Reference (zero) of the fc_axis_s
+
+            * 1: reference at the center (makes axis_l symmetrical): p 1,2,3
+            * 2: reference at the parallels lines: p: 4, 5 
+              the other parallel will be on the direction of fc_axis_s
+
+    ref_h : int
+        * 1: reference is at the center of the height
+        * 2: reference is at the bottom
+
+    xtr_h : float
+         If >0 it will be that extra height on the direction of fc_axis_h
+    xtr_nh : float
+        If >0 it will be that extra height on the opositve direction of
+        fc_axis_h
+    pos : FreeCAD.Vector
+        Placement
+        
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a stadium
     """
 
     # normalize the axis
@@ -3107,9 +3856,12 @@ def shp_2stadium_dir (
                      xtr_nh = 0,
                      pos=V0):
 
-    """ makes to concentric stadiums, useful for making rails for bolts
-        the length is the same for both. Changes the radius and the height
-        The smaller radius will have the largest length
+    """ 
+    Makes to concentric stadiums, useful for making rails for bolts
+    the length is the same for both. Changes the radius and the height
+    The smaller radius will have the largest length
+
+    ::
 
         rl_h0 = 1: the large stadium is at h=0
 
@@ -3145,39 +3897,58 @@ def shp_2stadium_dir (
         :.r_l...:
 
     on the axis_h, the h_rl stadium can be at the reference, or at the
-    end of the reference (rl_h0 =0)
+    end of the reference (rl_h0 =0)::
 
-    ref_l points:
+     ref_l points:
 
          fc_axis_s
            :
            :_________         
-          /          \
+          /          \ 
          ( 2    1     ) -------> fc_axis_l
           \__________/ 
 
 
-    Arguments:
-    length: length of the parallels, from one semicircle center to the other
-    r_s: Smaller radius of the semicircles
-    r_l: Larger radius of the semicircles
-    h_tot: Total height
-    h_rl: height of the larger radius stadium
-    fc_axis_h: vector on the direction of the height
-    fc_axis_l: vector on the direction of the parallels, 
-    ref_l: reference (zero) of the fc_axis_l
-            1: reference on the center (makes axis_s symmetrical)
-            2: reference at one of the semicircle centers (point 2)
-               the other circle center will be on the direction of fc_axis_l
-    rl_h0: 1: if the larger radius stadium is at the beginning of the axis_h
-           0: at the end of axis_h
+    Parameters
+    ----------
+    length : float
+        Length of the parallels, from one semicircle center to the other
+    r_s : float
+        Smaller radius of the semicircles
+    r_l : float
+        Larger radius of the semicircles
+    h_tot : float
+        Total height
+    h_rl : float
+        Height of the larger radius stadium
+    fc_axis_h : FreeCAD.Vector
+        Vector on the direction of the height
+    fc_axis_l : FreeCAD.Vector
+        Vector on the direction of the parallels, 
+    ref_l : int
+        Reference (zero) of the fc_axis_l
 
-    xtr_h: if >0 it will be that extra height on the direction of fc_axis_h
-    xtr_nh: if >0 it will be that extra height on the opositve direction of
-             fc_axis_h
-    pos: position of the reference
+            * 1: reference on the center (makes axis_s symmetrical)
+            * 2: reference at one of the semicircle centers (point 2)
+              the other circle center will be on the direction of fc_axis_l
 
+    rl_h0 : int
+        * 1: if the larger radius stadium is at the beginning of the axis_h
+        * 0: at the end of axis_h
 
+    xtr_h : float
+        If >0 it will be that extra height on the direction of fc_axis_h
+    xtr_nh : float
+        If >0 it will be that extra height on the opositve direction of
+        fc_axis_h
+    xtr_nh : float
+    pos : FreeCAD.Vector
+        Position of the reference
+
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a two stadiums
     """
 
     # normalize the axis_h
@@ -3244,19 +4015,6 @@ def shp_2stadium_dir (
 #                     xtr_nh = 3,
 #                     pos=V0)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ------------------- def shp_belt_wire_dir
 
 def shp_belt_wire_dir (center_sep, rad1, rad2, fc_axis_l = VX,
@@ -3267,9 +4025,9 @@ def shp_belt_wire_dir (center_sep, rad1, rad2, fc_axis_l = VX,
 
     """
     Makes a shape of a wire with 2 circles and exterior tangent lines
-    check: https://en.wikipedia.org/wiki/Tangent_lines_to_circles
+    check `here <https://en.wikipedia.org/wiki/Tangent_lines_to_circles>`_
     It is not easy to draw it well
-    rad1 and rad2 can be exchanged, rad1 doesnt have to be larger
+    rad1 and rad2 can be exchanged, rad1 doesnt have to be larger::
 
             ....                    fc_axis_s
            :    ( \ tangent          |
@@ -3280,8 +4038,6 @@ def shp_belt_wire_dir (center_sep, rad1, rad2, fc_axis_l = VX,
                  :   :
                  :...:
                    + center_sep
-
- 
 
                   ....                fc_axis_s
                  :    ( \ tangent       |
@@ -3294,22 +4050,33 @@ def shp_belt_wire_dir (center_sep, rad1, rad2, fc_axis_l = VX,
              ref_l: 3  2 1
 
  
-    Arguments:
-    center_sep: separation of the circle centers
-    rad1: Radius of the firs circle, on the opposite direction of fc_axis_l
-    fc_axis_l: vector on the direction circle centers, pointing to rad2
-    fc_axis_s: vector on the direction perpendicular to fc_axis_l, on the plane
-               of the wire
-    ref_l: reference (zero) of the fc_axis_l
-            1: reference on the center 
-            2: reference at one of the semicircle centers (point 2)
-               the other circle center will be on the direction of fc_axis_l
-            3: reference at the end of rad1 circle
-               the other end will be on the direction of fc_axis_l
-    pos: FreeCAD vector of the position of the reference
+    Parameters
+    ----------
+    center_sep : float
+        Separation of the circle centers
+    rad1 : float
+        Radius of the firs circle, on the opposite direction of fc_axis_l
+    fc_axis_l : FreeCAD.Vector
+        Vector on the direction circle centers, pointing to rad2
+    fc_axis_s : FreeCAD.Vector
+        Vector on the direction perpendicular to fc_axis_l, on the plane
+        of the wire
+    ref_l : int
+        Reference (zero) of the fc_axis_l     
 
+            * 1: reference on the center 
+            * 2: reference at one of the semicircle centers (point 2)
+              the other circle center will be on the direction of fc_axis_l
+            * 3: reference at the end of rad1 circle
+              the other end will be on the direction of fc_axis_l
 
-    returns the shape of the wire
+    pos : FreeCAD.Vector
+        Position of the reference
+
+    Returns
+    --------
+    Shape Wire
+        FreeCAD Wire of a belt
     """
 
     # normalize the axis
@@ -3442,27 +4209,45 @@ def shp_belt_dir (center_sep, rad1, rad2, height,
     Makes a shape of 2 tangent circles (like a belt joining 2 circles).
     check shp_belt_wire_dir
     
-    Arguments:
-    center_sep: separation of the circle centers
-    rad1: Radius of the first circle, on the opposite direction of fc_axis_l
-    rad2: Radius of the second circle, on the direction of fc_axis_l
-    height: height of the shape
-    fc_axis_l: vector on the direction circle centers, pointing to rad2
-    fc_axis_h: vector on the hieght direction
-    ref_l: reference (zero) of the fc_axis_l
-            1: reference on the center 
-            2: reference at rad1 semicircle centers (point 2)
-               the other circle center will be on the direction of fc_axis_l
-            3: reference at the end of rad1 circle
-               the other end will be on the direction of fc_axis_l
-    ref_h: 1: reference is at the center of the height
-           2: reference is at the bottom
-    xtr_h: if >0 it will be that extra height on the direction of fc_axis_h
-    xtr_nh: if >0 it will be that extra height on the opositve direction of
-             fc_axis_h
-    pos: FreeCAD vector of the position of the reference
+    Parameters
+    ----------
+    center_sep : float
+        Separation of the circle centers
+    rad1 : float
+        Radius of the first circle, on the opposite direction of fc_axis_l
+    rad2 : float
+        Radius of the second circle, on the direction of fc_axis_l
+    height : float
+        Height of the shape
+    fc_axis_l : FreeCAD.Vector
+        Vector on the direction circle centers, pointing to rad2
+    fc_axis_h : FreeCAD.Vector
+        Vector on the hieght direction
+    ref_l : int
+        Reference (zero) of the fc_axis_l
 
-    returns the shape
+            * 1: reference on the center 
+            * 2: reference at rad1 semicircle centers (point 2)
+              the other circle center will be on the direction of fc_axis_l
+            * 3: reference at the end of rad1 circle
+              the other end will be on the direction of fc_axis_l
+
+    ref_h : int
+        * 1: reference is at the center of the height
+        * 2: reference is at the bottom
+
+    xtr_h : float
+        If >0 it will be that extra height on the direction of fc_axis_h
+    xtr_nh : float
+        If >0 it will be that extra height on the opositve direction of
+        fc_axis_h
+    pos : FreeCAD.Vector
+        Position of the reference
+
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a belt
     """
 
         # normalize the axis
@@ -3517,29 +4302,47 @@ def shp_hollowbelt_dir (center_sep, rad1, rad2,
     Makes a shape of 2 tangent circles (like a belt joining 2 circles).
     check shp_belt_wire_dir
     
-    Arguments:
-    center_sep: separation of the circle centers
-    rad1: Internal radius of the first circle, on the opposite direction of
-          fc_axis_l
-    rad2: Internal radius of the second circle, on the direction of fc_axis_l
-    rad_thick: increment to rad1 and rad2 to make the thickness. 
-    height: height of the shape
-    fc_axis_l: vector on the direction circle centers, pointing to rad2
-    fc_axis_h: vector on the hieght direction
-    ref_l: reference (zero) of the fc_axis_l
-            1: reference on the center 
-            2: reference at one of the semicircle centers (point 2)
-               the other circle center will be on the direction of fc_axis_l
-            3: reference at the end of rad1 circle
-               the other end will be on the direction of fc_axis_l
-    ref_h: 1: reference is at the center of the height
-           2: reference is at the bottom
-    xtr_h: if >0 it will be that extra height on the direction of fc_axis_h
-    xtr_nh: if >0 it will be that extra height on the opositve direction of
-             fc_axis_h
-    pos: FreeCAD vector of the position of the reference
+    Parameters
+    ----------
+    center_sep : float
+        Separation of the circle centers
+    rad1 : float
+        Internal radius of the first circle, on the opposite direction of
+        fc_axis_l
+    rad2 : float
+        Internal radius of the second circle, on the direction of fc_axis_l
+    rad_thick : float
+        Increment to rad1 and rad2 to make the thickness. 
+    height : float
+        Height of the shape
+    fc_axis_l : FreeCAD.Vector
+        Vector on the direction circle centers, pointing to rad2
+    fc_axis_h : FreeCAD.Vector
+        Vector on the hieght direction
+    ref_l : int
+        Reference (zero) of the fc_axis_l
 
-    returns the shape
+            * 1: reference on the center 
+            * 2: reference at one of the semicircle centers (point 2)
+              the other circle center will be on the direction of fc_axis_l
+            * 3: reference at the end of rad1 circle
+              the other end will be on the direction of fc_axis_l
+
+    ref_h : int
+        * 1: reference is at the center of the height
+        * 2: reference is at the bottom
+    xtr_h : float
+        If >0 it will be that extra height on the direction of fc_axis_h
+    xtr_nh : float
+        If >0 it will be that extra height on the opositve direction of
+        fc_axis_h
+    pos : FreeCAD.Vector
+        Position of the reference
+
+    Returns
+    --------
+    Shape
+        FreeCAD Shape 
     """
 
 
@@ -3611,6 +4414,40 @@ def shp_hollowbelt_dir (center_sep, rad1, rad2,
 
 
 def shpRndRectWire (x=1, y=1, r= 0.5, zpos = 0):
+    """
+    Creates a wire (shape), that is a rectangle with rounded edges.
+    if r== 0, it will be a rectangle
+    The wire will be centered
+    ::
+
+                    Y
+                    |_ X
+                
+         ______     ___ y
+        /      \ r
+        |      |
+        |      |              z=0
+        |      |
+        \______/    ___
+        
+        |_______| x
+    
+    Parameters
+    ----------
+    x : float
+        Dimension of the base, on the X axis
+    y : float
+        Dimension of the height, on the Y axis
+    r : float
+        Radius of the rouned edge. 
+    zpos : float
+        Position on the Z axis
+
+    Returns
+    --------
+    Shape Wire
+        FreeCAD Wire of a rounded edges rectangle
+    """
 
     #doc = FreeCAD.ActiveDocument
 
@@ -3734,6 +4571,25 @@ def shpRndRectWire (x=1, y=1, r= 0.5, zpos = 0):
 
 # same as shpRndRectWire, but returns a face
 def shp_rndrect_face (x, y, r=0.5, pos_z=0):
+    """ 
+    Same as shpRndRectWire
+    
+    Parameters
+    ----------
+    x : float
+        Dimension of the base, on the X axis
+    y : float
+        Dimension of the height, on the Y axis
+    r : float
+        Radius of the rouned edge. 
+    zpos : float
+        Position on the Z axis
+
+    Returns
+    --------
+    Shape Face
+        FreeCAD Face of a rounded edges rectangle
+    """
 
     shp_RndRectWire = shpRndRectWire (x, y, r=r, zpos= pos_z)
     shpRndRectFace = Part.Face (shp_RndRectWire)
@@ -3788,6 +4644,28 @@ def shp_rndrect_face (x, y, r=0.5, pos_z=0):
 #      
 
 def wire_sim_xy (vecList):
+    """
+    Creates a wire (shape), from a list of points on the positive quadrant of XY
+    the wire is simmetrical to both X and Y
+    ::
+
+                    Y
+                    |_ X
+                
+         __|__  
+        /  |  \ We receive these points
+        |  |  |
+        |  |--------          z=0
+        |     |
+        \_____/  
+  
+    Parameters
+    ----------
+    vecList : list
+        List of FreeCAD Vectors, the have to be in order clockwise
+        if the first or the last points are not on the axis, a new point will be
+        created
+    """
 
     edgList = []
     if vecList[0].x != 0:
@@ -3851,7 +4729,7 @@ def wire_cableturn (d, w, corner_r,
     """
     Creates a electrical wire turn, in any direction
     But it is a wire in FreeCAD, has no volumen
-
+    ::
 
            axis_d
              :
@@ -3879,45 +4757,54 @@ def wire_cableturn (d, w, corner_r,
        pos_o (orig) is at pos_d=0, pos_w=0, marked with o
 
 
- 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     d : float
-        depth/length of the turn
+        Depth/length of the turn
     w : float
-        width of the turn
+        Width of the turn
     corner_r : float
-        radius of the corners
+        Radius of the corners
     conn_d : float
-        depth/length of the connector part
-        0: there is no connecting wire
+        Depth/length of the connector part
+
+            * 0: there is no connecting wire
+
     xtr_conn_d : float
-        if conn_d > 0, there can be and extra length of connector to make 
+        If conn_d > 0, there can be and extra length of connector to make 
         unions, it will not be counted as pos_d = 0
         It will not work well if it is closed
     conn_sep : float
-        separation of the connectors
+        Separation of the connectors
     closed : boolean
-        0 : the ends are not closed
-        1 : the ends are closed
-    axis_d :  FreeCAD.Vector
+        * 0 : the ends are not closed
+        * 1 : the ends are closed
+
+    axis_d : FreeCAD.Vector
         Coordinate System Vector along the depth
-    axis_w :  FreeCAD.Vector
+    axis_w : FreeCAD.Vector
         Coordinate System Vector along the width
     pos_d : int
-        location of pos along the axis_d (0,1,2,3), see drawing
-        0: reference at the beginning of the connector
-        1: reference at the beginning of the turn, at the side of the connector
-        2: reference at the middle of the turn
-        3: reference at the end of the turn
+        Location of pos along the axis_d (0,1,2,3), see drawing
+
+            * 0: reference at the beginning of the connector
+            * 1: reference at the beginning of the turn, at the side of the connector
+            * 2: reference at the middle of the turn
+            * 3: reference at the end of the turn
+
     pos_w : int
-        location of pos along the axis_w (0,1), see drawing
-        0: reference at the center of simmetry
-        1: reference at the end of the turn
-    pos: FreeCAD vector of the position of the reference
+        Location of pos along the axis_w (0,1), see drawing
+        
+            * 0: reference at the center of simmetry
+            * 1: reference at the end of the turn
 
+    pos : FreeCAD.Vector
+        Position of the reference
 
-    returns the shape of the wire
+    Returns
+    --------
+    Shape Wire
+        FreeCAD Wire of a electrical wire
     """
 
     # normalize the axis
@@ -4146,7 +5033,7 @@ def shp_cableturn (d, w, thick_d, corner_r,
     Creates a shape of an electrical cable turn, in any direction
     But it is a shape in FreeCAD
     See function wire_cableturn
-
+    ::
 
            axis_d
              :
@@ -4174,47 +5061,56 @@ def shp_cableturn (d, w, thick_d, corner_r,
        pos_o (orig) is at pos_d=0, pos_w=0, marked with o
 
 
- 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     d : float
-        depth/length of the turn
+        Depth/length of the turn
     w : float
-        width of the turn
+        Width of the turn
     thick_d : float
-        diameter of the wire
+        Diameter of the wire
     corner_r : float
-        radius of the corners
+        Radius of the corners
     conn_d : float
-        depth/length of the connector part
-        0: there is no connecting wire
-    conn_sep : float
-        separation of the connectors
+        Depth/length of the connector part
+            
+            * 0: there is no connecting wire
+
     xtr_conn_d : float
-        if conn_d > 0, there can be and extra length of connector to make 
+        If conn_d > 0, there can be and extra length of connector to make 
         unions, it will not be counted as pos_d = 0
         It will not work well if it is closed
+    conn_sep : float
+        Separation of the connectors
     closed : boolean
-        0 : the ends are not closed
-        1 : the ends are closed
-    axis_d :  FreeCAD.Vector
+        * 0 : the ends are not closed
+        * 1 : the ends are closed
+
+    axis_d : FreeCAD.Vector
         Coordinate System Vector along the depth
-    axis_w :  FreeCAD.Vector
+    axis_w : FreeCAD.Vector
         Coordinate System Vector along the width
     pos_d : int
-        location of pos along the axis_d (0,1,2,3), see drawing
-        0: reference at the beginning of the connector
-        1: reference at the beginning of the turn, at the side of the connector
-        2: reference at the middle of the turn
-        3: reference at the end of the turn
+        Location of pos along the axis_d (0,1,2,3), see drawing
+
+            * 0: reference at the beginning of the connector
+            * 1: reference at the beginning of the turn, at the side of the connector
+            * 2: reference at the middle of the turn
+            * 3: reference at the end of the turn
+
     pos_w : int
-        location of pos along the axis_w (0,1), see drawing
-        0: reference at the center of simmetry
-        1: reference at the end of the turn
-    pos: FreeCAD vector of the position of the reference
+        Location of pos along the axis_w (0,1), see drawing
 
+            * 0: reference at the center of simmetry
+            * 1: reference at the end of the turn
 
-    returns the shape of the wire
+    pos : FreeCAD.Vector
+        Position of the reference
+
+    Returns
+    --------
+    Shape 
+        FreeCAD Shape of a electrical wire
     """
 
     # normalize the axis
@@ -4278,16 +5174,6 @@ def shp_cableturn (d, w, thick_d, corner_r,
 #                        pos_w = 0,
 #                        pos=V0)
 
-
-
-
-
-
-
-
-
-
-
 # ------------------- def wire_beltclamp
 
 def wire_beltclamp (d, w, corner_r,
@@ -4303,6 +5189,7 @@ def wire_beltclamp (d, w, corner_r,
     """
     Creates a wire following 2 pulleys and ending in a belt clamp
     But it is a wire in FreeCAD, has no volumen
+    ::
 
       axis_w
         :
@@ -4368,77 +5255,83 @@ def wire_beltclamp (d, w, corner_r,
          clamp_pull1_d
          
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     pull1_d : float
-        diameter of pulley 1
+        Diameter of pulley 1
     pull2_d : float
-        diameter of pulley 2
+        Diameter of pulley 2
     pull_sep_d : float
-        separation between the 2 pulleys centers along axis_d
+        Separation between the 2 pulleys centers along axis_d
         if positive, pulley 2 is further away in the direction of axis_d
         if negative, pulley 2 is further away opposite to the direction of
-           axis_d
+        axis_d
     pull_sep_w : float
-        separation between the 2 pulleys centers along axis_w
+        Separation between the 2 pulleys centers along axis_w
         if positive, pulley 2 is further away in the direction of axis_w
         if negative, pulley 2 is further away opposite to the direction of
-           axis_w
+        axis_w
     clamp_pull1_d : float
-        separation between the clamp (side closer to the center) and the center
+        Separation between the clamp (side closer to the center) and the center
         of the pulley1
     clamp_pull1_w : float
-        separation between the center of the clamp and the center of the
+        Separation between the center of the clamp and the center of the
         pulley1
         if positive, the clamp is further away in the direction of axis_w
         if negative, the clamp is further away opposite to the direction of
-           axis_w
+        axis_w
     clamp_d : float
-        length of the clamp (same for each clamp)
+        Length of the clamp (same for each clamp)
     clamp_w : float
-        width of inner space (same for each clamp)
+        Width of inner space (same for each clamp)
     clamp_sep : float
-        separation between clamps, the closest ends
+        Separation between clamps, the closest ends
     clamp_cyl_sep : float
-        separation between clamp and the center of the cylinder (or the center)
+        Separation between clamp and the center of the cylinder (or the center)
         of the larger cylinder (when is a belt shape)
     cyl_r : float
         Radius of the cylinder for the belt, if it is not a cylinder but a
         shape of 2 cylinders: < ) , then the raidius of the larger one
-
-    axis_d :  FreeCAD.Vector
+    axis_d : FreeCAD.Vector
         Coordinate System Vector along the depth
-    axis_w :  FreeCAD.Vector
+    axis_w : FreeCAD.Vector
         Coordinate System Vector along the width
     pos_d : int
-        location of pos along the axis_d, see drawing
-        0: center of the pulley 1
-        1: end of pulley 1
-        2: end of clamp 1, closest end to pulley 1
-        3: other end of clamp 1, closest to cylinder
-        4: center of cylinder (or shape < ) 1
-        5: external radius of cylinder 1
-        6: external radius of cylinder 2
-        7: center of cylinder (or shape ( > 2
-        8: end of clamp 2, closest to cylinder
-        9: other end of clamp 2, closest end to pulley 2
-        10: center of pulley 2
-        11: end of pulley 2
+        Location of pos along the axis_d, see drawing
+
+            * 0: center of the pulley 1
+            * 1: end of pulley 1
+            * 2: end of clamp 1, closest end to pulley 1
+            * 3: other end of clamp 1, closest to cylinder
+            * 4: center of cylinder (or shape < ) 1
+            * 5: external radius of cylinder 1
+            * 6: external radius of cylinder 2
+            * 7: center of cylinder (or shape ( > 2
+            * 8: end of clamp 2, closest to cylinder
+            * 9: other end of clamp 2, closest end to pulley 2
+            * 10: center of pulley 2
+            * 11: end of pulley 2
+
     pos_w : int
-        location of pos along the axis_w, see drawing
-        0: center of pulley 1
-        1: center of pulley 2
-        2: end (radius) of pulley 1 along axis_w
-        3: end (radius) of pulley 2 along axis_w
-        4: other end (radius) of pulley 1 opposite to axis_w
-        5: other end (radius) of pulley 2 opposite to axis_w
-        6: clamp space, closest to the pulley
-        7: center of clamp space
-        8: clamp space, far away from the pulley
-    pos: FreeCAD vector of the position of the reference
+        Location of pos along the axis_w, see drawing
 
+            * 0: center of pulley 1
+            * 1: center of pulley 2
+            * 2: end (radius) of pulley 1 along axis_w
+            * 3: end (radius) of pulley 2 along axis_w
+            * 4: other end (radius) of pulley 1 opposite to axis_w
+            * 5: other end (radius) of pulley 2 opposite to axis_w
+            * 6: clamp space, closest to the pulley
+            * 7: center of clamp space
+            * 8: clamp space, far away from the pulley
 
-    returns the shape of the wire
+    pos : FreeCAD.Vector
+        Position of the reference
+
+    Returns
+    --------
+    Shape Wire
+        FreeCAD Wire of a belt clamped
     """
     """
 
@@ -4643,36 +5536,28 @@ def wire_beltclamp (d, w, corner_r,
     """
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def regpolygon_vecl (n_sides, radius, x_angle=0):
 
     """
-    calculates the vertexes of a regular polygon. Returns a list of 
+    Calculates the vertexes of a regular polygon. Returns a list of 
     FreeCAD vectors with the vertexes. The first vertex will be repeated
     at the end, this is needed to close the wire to make the shape
     The polygon will be on axis XY (z=0). 
 
-    Args:
-        n_sides: number of sides of the polygon
-        radius: Circumradius of the polygon
-        x_angle: if zero, the first vertex will be on axis x (y=0)
-                 if x_angle != 0, it will rotated some angle
+    Parameters
+    ----------
+    n_sides : int
+        Number of sides of the polygon
+    radius : float
+        Circumradius of the polygon
+    x_angle : float
+        If zero, the first vertex will be on axis x (y=0)
+        if x_angle != 0, it will rotated some angle
 
-    Returns:
-        a list of FreeCAD.Vector of the vertexes
+    Returns
+    --------
+    List
+        List of FreeCAD.Vector of the vertexes
 
     """
 
@@ -4703,16 +5588,23 @@ def regpolygon_dir_vecl (n_sides, radius, fc_normal, fc_verx1, pos):
     The polygon will have the center in pos. The normal on fc_normal
     The direction of the first vertex on fc_verx_1
 
-    Args:
-        n_sides: number of sides of the polygon
-        radius: Circumradius of the polygon
-        fc_normal: FreeCAD.Vector with the direction of the normal
-        fc_verx1: FreeCAD.Vector of direction of the first vertex
-        pos: FreeCAD.Vector with the position of the center
+    Parameters
+    ----------
+    n_sides : int
+        Number of sides of the polygon
+    radius : float
+        Circumradius of the polygon
+    fc_normal : FreeCAD.Vector
+        Direction of the normal
+    fc_verx1 : FreeCAD.Vector
+        Direction of the first vertex
+    pos : FreeCAD.Vector
+        Position of the center
 
-    Returns:
-        a list of FreeCAD.Vector of the vertexes
-
+    Returns
+    --------
+    List
+        List of FreeCAD.Vector of the vertexes
     """
 
     # normalize the normal direction
@@ -4744,21 +5636,30 @@ def shp_regpolygon_face (n_sides, radius,
                          n_axis='z', v_axis='x',
                          edge_rot=0, pos=V0):
     """
-    makes the shape of a face of a regular polygon
+    Makes the shape of a face of a regular polygon
 
-    Args:
-        n_sides: number of sides of the polygon
-        radius: Circumradius of the polygon
-        n_axis: Axis of the normal: 'x', '-x', 'y', '-y', 'z', '-z'
-        v_axis : perpendicular to n_axis, pointing to the first vertex,
-                 unless, x_angle is != 0. the vertex will be rotated
-                 x_angle degrees for v_axis
-        x_angle: if zero, the first vertex will be on axis v_axis 
-                 if x_angle != 0, it will rotated some angle
-        pos:  FreeCAD.Vector of the position of the center. Default (0,0,0)
+    Parameters
+    ----------
+    n_sides : int
+        Number of sides of the polygon
+    radius  : float
+        Circumradius of the polygon
+    n_axis  : str
+        Axis of the normal: 'x', '-x', 'y', '-y', 'z', '-z'
+    v_axis  : str
+        Perpendicular to n_axis, pointing to the first vertex,
+        unless, x_angle is != 0. the vertex will be rotated
+        x_angle degrees for v_axis
+    x_angle : float
+        If zero, the first vertex will be on axis v_axis 
+        if x_angle != 0, it will rotated some angle
+    pos : FreeCAD.Vector
+        Position of the center. Default (0,0,0)
 
-    Returns:
-        a shape (TopoShape) of the face
+    Returns
+    -------
+    Shape Face
+        FreeCAD Face of a regular polygon
 
     """
 
@@ -4779,15 +5680,23 @@ def shp_regpolygon_dir_face (n_sides, radius,
     Similar to shp_regpolygon_face, but in any direction of the space
     makes the shape of a face of a regular polygon
 
-    Args:
-        n_sides: number of sides of the polygon
-        radius: Circumradius of the polygon
-        fc_normal: FreeCAD.Vector with the direction of the normal
-        fc_verx1: FreeCAD.Vector of direction of the first vertex
-        pos: FreeCAD.Vector of the position of the center. Default (0,0,0)
+    Parameters
+    ----------
+    n_sides : int
+        Number of sides of the polygon
+    radius : float
+        Circumradius of the polygon
+    fc_normal : FreeCAD.Vector
+        Direction of the normal
+    fc_verx1 : FreeCAD.Vector
+        Direction of the first vertex
+    pos : FreeCAD.Vector
+        Position of the center. Default (0,0,0)
 
-    Returns:
-        a shape (TopoShape) of the face
+    Returns
+    --------
+    Shape Face
+        FreeCAD Face of a regular polygon
 
     """
 
@@ -4803,23 +5712,34 @@ def shp_regprism (n_sides, radius, length,
                     centered = 0,
                     edge_rot=0, pos=V0):
     """
-    makes a shape of a face of a regular polygon
+    Makes a shape of a face of a regular polygon
 
-    Args:
-        n_sides: number of sides of the polygon
-        radius: Circumradius of the polygon
-        length: length of the polygon
-        n_axis: Axis of the normal: 'x', '-x', 'y', '-y', 'z', '-z'
-        v_axis : perpendicular to n_axis, pointing to the first vertex,
-                 unless, x_angle is != 0. the vertex will be rotated
-                 x_angle degrees for v_axis
-        centered: 1 if the extrusion is centered on pos (symmetrical)
-        x_angle: if zero, the first vertex will be on axis v_axis 
-                 if x_angle != 0, it will rotated some angle
-        pos:  FreeCAD.Vector of the position of the center. Default (0,0,0)
+    Parameters
+    ----------
+    n_sides : int
+        Number of sides of the polygon
+    radius : float
+        Circumradius of the polygon
+    length : float
+        Length of the polygon
+    n_axis : str
+        Axis of the normal: 'x', '-x', 'y', '-y', 'z', '-z'
+    v_axis : str
+        Perpendicular to n_axis, pointing to the first vertex,
+        unless, x_angle is != 0. the vertex will be rotated
+        x_angle degrees for v_axis
+    centered : int
+        1 if the extrusion is centered on pos (symmetrical)
+    x_angle : float
+        if zero, the first vertex will be on axis v_axis 
+        if x_angle != 0, it will rotated some angle
+    pos : FreeCAD.Vector
+        Position of the center. Default (0,0,0)
 
-    Returns:
-        a shape (TopoShape) of the regular prism
+    Returns
+    --------
+    Shape
+        FreeCAD Shape of a regular prism
 
     """
 
@@ -4846,23 +5766,36 @@ def shp_regprism_xtr (n_sides, radius, length,
     On top is easy, but at the bottom, the reference will be no counting that
     extra lenght added. This is useful to make boolean difference
 
-    Args:
-        n_sides: number of sides of the polygon
-        radius: Circumradius of the polygon
-        length: length of the polygon
-        n_axis: Axis of the normal: 'x', '-x', 'y', '-y', 'z', '-z'
-        v_axis : perpendicular to n_axis, pointing to the first vertex,
-                 unless, x_angle is != 0. the vertex will be rotated
-                 x_angle degrees for v_axis
-        centered: 1 if the extrusion is centered on pos (symmetrical)
-        xtr_top: add an extra lenght on top. If 0, nothing added
-        xtr_bot: add an extra lenght at the bottom. If 0, nothing added
-        x_angle: if zero, the first vertex will be on axis v_axis 
-                 if x_angle != 0, it will rotated some angle
-        pos:  FreeCAD.Vector of the position of the center. Default (0,0,0)
+    Parameters
+    ----------
+    n_sides : int
+        Number of sides of the polygon
+    radius : float
+        Circumradius of the polygon
+    length : float
+        Length of the polygon
+    n_axis : str 
+        Axis of the normal: 'x', '-x', 'y', '-y', 'z', '-z'
+    v_axis : str
+        Perpendicular to n_axis, pointing to the first vertex,
+        unless, x_angle is != 0. the vertex will be rotated
+        x_angle degrees for v_axis
+    centered : int
+        1 if the extrusion is centered on pos (symmetrical)
+    xtr_top : float
+        Add an extra lenght on top. If 0, nothing added
+    xtr_bot : float
+        Add an extra lenght at the bottom. If 0, nothing added
+    x_angle : float
+        If zero, the first vertex will be on axis v_axis 
+        if x_angle != 0, it will rotated some angle
+    pos : FreeCAD.Vector
+        Position of the center. Default (0,0,0)
 
-    Returns:
-        a shape (TopoShape) of the regular prism
+    Returns
+    --------
+    Shape 
+        FreeCAD Shape of a regular prism
 
     """
 
@@ -4900,19 +5833,31 @@ def shp_regprism_dirxtr (n_sides, radius, length,
     On top is easy, but at the bottom, the reference will be no counting that
     extra lenght added. This is useful to make boolean difference
 
-    Args:
-        n_sides: number of sides of the polygon
-        radius: Circumradius of the polygon
-        length: length of the polygon
-        fc_normal: FreeCAD.Vector with the direction of the normal
-        fc_verx1: FreeCAD.Vector of direction of the first vertex
-        centered: 1 if the extrusion is centered on pos (symmetrical)
-        xtr_top: add an extra lenght on top. If 0, nothing added
-        xtr_bot: add an extra lenght at the bottom. If 0, nothing added
-        pos:  FreeCAD.Vector of the position of the center. Default (0,0,0)
+    Parameters
+    ----------
+    n_sides : int
+        Number of sides of the polygon
+    radius : float
+        Circumradius of the polygon
+    length : float
+        Length of the polygon
+    fc_normal : FreeCAD.Vector
+        Direction of the normal
+    fc_verx1 : FreeCAD.Vector
+        Direction of the first vertex
+    centered : int
+        1 if the extrusion is centered on pos (symmetrical)
+    xtr_top : float
+        Add an extra lenght on top. If 0, nothing added
+    xtr_bot : float
+        Add an extra lenght at the bottom. If 0, nothing added
+    pos : FreeCAD.Vector
+        Position of the center. Default (0,0,0)
 
-    Returns:
-        a shape (TopoShape) of the regular prism
+    Returns
+    --------
+    Shape 
+        FreeCAD Shape of a regular prism
 
     """
 
@@ -4952,81 +5897,10 @@ def shp_cylhole_bolthole (r_out, r_in, h,
 
     Also has a number of nbolt holes along a radius r_bolt2cen
     the bolts a equi spaced depending on the number
+    ::
 
-    Returns: a TopoShape
-
-    Parameters:
-    -----------
-    r_out : float
-        radius of the outside cylinder
-    r_in : float
-        radius of the inner hole of the cylinder
-    h : float
-        height of the cylinder
-    n_bolt : int
-        number of bolt holes, if zero no bolt holes
-    d_bolt : float
-        diameter of the bolt holes
-    r_bolt2cen : float
-        distance (radius) from the cylinder center to the bolt hole centers
-    bolt_axis_ra : int
-        1: the first bolt will be on axis ra
-        0: the first bolt will be rotated half of the angle between to bolt
-           holes -> centered on the side
-    axis_h : FreeCAD.Vector
-        vector along the cylinder height
-    axis_ra : FreeCAD.Vector
-        vector along the cylinder radius, a direction perpendicular to axis_h
-        it is not necessary if pos_ra == 0
-        It can be None, but if None, axis_rb has to be None
-    axis_rb : FreeCAD.Vector
-        vector along the cylinder radius,
-        a direction perpendicular to axis_h and axis_ra
-        it is not necessary if pos_ra == 0
-        It can be None
-    pos_h : int
-        location of pos along axis_h (0, 1)
-        0: the cylinder pos is centered along its height, not considering
-           xtr_top, xtr_bot
-        1: the cylinder pos is at its base (not considering xtr_h)
-    pos_ra : int
-        location of pos along axis_ra (0, 1)
-        0: pos is at the circunference center
-        1: pos is at the inner circunsference, on axis_ra, at r_in from the
-           circle center (not at r_in + xtr_r_in)
-        2: pos is at the center of the bolt hole (one of them)
-        3: pos is at the outer circunsference, on axis_ra, at r_out from the
-           circle center (not at r_out + xtr_r_out)
-    pos_rb : int
-        location of pos along axis_ra (0, 1)
-        0: pos is at the circunference center
-        1: pos is at the inner circunsference, on axis_rb, at r_in from the
-           circle center (not at r_in + xtr_r_in)
-        2: pos is at the center of the bolt hole (one of them)
-        3: pos is at the outer circunsference, on axis_rb, at r_out from the
-           circle center (not at r_out + xtr_r_out)
-    xtr_top : float
-        Extra height on top, it is not taken under consideration when
-        calculating the cylinder center along the height
-    xtr_bot : float
-        Extra height at the bottom, it is not taken under consideration when
-        calculating the cylinder center along the height or the position of
-        the base
-    xtr_r_in : float
-        Extra length of the inner radius (hollow cylinder),
-        it is not taken under consideration when calculating pos_ra or pos_rb.
-        It can be negative, so this inner radius would be smaller
-    xtr_r_out : float
-        Extra length of the outer radius
-        it is not taken under consideration when calculating pos_ra or pos_rb.
-        It can be negative, so this outer radius would be smaller
-    pos : FreeCAD.Vector
-        Position of the cylinder, taking into account where the center is
-
-
-    
-    pos_h = 1, pos_ra = 0, pos_rb = 0
-    pos at 1:
+     pos_h = 1, pos_ra = 0, pos_rb = 0
+     pos at 1:
             axis_rb
               :
               :
@@ -5058,8 +5932,7 @@ def shp_cylhole_bolthole (r_out, r_in, h,
            +
           r_out
          
-
-    Values for pos_ra  (similar to pos_rb along it axis)
+     Values for pos_ra  (similar to pos_rb along it axis)
 
 
              axis_h
@@ -5087,6 +5960,85 @@ def shp_cylhole_bolthole (r_out, r_in, h,
            +
           r_out
 
+    Parameters
+    ----------
+    r_out : float
+        Radius of the outside cylinder
+    r_in : float
+        Radius of the inner hole of the cylinder
+    h : float
+        Height of the cylinder
+    n_bolt : int
+        Number of bolt holes, if zero no bolt holes
+    d_bolt : float
+        Diameter of the bolt holes
+    r_bolt2cen : float
+        Distance (radius) from the cylinder center to the bolt hole centers
+    bolt_axis_ra : int
+
+        * 1: the first bolt will be on axis ra
+        * 0: the first bolt will be rotated half of the angle between to bolt
+          holes -> centered on the side
+          
+    axis_h : FreeCAD.Vector
+        Vector along the cylinder height
+    axis_ra : FreeCAD.Vector
+        Vector along the cylinder radius, a direction perpendicular to axis_h
+        it is not necessary if pos_ra == 0
+        It can be None, but if None, axis_rb has to be None
+    axis_rb : FreeCAD.Vector
+        Vector along the cylinder radius, a direction perpendicular to axis_h and axis_ra
+        it is not necessary if pos_ra == 0
+        It can be None
+    pos_h : int
+        Location of pos along axis_h (0, 1)
+
+            * 0: the cylinder pos is centered along its height, not considering
+              xtr_top, xtr_bot
+            * 1: the cylinder pos is at its base (not considering xtr_h)
+
+    pos_ra : int
+        Location of pos along axis_ra (0, 1)
+
+            * 0: pos is at the circunference center
+            * 1: pos is at the inner circunsference, on axis_ra, at r_in from the
+              circle center (not at r_in + xtr_r_in)
+            * 2: pos is at the center of the bolt hole (one of them)
+            * 3: pos is at the outer circunsference, on axis_ra, at r_out from the
+              circle center (not at r_out + xtr_r_out)
+
+    pos_rb : int
+        Location of pos along axis_ra (0, 1)
+
+            * 0: pos is at the circunference center
+            * 1: pos is at the inner circunsference, on axis_rb, at r_in from the
+              circle center (not at r_in + xtr_r_in)
+            * 2: pos is at the center of the bolt hole (one of them)
+            * 3: pos is at the outer circunsference, on axis_rb, at r_out from the
+              circle center (not at r_out + xtr_r_out)
+
+    xtr_top : float
+        Extra height on top, it is not taken under consideration when
+        calculating the cylinder center along the height
+    xtr_bot : float
+        Extra height at the bottom, it is not taken under consideration when
+        calculating the cylinder center along the height or the position of
+        the base
+    xtr_r_in : float
+        Extra length of the inner radius (hollow cylinder),
+        it is not taken under consideration when calculating pos_ra or pos_rb.
+        It can be negative, so this inner radius would be smaller
+    xtr_r_out : float
+        Extra length of the outer radius
+        it is not taken under consideration when calculating pos_ra or pos_rb.
+        It can be negative, so this outer radius would be smaller
+    pos : FreeCAD.Vector
+        Position of the cylinder, taking into account where the center is
+
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape of a cylinder with hole
    """
    
 
@@ -5189,7 +6141,27 @@ def shp_cylhole_bolthole (r_out, r_in, h,
 #    It doesn't have to be on an axis, it can be diagonally
 
 def shp_extrud_face (face, length, vec_extr_axis, centered=0):
+    """
+    Extrudes a face on any plane
 
+    Parameters
+    ----------
+    face : FreeCAD.Face
+        Face to be extruded. 
+    length : float
+        Extrusion length
+    centered : int
+        1 if the extrusion is centered (simetrical) 0 if it is not
+    vec_extr_axis : FreeCAD.Vector
+        Typically, it will be the same as vec_facenormal.
+        by default, if it is 0, it will be equal to vec_facenormal
+        It doesn't have to be on an axis, it can be diagonally
+
+    Returns
+    --------
+    Shape 
+        FreeCAD Shape of the Face
+    """
     
     # Normalize the extrusion vector
     vec_extr = DraftVecUtils.scaleTo(vec_extr_axis,length)
@@ -5237,7 +6209,46 @@ def shp_extrud_face (face, length, vec_extr_axis, centered=0):
 
 def shp_extrud_face_rot (face, vec_facenormal, vec_edgx, length, centered=0,
                      vec_extr_axis = 0):
+    """
+    Extrudes a face that is on plane XY, includes a rotation
+    ::
 
+            Y
+            :
+        ____:___           
+        \   :   |
+         \  :...|...... X
+          \     |
+           \____|
+
+
+    Parameters
+    ----------
+    face : FreeCAD.Face
+        Face to be extruded. On plane XY
+    vec_facenormal : FreeCAD.Vector
+        Indicates where the normal of the 
+        face will point. The normal of the original face is VZ, but this 
+        function may rotate it depending on this argument
+        It has to be on an axis: 'x', 'y', ..
+    vec_edgx : FreeCAD.Vector
+        Indicates where the edge X will be after
+        the rotation
+        It has to be on an axis: 'x', 'y', ..
+    length : float
+        Extrusion length
+    centered : int
+        1 if the extrusion is centered (simetrical) 0 if it is not
+    vec_extr_axis : FreeCAD.Vector
+        Typically, it will be the same as vec_facenormal.
+        by default, if it is 0, it will be equal to vec_facenormal
+        It doesn't have to be on an axis, it can be diagonally
+    
+    Returns
+    --------
+    Shape 
+        FreeCAD Shape of a face
+    """
     
     # since vec2 of calc_rot is referenced to VNZ, vec_facenomal is negated
     vec_nfacenormal = DraftVecUtils.neg(vec_facenormal)
@@ -5273,22 +6284,40 @@ def addBolt (r_shank, l_bolt, r_head, l_head,
     Creates the hole for the bolt shank and the head or the nut
     Tolerances have to be included
 
-    Args:
-        r_shank: Radius of the shank (tolerance included)
-        l_bolt: total length of the bolt: head & shank
-        r_head: radius of the head (tolerance included)
-        l_head: length of the head
-        hex_head: inidicates if the head is hexagonal or rounded
-              1: hexagonal
-              0: rounded
-        h_layer3d: height of the layer for printing, if 0, means that the
-                   support is not needed
-        extra: 1 if you want 1 mm on top and botton to avoid cutting on the same
-               plane pieces after making cuts (boolean difference) 
-        support: 1 if you want to include a triangle between the shank and the
-                 head to support the shank and not building the head on the
-                 air using kcomp.LAYER3D_H
-        headdown: 1 if the head is down. 0 if it is up
+    Parameters
+    ----------
+    r_shank : float
+        Radius of the shank (tolerance included)
+    l_bolt : float
+        Total length of the bolt: head & shank
+    r_head : float
+        Radius of the head (tolerance included)
+    l_head : float
+        Length of the head
+    hex_head : int
+        Inidicates if the head is hexagonal or rounded      
+            * 1: hexagonal
+            * 0: rounded
+
+    h_layer3d : float
+        Height of the layer for printing, if 0, means that the
+        support is not needed
+    extra : int
+        1 if you want 1 mm on top and botton to avoid cutting on the same
+        plane pieces after making cuts (boolean difference) 
+    support : int
+        1 if you want to include a triangle between the shank and the
+        head to support the shank and not building the head on the
+        air using kcomp.LAYER3D_H
+    headdown : int
+        * 1 if the head is down. 
+        * 0 if it is up
+
+
+    Returns
+    --------
+    FreeCAD Object
+        FreeCAD Object of a bolt
     """
 
     # we have to bring the active document
@@ -5372,15 +6401,10 @@ def addBolt (r_shank, l_bolt, r_head, l_head,
     bolt =  doc.addObject("Part::MultiFuse", name)
     bolt.Shapes = elements
     return bolt
-"""
-    bolt =  doc.addObject("Part::Fuse", name)
-    bolt.Base = shank
-    bolt.Tool = head
-"""
 
-
-
-
+    # bolt =  doc.addObject("Part::Fuse", name)
+    # bolt.Base = shank
+    # bolt.Tool = head
 
 def shp_bolt (r_shank, l_bolt, r_head, l_head,
               hex_head = 0,
@@ -5398,26 +6422,40 @@ def shp_bolt (r_shank, l_bolt, r_head, l_head,
 
     It is referenced at the end of the head
 
-    Args:
-        r_shank: Radius of the shank (tolerance included)
-        l_bolt: total length of the bolt: head & shank
-        r_head: radius of the head (tolerance included)
-        l_head: length of the head
-        hex_head: inidicates if the head is hexagonal or rounded
-              1: hexagonal
-              0: rounded
-        h_layer3d: height of the layer for printing, if 0, means that the
-                   support is not needed
-        xtr_head: 1 if you want 1 mm on the head to avoid cutting on the same
-               plane pieces after making cuts (boolean difference) 
-        xtr_shank: 1 if you want 1 mm at the opposite side of the head to
-               avoid cutting on the same plane pieces after making cuts
-               (boolean difference) 
-        support: 1 if you want to include a triangle between the shank and the
-                 head to support the shank and not building the head on the
-                 air using kcomp.LAYER3D_H
-        axis: 'x', '-x', 'y', '-y', 'z', '-z': defines the orientation
-           for example:
+    Parameters
+    ----------
+    r_shank : float
+        Radius of the shank (tolerance included)
+    l_bolt : float
+        Total length of the bolt: head & shank
+    r_head : float
+        Radius of the head (tolerance included)
+    l_head : float
+        Length of the head
+    hex_head : int
+        Inidicates if the head is hexagonal or rounded
+
+            * 1: hexagonal
+            * 0: rounded
+
+    h_layer3d : float
+        Height of the layer for printing, if 0, means that the
+        support is not needed
+    xtr_head : int
+        1 if you want 1 mm on the head to avoid cutting on the same
+        plane pieces after making cuts (boolean difference) 
+    xtr_shank : int
+        1 if you want 1 mm at the opposite side of the head to
+        avoid cutting on the same plane pieces after making cuts
+        (boolean difference) 
+    support : int
+        1 if you want to include a triangle between the shank and the
+        head to support the shank and not building the head on the
+        air using kcomp.LAYER3D_H
+    axis : str
+        'x', '-x', 'y', '-y', 'z', '-z': Defines the orientation. For example:
+        ::
+
            axis = '-z':              Z
                                      :
                          ....... ____:____
@@ -5441,18 +6479,21 @@ def shp_bolt (r_shank, l_bolt, r_head, l_head,
              xtr_head=1  .......|    :....|...... X
                          .......|____:____|
 
-        hex_ref: In case of a hexagonal head, this will indicate the
-                 axis that the first vertex of the nut will point
-                 hex_ref has to be perpendicular to axis, if not, it will be
-                 changed
-        hex_rot_angle: Angle in degrees. In case of a hexagonal head, it will
-           indicate the angle of rotation of the hexagon referenced to hex_ref.
+    hex_ref : str
+        In case of a hexagonal head, this will indicate the
+        axis that the first vertex of the nut will point
+        hex_ref has to be perpendicular to axis, if not, it will be
+        changed
+    hex_rot_angle : float
+        Angle in degrees. In case of a hexagonal head, it will
+        indicate the angle of rotation of the hexagon referenced to hex_ref.
+    pos : FreeCAD.Vector
+        Position of the center of the head of the bolt
 
-        pos: FreeCAD.Vector of the position of the center of the head of the
-              bolt
-
-
-
+    Returns
+    --------
+    Shape 
+        FreeCAD Shape of a bolt
     """
 
     elements = []
@@ -5561,26 +6602,40 @@ def shp_bolt_dir (r_shank, l_bolt, r_head, l_head,
 
     It is referenced at the end of the head
 
-    Args:
-        r_shank: Radius of the shank (tolerance included)
-        l_bolt: total length of the bolt: head & shank
-        r_head: radius of the head (tolerance included)
-        l_head: length of the head
-        hex_head: inidicates if the head is hexagonal or rounded
-              1: hexagonal
-              0: rounded
-        h_layer3d: height of the layer for printing, if 0, means that the
-                   support is not needed
-        xtr_head: 1 if you want 1 mm on the head to avoid cutting on the same
-               plane pieces after making cuts (boolean difference) 
-        xtr_shank: 1 if you want 1 mm at the opposite side of the head to
-               avoid cutting on the same plane pieces after making cuts
-               (boolean difference) 
-        support: 1 if you want to include a triangle between the shank and the
-                 head to support the shank and not building the head on the
-                 air using kcomp.LAYER3D_H
-        fc_normal: FreeCAD.Vector: defines the orientation
-           for example:
+    Parameters
+    ----------
+    r_shank : float 
+        Radius of the shank (tolerance included)
+    l_bolt : float 
+        Total length of the bolt: head & shank
+    r_head : float 
+        Radius of the head (tolerance included)
+    l_head : float 
+        Length of the head
+    hex_head : int 
+        Inidicates if the head is hexagonal or rounded
+
+            * 1: hexagonal
+            * 0: rounded
+
+    h_layer3d : float 
+        Height of the layer for printing, if 0, means that the
+        support is not needed
+    xtr_head : int 
+        1 if you want 1 mm on the head to avoid cutting on the same
+        plane pieces after making cuts (boolean difference) 
+    xtr_shank : int 
+        1 if you want 1 mm at the opposite side of the head to
+        avoid cutting on the same plane pieces after making cuts
+        (boolean difference) 
+    support : int 
+        1 if you want to include a triangle between the shank and the
+        head to support the shank and not building the head on the
+        air using kcomp.LAYER3D_H
+    fc_normal : FreeCAD.Vector 
+        Defines the orientation. For example:
+        ::
+
            fc_normal = (0,0,-1):     Z
                                      :
                          ....... ____:____
@@ -5595,8 +6650,6 @@ def shp_bolt_dir (r_shank, l_bolt, r_head, l_head,
                                      :
                                    fc_normal
 
-
-
            fc_normal = (0,0,1):      Z
                                      :
                                      :
@@ -5609,20 +6662,24 @@ def shp_bolt_dir (r_shank, l_bolt, r_head, l_head,
              xtr_head=1  .......|    :....|...... X
                          .......|____:____|
 
-        fc_verx1: In case of a hexagonal head, this will indicate the
-                 axis that the first vertex of the nut will point
-                 it has to be perpendicular to fc_normal, 
+    fc_verx1 : FreeCAD.Vector 
+        In case of a hexagonal head, this will indicate the
+        axis that the first vertex of the nut will point
+        it has to be perpendicular to fc_normal, 
+    pos_n : int
+        Location of pos along the normal, at the cylinder center
 
-        pos_n: location of pos along the normal, at the cylinder center
-            0: at the top of the head (excluding xtr_head)
-            1: at the union of the head and the shank
-            2: at the end of the shank (excluding xtr_shank)
+            * 0: at the top of the head (excluding xtr_head)
+            * 1: at the union of the head and the shank
+            * 2: at the end of the shank (excluding xtr_shank)
 
-        pos: FreeCAD.Vector of the position of the center of the head of the
-              bolt
+    pos : FreeCAD.Vector 
+        Position of the center of the head of the bolt
 
-
-
+    Returns
+    -------
+    Shape
+        FreeCAD Shape of a bolt
     """
 
     elements = []
@@ -5747,25 +6804,43 @@ def addBoltNut_hole (r_shank,        l_bolt,
     The bolt head will be at the botton, and the nut will be on top
     Tolerances have to be already included in the argments values
 
-    Args:
-        r_shank: Radius of the shank (tolerance included)
-        l_bolt: total length of the bolt: head & shank
-        r_head: radius of the head (tolerance included)
-        l_head: length of the head
-        r_nut : radius of the nut (tolerance included)
-        l_nut : length of the nut. It doesn't have to be the length of the nut
-                but how long you want the nut to be inserted
-        hex_head: inidicates if the head is hexagonal or rounded
-                  1: hexagonal
-                  0: rounded
-        zpos_nut: inidicates the height position of the nut, the lower part     
-        h_layer3d: height of the layer for printing,
-                   if 0, means that the support is not needed
-        extra: 1 if you want 1 mm on top and botton to avoid cutting on the same
-                 plane pieces after makeing differences 
-        support: 1 if you want to include a triangle between the shank and the
-                 head to support the shank and not building the head on the air
-                 using kcomp.LAYER3D_H
+    Parameters
+    ----------
+    r_shank : float
+        Radius of the shank (tolerance included)
+    l_bolt : float
+        Total length of the bolt: head & shank
+    r_head : float
+        Radius of the head (tolerance included)
+    l_head : float
+        Length of the head
+    r_nut : float
+        Radius of the nut (tolerance included)
+    l_nut : float
+        Length of the nut. It doesn't have to be the length of the nut
+        but how long you want the nut to be inserted
+    hex_head : int
+        Inidicates if the head is hexagonal or rounded         
+            * 1: hexagonal
+            * 0: rounded
+
+    zpos_nut : float
+        Inidicates the height position of the nut, the lower part     
+    h_layer3d : float
+        Height of the layer for printing,
+        if 0, means that the support is not needed
+    extra : int
+        1 if you want 1 mm on top and botton to avoid cutting on the same
+        plane pieces after makeing differences 
+    support : int
+        1 if you want to include a triangle between the shank and the
+        head to support the shank and not building the head on the air
+        using kcomp.LAYER3D_H
+    
+    Returns
+    --------
+    FreeCAD Object
+        FreeCAD Object of a Nut Hole
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -5847,43 +6922,66 @@ def shp_boltnut_dir_hole (r_shank,        l_bolt,
                           pos = V0):
 
     """
-    similar to addBoltNut_hole, but in any direction and creates shapes,
+    Similar to addBoltNut_hole, but in any direction and creates shapes,
     not FreeCAD Objects
     Creates the hole for the bolt shank, the head and the nut.
     The bolt head will be at the botton, and the nut will be on top
     Tolerances have to be already included in the argments values
 
-    Args:
-        r_shank: Radius of the shank (tolerance included)
-        l_bolt: total length of the bolt: head & shank
-        r_head: radius of the head (tolerance included)
-        l_head: length of the head
-        r_nut : radius of the nut (tolerance included)
-        l_nut : length of the nut. It doesn't have to be the length of the nut
-                but how long you want the nut to be inserted
-        hex_head: inidicates if the head is hexagonal or rounded
-                  1: hexagonal
-                  0: rounded
-        xtr_head: 1 if you want an extra size on the side of the head
-                   to avoid cutting on the same plane pieces after making
-                   differences 
-        xtr_nut: 1 if you want an extra size on the side of the nut
-                   to avoid cutting on the same plane pieces after making
-                   differences 
-        supp_head: 1 if you want to include a triangle between the shank and the
-                 head to support the shank and not building the head on the air
-                 using kcomp.LAYER3D_H
-        supp_nut: 1 if you want to include a triangle between the shank and the
-                 nut to support the shank and not building the nut on the air
-                 using kcomp.LAYER3D_H
-        headstart: if on pos you have the head, or if you have it on the
-                   other end
-        fc_normal: direction of the bolt
-        fc_verx1:  direction of the first vertex of the hexagonal nut.
-                 Perpendicular to fc_normal. If not perpendicular or zero,
-                 means that it doesn't matter which direction and the function
-                 will obtain one perpendicular direction
-        pos: position of the head (if headstart) or of the nut 
+    Parameters
+    ----------
+    r_shank : float
+        Radius of the shank (tolerance included)
+    l_bolt : float
+        Total length of the bolt: head & shank
+    r_head : float
+        Radius of the head (tolerance included)
+    l_head : float
+        Length of the head
+    r_nut : float
+        Radius of the nut (tolerance included)
+    l_nut : float
+        Length of the nut. It doesn't have to be the length of the nut
+        but how long you want the nut to be inserted
+    hex_head : int
+        Inidicates if the head is hexagonal or rounded
+
+            * 1: hexagonal
+            * 0: rounded
+
+    xtr_head : int
+        1 if you want an extra size on the side of the head
+        to avoid cutting on the same plane pieces after making
+        differences 
+    xtr_nut : int
+        1 if you want an extra size on the side of the nut
+        to avoid cutting on the same plane pieces after making
+        differences 
+    supp_head : int
+        1 if you want to include a triangle between the shank and the
+        head to support the shank and not building the head on the air
+        using kcomp.LAYER3D_H
+    supp_nut : int
+        1 if you want to include a triangle between the shank and the
+        nut to support the shank and not building the nut on the air
+        using kcomp.LAYER3D_H
+    headstart : int
+        If on pos you have the head, or if you have it on the
+        other end
+    fc_normal : FreeCAD.Vector
+        Direction of the bolt
+    fc_verx1 : FreeCAD.Vector
+        Direction of the first vertex of the hexagonal nut.
+        Perpendicular to fc_normal. If not perpendicular or zero,
+        means that it doesn't matter which direction and the function
+        will obtain one perpendicular direction
+    pos : FreeCAD.Vector
+        Position of the head (if headstart) or of the nut 
+    
+    Returns
+    --------
+    FreeCAD Object
+        FreeCAD Object of a Nut Hole
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -6025,7 +7123,53 @@ def shp_boltnut_dir_hole (r_shank,        l_bolt,
 # obtains the points of the aluminum profile positive quadrant
 
 def aluprof_vec (width, thick, slot, insquare):
+    """
+    Creates a wire (shape), that is an approximation of a generic alum
+    profile extrusion 
+    ::
 
+                    Y
+                    |_ X
+        :----- width ----:
+        :       slot     :
+        :      :--:      :
+        :______:  :______:
+        |    __|  |__    |
+        | |\ \      / /| |
+        |_| \ \____/ / |_| ...........
+            |        | ......        insquare
+            |  (  )  | ......indiam  :
+         _  |  ____  | ..............:
+        | | / /    \ \ | |
+        | |/ /_    _\ \| | .... 
+        |______|  |______| ....thick
+
+                                    Y values:
+        :  3 _____ 4
+        :   |_1  7| ................... 1,2: width/2 - thick
+        :  2 / /|_| ....................7: width/2- (thick+thick*cos45)
+        :___/ / 6  5 .....................              5,6: slot/2.
+        :  0  |8     :8:insquare/2-thick*cos45  0:insquare/2  :
+        :.....|......:..........................:.............:
+
+    Parameters
+    ----------
+    width : float
+        The total width of the profile, it is a square
+    thick : float
+        The thickness of the side
+    slot : float
+        The width of the rail 
+    insquare : float
+        The width of the inner square
+    indiam : float
+        The diameter of the inner hole
+
+    Returns
+    --------
+    Vector
+        The points of the aluminum profile positive quadrant
+    """
 
     y = []
     y.append(insquare/2)               # y0, x8
@@ -6067,28 +7211,11 @@ def shp_aluwire_dir (width, thick, slot, insquare,
                     fc_axis_x=VX, fc_axis_y=VY,
                     ref_x = 1, ref_y = 1,
                     pos=V0):
-
-
     """
     Creates a wire (shape), that is an approximation of a generic alum
     profile extrusion. Creates it in any position an any direction
-    width: the total width of the profile, it is a square
-    thick: the thickness of the side
-    slot: the width of the rail 
-    insquare: the width of the inner square
-    indiam: the diameter of the inner hole
-    fc_axis_x : is a generic X axis, can be any
-        1: reference (zero) at the center
-        2: reference (zero) at the side, the other end side will be on the
-           direction of fc_axis_x
-    fc_axis_y : is a generic Y axis, can be any perpendicular to fc_axis_y
-        1: reference (zero) at the center
-        2: reference (zero) at the side, the other end side will be on the
-           direction of fc_axis_y
-    ref_x: reference (zero) on the fc_axis_x
-    ref_y: reference (zero) on the fc_axis_1
-    pos: position of the center
-    
+    ::
+
                       Y
                       |_ X
          :----- width ----:
@@ -6126,7 +7253,6 @@ def shp_aluwire_dir (width, thick, slot, insquare,
                 :
                 :
    
-   
      ref_x= 2 ; ref_y = 1 (the zero of axis_y is at the center)
                           (the zero of axis_x is at one side)
 
@@ -6143,6 +7269,43 @@ def shp_aluwire_dir (width, thick, slot, insquare,
                 :
                 :
 
+    Parameters
+    ----------
+    width : float
+        Total width of the profile, it is a square
+    thick : float
+        Thickness of the side
+    slot : float
+        Width of the rail 
+    insquare : float
+        Width of the inner square
+    indiam : float
+        Diameter of the inner hole
+    fc_axis_x : int
+        Is a generic X axis, can be any
+
+            * 1: reference (zero) at the center
+            * 2: reference (zero) at the side, the other end side will be on the
+              direction of fc_axis_x
+
+    fc_axis_y : int
+        Is a generic Y axis, can be any perpendicular to fc_axis_y
+
+            * 1: reference (zero) at the center
+            * 2: reference (zero) at the side, the other end side will be on the
+              direction of fc_axis_y
+
+    ref_x : float
+        Reference (zero) on the fc_axis_x
+    ref_y : float
+        Reference (zero) on the fc_axis_1
+    pos : FreeCAD.Vector
+        Position of the center
+    
+    Returns
+    --------
+    Shape Wire
+        FreeCAD Shape Wire of a aluminium profile
     """
 
     axis_x = DraftVecUtils.scaleTo(fc_axis_x, 1)
@@ -6246,6 +7409,58 @@ def shp_aluwire_dir (width, thick, slot, insquare,
 #                       \/
 
 class NutHole (object):
+    """
+    Adding a Nut hole (hexagonal) with a prism attached to introduce the nut.
+    Tolerances are included
+    ::
+    
+        0               1       
+         /\              __
+        |  |            |  |
+        |  |            |  |
+        |__|__ z = 0    |  | -- z = 0
+                         \/
+
+    Parameters
+    ----------
+    nut_r : float
+        Circumradius of the hexagon
+    nut_h : float
+        Height of the nut, usually larger than the actual nut height, to be
+        able to introduce it
+    hole_h : float
+        The hole height, from the center of the hexagon to the side it will
+        see light
+    name : str
+        Name of the object (string)
+    extra : int
+        * 1 if you want 1 mm out of the hole, to cut
+
+    nuthole_x : int 
+        * 1 : if you want that the nut height to be along the X axis
+          and the 2*apotheme on the Y axis
+          ie. Nut hole facing X
+        * 0 : if you want that the nut height to be along the Y axis
+          ie. Nut hole facing Y
+
+    cx : int
+        * 1 : if you want the coordinates referenced to the x center of the piece
+          it can be done because it is a new shape formed from the union
+
+    cy : int
+        * 1 : if you want the coordinates referenced to the y center of the piece
+
+    holedown : int
+        I THINK IS THE OTHER WAY; CHECK
+            * 0: the z0 is the bottom of the square (hole)
+            * 1: the z0 is the center of the hexagon (nut)
+              it can be done because it is a new shape formed from the union
+    
+    Returns
+    --------
+    FreeCAD Object
+        FreeCAD object of a nut hole
+    """
 
     def __init__(self, nut_r, nut_h, hole_h, name,
                  extra = 1, nuthole_x = 1, cx=0, cy=0, holedown = 0):
@@ -6334,23 +7549,11 @@ def shp_nuthole (nut_r, nut_h, hole_h,
                  ref_hole_ax = 1,
                  pos = V0):
     """
-    similar to NutHole, but creates a shape, in any direction
-    add a Nut hole (hexagonal) with a prism attached to introduce the nut
+    Similar to NutHole, but creates a shape, in any direction.
+    Add a Nut hole (hexagonal) with a prism attached to introduce the nut
     tolerances are included
-    nut_r : circumradius of the hexagon
-    nut_h : height of the nut, usually larger than the actual nut height, to be
-           able to introduce it
-    hole_h: the hole height, from the center of the hexagon to the side it will
-           see light
-    xtr_nut:  1 if you want 1 mm out of the hole, to cut
-    xtr_hole:  1 if you want 1 mm out of the hole, to cut
-    fc_axis_nut: axis of the shank of the nut
-    fc_axis_hole: axis of the shank of the nut
-    ref_nut_ax: if it is referenced to the center, symmetrical point on the
-                on the fc_axis_nut
-    ref_hole_ax: if it is referenced at the center of the shank, or at the 
-                 end of the hole, not counting extra
- 
+    ::
+
          fc_axis_hole               fc_axis_hole
             :                        :   
            _:_                      _:_ ..
@@ -6397,6 +7600,37 @@ def shp_nuthole (nut_r, nut_h, hole_h,
           |___|.....           |   |    the shank
                     xtr_nut....|___|
 
+    Parameters
+    ----------
+    nut_r : float
+        Circumradius of the hexagon
+    nut_h : float
+        Height of the nut, usually larger than the actual nut height, to be
+        able to introduce it
+    hole_h : float
+        The hole height, from the center of the hexagon to the side it will
+        see light
+    xtr_nut : int
+        1 if you want 1 mm out of the hole, to cut
+    xtr_hole : int
+        1 if you want 1 mm out of the hole, to cut
+    fc_axis_nut : FreeCAD.Vector
+        Axis of the shank of the nut
+    fc_axis_hole : FreeCAD.Vector
+        Axis of the shank of the nut
+    ref_nut_ax : int
+        If it is referenced to the center, symmetrical point on the
+        on the fc_axis_nut
+    ref_hole_ax : int
+        If it is referenced at the center of the shank, or at the 
+        end of the hole, not counting extra
+    pos : FreeCAD.Vector
+        Position
+
+    Returns
+    --------
+    Shape 
+        FreeCAD Shape of a nut hole
     """
     doc = FreeCAD.ActiveDocument
     # normalize axis:
@@ -6501,6 +7735,25 @@ def shp_nuthole (nut_r, nut_h, hole_h,
 #   name: the name of the shape we want to create
 
 def fillet_len (box, e_len, radius, name):
+    """
+    Make a new object with fillet 
+
+    Parameters
+    ----------
+    box : TopoShape
+        Original shape we want to fillet
+    e_len : float
+        Length of the edges that we want to fillet
+    radius : float
+        Radius of the fillet
+    name : str
+        Name of the shape we want to create
+
+    Returns
+    --------
+    FreeCAD Object
+        FreeCAD Object with fillet made
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
     fllts_v = []
@@ -6570,15 +7823,23 @@ def get_bolt_end_sep (bolt_d, hasnut, sep=2.):
 
     Example of nut and bolt head sizes:
 
-        din912  din938
-          D     S(max)   D(max)
-    M3:  5.5      5.5     6,35
-    M4:  7.0      7.0     8,08
-    M5:  8.5      8.0     9,24
-    M6: 10.0     10.0    11,55
+    +--------+--------+--------+--------+
+    |        | din912 | din938 |        |
+    +========+========+========+========+
+    |        |  D     | S(max) | D(max) |
+    +--------+--------+--------+--------+
+    | **M3** |   5.5  |   5.5  |   6,35 |
+    +--------+--------+--------+--------+
+    | **M4** |   7.0  |   7.0  |   8,08 |
+    +--------+--------+--------+--------+
+    | **M5** |   8.5  |   8.0  |   9,24 |
+    +--------+--------+--------+--------+
+    | **M6** |  10.0  |  10.0  |  11,55 |
+    +--------+--------+--------+--------+
 
-   Therefore, if there is a nut, the nut will be used to calculate the
-   separation
+    Therefore, if there is a nut, the nut will be used to calculate the
+    separation
+    ::
 
           _____    :    _______ 
          |     |_  :  _|    
@@ -6593,15 +7854,22 @@ def get_bolt_end_sep (bolt_d, hasnut, sep=2.):
          :....,....:
            bolt_sep 
  
-    Args:
-        bolt_d: diameter of the bolt: 3, 4, ... for M3, M4,... 
-        hasnut: 1: if there is a nut
-                0: if there is not a nut, so just the bolt head (smaller)
-        sep: separation from the outside of the nut to the end, if empty,
-             default value 2mm
+    Parameters
+    ----------
+    bolt_d : int
+        Diameter of the bolt: 3, 4, ... for M3, M4,... 
+    hasnut : int
+        * 1: if there is a nut
+        * 0: if there is not a nut, so just the bolt head (smaller)
 
-    Returns:
-        (float): Minimum separation between the center of the bolt and the end
+    sep : float
+        Separation from the outside of the nut to the end, if empty,
+                default value 2mm
+
+    Returns
+    --------
+    float
+        Minimum separation between the center of the bolt and the end
 
     """
 
@@ -6645,6 +7913,45 @@ def get_bolt_end_sep (bolt_d, hasnut, sep=2.):
 #       default value 0mm
 
 def get_bolt_bearing_sep (bolt_d, hasnut, lbearing_r, bsep=0):
+    """
+    same as get_bolt_end_sep, but when there is a bearing. 
+    If there is a bearing, there will be more space because the nut is at
+    the bottom or top, and the widest side is on the middle
+    ::
+
+                           lbearing_r
+                   rad    ..+...
+                  ..+..  :      :
+        ______    :   :__:______:_
+       |      |_  :  _|      .* : 
+       |        | : |     .*    : this is the bearing section (circunference)
+       |        | : |    (      :
+       |       _| : |_   : *.   :
+       |______|   :   |__:____*_:
+                  :   :  :      :
+                  :   :.bsep    :
+                  :             :
+                  :.bolt_b_sep..:
+
+    Parameters
+    ----------
+    bolt_d : int
+        Diameter of the bolt: 3, 4, ... for M3, M4,... 
+    hasnut : int
+        * 1: if there is a nut
+        * 0: if there is not a nut, so just the bolt head (smaller)
+
+    lbearing_r : float
+        Radius of the linear bearing
+    bsep : float
+        Separation from the outside of the nut to the end of bearing
+        default value 0mm
+    
+    Returns
+    --------
+    float
+        Minimum separation between the center of the bolt and the bearing
+    """
 
     if hasnut == 1:
         diam = kcomp.NUT_D934_2A[bolt_d] / COS30 
@@ -6666,6 +7973,22 @@ def get_bolt_bearing_sep (bolt_d, hasnut, lbearing_r, bsep=0):
 # axis: a text, being 'x', '-x', 'y', '-y', 'z', '-z'
 
 def edgeonaxis (edge, axis):
+    """
+    It tells if an edge is on an axis
+
+    Parameters
+    ----------
+    edge : Edge
+        A FreeCAD edge, with its vertexes
+    axis : str
+        'x', '-x', 'y', '-y', 'z', '-z'
+    
+    Returns
+    -------
+    boolean
+        True: edge on an axis
+        False: edge not on an axis
+    """
 
     vex0 = edge.Vertexes[0]
     vex1 = edge.Vertexes[1]
@@ -6709,14 +8032,25 @@ def edgeonaxis (edge, axis):
 
 def shp_filletchamfer_dir (shp, fc_axis = VZ,  fillet = 1, radius=1):
     """
-        Fillet or chamfer edges on a certain axis
-        For a shape
-    Arguments:
-        shp:   is the original shape we want to fillet or chamfer
-        fillet: 1 if we are doing a fillet, 0 if it is a chamfer
-        radius: the radius of the fillet or chamfer
-        fc_axis  : FreeCAD.Vector the axis where the fillet will be
+    Fillet or chamfer edges on a certain axis
+    
+    Parameters
+    ----------
+    shp : Shape
+        Original shape we want to fillet or chamfer
+    fillet : int 
+        * 1 if we are doing a fillet
+        * 0 if it is a chamfer
 
+    radius : float
+        The radius of the fillet or chamfer
+    fc_axis : FreeCAD.Vector
+        Axis where the fillet will be
+
+    Returns
+    --------
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -6760,14 +8094,26 @@ def shp_filletchamfer_dir (shp, fc_axis = VZ,  fillet = 1, radius=1):
 
 def shp_filletchamfer_dirs (shp, fc_axis_l, fillet = 1, radius=1):
     """
-        Same as shp_filletchamfer_dir, but with a list of directions
-    Arguments:
-        shp:   is the original shape we want to fillet or chamfer
-        fc_axis_l  : a list of FreeCAD.Vector. Each vector indicates the axis
-                     where the fillet/chamfer will be
-        fillet: 1 if we are doing a fillet, 0 if it is a chamfer
-        radius: the radius of the fillet or chamfer
+    Same as shp_filletchamfer_dir, but with a list of directions
+    
+    Parameters
+    ----------
+    shp : Shape
+        Original shape we want to fillet or chamfer
+    fc_axis_l : list 
+        List of FreeCAD.Vector. Each vector indicates the axis
+        where the fillet/chamfer will be
+    fillet : int
+        * 1 if we are doing a fillet
+        * 0 if it is a chamfer
 
+    radius : float
+        Radius of the fillet or chamfer
+
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -6818,16 +8164,28 @@ def shp_filletchamfer_dirs (shp, fc_axis_l, fillet = 1, radius=1):
 def shp_filletchamfer_dirpt (shp, fc_axis = VZ, fc_pt = V0,  fillet = 1,
                              radius=1):
     """
-        Fillet or chamfer edges on a certain axis and a point contained
-        in that axis
-        For a shape
-    Arguments:
-        shp:   is the original shape we want to fillet or chamfer
-        fc_axis  : FreeCAD.Vector the axis where the fillet will be
-        fc_pt  : FreeCAD.Vector of the point
-        fillet: 1 if we are doing a fillet, 0 if it is a chamfer
-        radius: the radius of the fillet or chamfer
+    Fillet or chamfer edges on a certain axis and a point contained
+    in that axis
 
+    Parameters
+    ----------
+    shp : Shape
+        Original shape we want to fillet or chamfer
+    fc_axis : FreeCAD.Vector
+        Axis where the fillet will be
+    fc_pt : FreeCAD.Vector
+        Placement of the point
+    fillet : int
+        * 1 if we are doing a fillet
+        * 0 if it is a chamfer
+
+    radius : float
+        Radius of the fillet or chamfer
+
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -6882,16 +8240,28 @@ def shp_filletchamfer_dirpt (shp, fc_axis = VZ, fc_pt = V0,  fillet = 1,
 def shp_filletchamfer_dirpts (shp, fc_axis, fc_pts,  fillet = 1,
                              radius=1):
     """
-        Fillet or chamfer edges on a certain axis and a list of point contained
-        in that axis
-        For a shape
-    Arguments:
-        shp:   is the original shape we want to fillet or chamfer
-        fc_axis  : FreeCAD.Vector the axis where the fillet will be
-        fc_pts  : FreeCAD.Vector list of the points
-        fillet: 1 if we are doing a fillet, 0 if it is a chamfer
-        radius: the radius of the fillet or chamfer
+    Fillet or chamfer edges on a certain axis and a list of point contained
+    in that axis
 
+    Parameters
+    ----------
+    shp : Shape
+        Original shape we want to fillet or chamfer
+    fc_axis : FreeCAD.Vector
+        Axis where the fillet will be
+    fc_pts : FreeCAD.Vector
+        Vector list of the points
+    fillet : int 
+        * 1 if we are doing a fillet
+        * 0 if it is a chamfer
+
+    radius : float
+        Radius of the fillet or chamfer
+
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -6948,14 +8318,26 @@ def shp_filletchamfer_dirpts (shp, fc_axis, fc_pts,  fillet = 1,
 
 def shp_cir_fillchmf (shp, circen_pos = V0,  fillet = 1, radius=1):
     """
-        Fillet or chamfer edges that is a circle, the shape has to be a 
-        cylinder
-    Arguments:
-        shp:   is the original cylinder shape we want to fillet or chamfer
-        circen_pos  : FreeCAD.Vector of the center of the circle
-        fillet: 1 if we are doing a fillet, 0 if it is a chamfer
-        radius: the radius of the fillet or chamfer
+    Fillet or chamfer edges that is a circle, the shape has to be a 
+    cylinder
 
+    Parameters
+    ----------
+    shp : Shape
+        Original cylinder shape we want to fillet or chamfer
+    circen_pos : FreeCAD.Vector
+        Center of the circle
+    fillet : int    
+        * 1 if we are doing a fillet
+        * 0 if it is a chamfer
+
+    radius : float
+        Radius of the fillet or chamfer
+    
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -6989,12 +8371,23 @@ def shp_cir_fillchmf (shp, circen_pos = V0,  fillet = 1, radius=1):
 
 def shp_cylfilletchamfer (shp, fillet = 1, radius=1):
     """
-        Fillet or chamfer all edges of a cylinder
-    Arguments:
-        shp:   is the original cylinder shape we want to fillet or chamfer
-        fillet: 1 if we are doing a fillet, 0 if it is a chamfer
-        radius: the radius of the fillet or chamfer
+    Fillet or chamfer all edges of a cylinder
+    
+    Parameters
+    ----------
+    shp : Shape
+        Original cylinder shape we want to fillet or chamfer
+    fillet : int
+        * 1 if we are doing a fillet
+        * 0 if it is a chamfer
 
+    radius : float
+        Radius of the fillet or chamfer
+
+    Returns
+    -------- 
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -7040,6 +8433,47 @@ def shp_filletchamfer (shp, e_len, fillet = 1, radius=1, axis='x',
                    xpos_chk = 0, ypos_chk = 0, zpos_chk=0,
                    xpos = 0, ypos = 0, zpos = 0
                     ):
+    """
+    Fillet or chamfer edges of a certain length, on a certain axis
+    and a certain coordinate
+
+    Parameters
+    ----------
+    shp : Shape
+        Original shape we want to fillet or chamfer
+    fillet : int
+        * 1 if we are doing a fillet
+        * 0 if it is a chamfer
+
+    e_len : float
+        Length of the edges that we want to fillet or chamfer
+        if e_len == 0, chamfer/fillet any length
+    radius : float
+        Radius of the fillet or chamfer
+    axis : str
+        Axis where the fillet will be
+    xpos_chk : int
+        If the position will be checked.
+    ypos_chk : int 
+        If the position will be checked.
+    zpos_chk : int
+        If the position will be checked.
+    xpos : float
+        The X position
+    ypos : float
+        The Y position
+    zpos : float
+        The Z position
+
+    Notes
+    -----
+    If axis = 'x', x_pos_check will not make sense
+
+    Returns
+    --------
+    Shape
+        FreeCAD Shape with fillet/chamfer made
+    """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
     doc.recompute()  # you may hav problems if you dont do it
@@ -7124,6 +8558,50 @@ def filletchamfer (fco, e_len, name, fillet = 1, radius=1, axis='x',
                    xpos_chk = 0, ypos_chk = 0, zpos_chk=0,
                    xpos = 0, ypos = 0, zpos = 0,
                     ):
+    """
+    Fillet or chamfer edges of a certain length, on a certain axis
+    and a certain coordinate
+    
+    Parameters
+    ----------
+    fco : FreeCAD Object
+        Original FreeCAD object we want to fillet or chamfer
+    fillet : int
+        * 1 if we are doing a fillet
+        * 0 if it is a chamfer
+
+    e_len : float
+        Length of the edges that we want to fillet or chamfer
+        if e_len == 0, chamfer/fillet any length
+    radius : float 
+        Radius of the fillet or chamfer
+    axis : str
+        Axis where the fillet will be
+    xpos_chk : int
+        If the X position will be checked
+    ypos_chk : int
+        If the Y position will be checked
+    zpos_chk : int
+        If the Z position will be checked
+    xpos : float
+        The X position
+    ypos : float
+        The Y position
+    zpos : float
+        The Z position
+    name : str
+        Name of the fco we want to create
+
+    Notes
+    -----
+    If axis = 'x', x_pos_check will not make sense
+
+    Returns
+    --------
+    FreeCAD Object
+        FreeCAD Object with fillet/chamfer made
+    """
+
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
     doc.recompute()  # you may hav problems if you dont do it
@@ -7235,6 +8713,54 @@ def filletchamfer (fco, e_len, name, fillet = 1, radius=1, axis='x',
 #
 
 def calc_rot (vec1, vec2):
+    """
+    Having an object with an orientation defined by 2 vectors
+    the vectors a tuples, nor FreeCAD.Vectors
+    use the wrapper fc_calc_rot to have FreeCAD.Vector arguments
+    First vector original direction (x,y,z) is (1,0,0) 
+    Second vector original direction (x,y,z) is (0,0,-1) 
+    we want to rotate the object in an ortoghonal direction. The vectors
+    will be in -90, 180, or 90 degrees.
+    this function returns the Rotation given by yaw, pitch and roll
+    In case vec1 is (0,0,0), means that it doesn't matter that vector.
+    Yaw is the rotation of Z axis. Positive Yaw is like screwing up
+    ::
+
+       Y         Y                   Y
+       |_X       :   yaw=0           :     yaw=60
+       /         :                   :   /
+      Z          :                   :  /
+                 :                   : /
+                 :________....  X    :/............ X
+     
+     
+      Z  Y       Z                   Z
+      |/_ X      :   pitch=0         :     pitch=-60
+                 :                   :   /
+                 :                   :  /
+                 :                   : /
+                 :________....  X    :/............ X
+     
+     
+                 Z                   Z
+       Z         :   roll=0          :     roll=-60
+       |_Y       :                   :   /
+      /          :                   :  /
+     X           :                   : /
+                 :________....  Y    :/............ Y
+     
+    Parameters
+    ----------
+    vec1 : tuples
+        Direction
+    vec2 : tuples
+        Direction
+
+    Returns
+    --------
+    FreeCAD.Rotation
+
+    """
            
     # rotation calculation
     if vec1 == (1,0,0):
@@ -7345,12 +8871,18 @@ def calc_rot (vec1, vec2):
 
 
 def get_fcvectup (tup):
-    """ Gets the FreeCAD.Vector of a tuple
+    """
+    Gets the FreeCAD.Vector of a tuple
 
-    Args:
-        tup: tuple of 3 elements
+    Parameters
+    ----------
+    tup : tuple
+        Tuple of 3 elements
 
-    Return: the FreeCAD.Vector
+    Returns
+    -------- 
+    FreeCAD.Vector
+        FreeCAD.Vector of a tuple
     """
 
     fcvec = FreeCAD.Vector(tup[0], tup[1], tup[2])
@@ -7361,7 +8893,9 @@ def get_fcvectup (tup):
 # same as calc_rot but using FreeCAD.Vectors arguments
 
 def fc_calc_rot (fc_vec1, fc_vec2):
-
+    """
+    Same as calc_rot but using FreeCAD.Vectors arguments
+    """
     ##vec1 = (fc_vec1.X, fc_vec1.Y, fc_vec1.Z)
     ##vec2 = (fc_vec2.X, fc_vec2.Y, fc_vec2.Z)
     vrot = calc_rot(DraftVecUtils.tup(fc_vec1),DraftVecUtils.tup(fc_vec2))
@@ -7369,21 +8903,22 @@ def fc_calc_rot (fc_vec1, fc_vec2):
 
 def calc_rot_z (v_refz, v_refx):
     """
-    calculates de rotation like calc_rot. However uses a different
+    Calculates de rotation like calc_rot. However uses a different
     origin axis. calc_rot uses:
     vec1 original direction (x,y,z) is (0,0,1) 
     vec2 original direction (x,y,z) is (1,0,0) 
     So it makes a change of axis before calling calc_rot
 
-    Args:
-        v_refz: tuple or FreeCAD.Vector indicating the rotation from (0,0,1)
-                to v_refz
-        v_refx: tuple or FreeCAD.Vector indicating the rotation from (1,0,0)
-                to v_refx
-        these argument vectors a tuples, not FreeCAD.Vectors
+    Parameters
+    ----------
+    v_refz : tuple or FreeCAD.Vector
+        Vector indicating the rotation from (0,0,1) to v_refz
+    v_refx : tuple or FreeCAD.Vector
+        Vector indicating the rotation from (1,0,0) to v_refx
 
-    Returns:
-        FreeCAD.Rotation value
+    Returns
+    --------
+    FreeCAD.Rotation 
 
     """
 
@@ -7399,21 +8934,29 @@ def calc_rot_z (v_refz, v_refx):
     
 
 def get_rot (v1, v2):
-    """ Calculate the rotation from v1 to v2
+    """ 
+    Calculate the rotation from v1 to v2
     the difference with previous verions, such fc_calc_rot, calc_rot, calc_rot
     is that it is for any vector direction.
     The difference with DraftVecUtils.getRotation is that getRotation doesnt
     work for vectors with 180 degrees.
 
-    MAYBE IT IS NOT NECESSARY, just use FreeCAD.Rotation
-    rotation.Axis, math.degrees(rotation.Angle)
+    Notes
+    -----
+        MAYBE IT IS NOT NECESSARY, just use FreeCAD.Rotation
+        rotation.Axis, math.degrees(rotation.Angle)
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     v1 : FreeCAD.Vector
+        Vector to calculate the rotation
     v2 : FreeCAD.Vector
+        Vector to calculate the rotation
 
-    returns a tuple representing a quaternion rotation between v2 and v1
+    Returns
+    --------
+    FreeCAD.Rotation
+        Tuple representing a quaternion rotation between v2 and v1
     """
 
     #normalize vectors
@@ -7474,7 +9017,74 @@ def get_rot (v1, v2):
 
 def calc_desp_ncen (Length, Width, Height, 
                      vec1, vec2, cx=False, cy=False, cz=False, H_extr = False):
-           
+    """
+    Similar to calc_rot, but calculates de displacement, when we don't want
+    to have all of the dimensions centered
+    First vector original direction (x,y,z) is (1,0,0)
+    Second vector original direction (x,y,z) is (0,0,-1)
+    The arguments vec1, vec2 are tuples (x,y,z) but they may be also
+    FreeCAD.Vectors
+    ::
+
+         Z          . Y       length (x) = 1
+     :   _    .           width  (y) = 2
+     : /  /|              heigth (z) = 3
+     :/_ / |
+     |  |  |              vec1 original (before rotation) = VX
+     |  | /               vec2 original (before rotation) = -VZ
+     |__|/..............X
+
+
+     Example after rotation and change position
+
+     Z         . Y       length (x) = 3
+     :   ____.           width  (y) = 2
+     : /    /|           heigth (z) = 1
+     :/___ //                  vec1 = VZ
+     |____|/..............X    vec2 = VX
+
+     So we have to move X its original heith (3), otherwise it would
+      be on the negative side, like this
+
+          Z 
+          :    . Y       length (x) = 3
+         _:__.           width  (y) = 2
+       /  : /|           heigth (z) = 1
+      /___://                  vec1 = VZ
+     |____|/..............X    vec2 = VX
+
+     the picture is wrong, because originally it is centered, that's
+     why the position is moved only half of the dimension. But the concept
+     is valid 
+
+    Parameters
+    ----------
+    vec1 : tuples
+        Have to be on the axis: x, -x, y, -y, z, -z
+        ::
+        
+         vec1 can be (0,0,0): it means that it doesnt matter how it is rotated
+
+    vec2 : tuples
+        Have to be on the axis: x, -x, y, -y, z, -z
+    Length : float
+        Original dimension on X
+    Width : float
+        Original dimension on Y
+    Height : float
+        Original dimension on Z
+    cx : boolean
+        Position centered or not
+    cy : boolean
+        Position centered or not
+    cz : boolean
+        Position centered or not
+
+    Returns
+    --------
+    FreeCAD.Vector
+        Vector of the displacement
+    """
     # rotation calculation
     x = 0
     y = 0
@@ -7573,6 +9183,9 @@ def calc_desp_ncen (Length, Width, Height,
 def fc_calc_desp_ncen (Length, Width, Height,
                        fc_vec1, fc_vec2,
                        cx=False, cy=False, cz=False, H_extr = False ):
+    """
+    Same as calc_desp_ncen but using FreeCAD.Vectors arguments
+    """
 
     vec1 = DraftVecUtils.tup(fc_vec1)
     vec2 = DraftVecUtils.tup(fc_vec2)
@@ -7583,6 +9196,9 @@ def fc_calc_desp_ncen (Length, Width, Height,
 
 
 def getvecofname(axis):
+    """
+    Get axis name renunrs the vector
+    """
 
     if axis == 'x':
         vec = (1,0,0)
@@ -7601,14 +9217,18 @@ def getvecofname(axis):
 
 #VX, VY, VZ,...
 def getfcvecofname(axis):
+    """
+    Returns the FreeCAD.Vecor of the vector name given
+    """
 
     fc_vec = FreeCAD.Vector(getvecofname(axis))
     return fc_vec
 
 def vecname_paral (vec1, vec2):
     """
-    given to vectors by name 'x', '-x', ... indicates if they are parallel
+    Given to vectors by name 'x', '-x', ... indicates if they are parallel
     or not
+
     """
     paral = -1
     if vec1 == 'x' or vec1 == '-x':
@@ -7630,10 +9250,18 @@ def vecname_paral (vec1, vec2):
     
 def get_vecname_perpend1(vecname):
 
-    """ gets a perpendicular vecname
+    """ 
+    Gets a perpendicular vecname
 
-    Args:
-        vec: 'x', '-x', 'y', '-y', 'z', '-z'
+    Parameters
+    ----------
+    vec : str
+        'x', '-x', 'y', '-y', 'z', '-z'
+
+    Returns
+    --------
+    str
+        Perpendicular vector name
     """
 
     if vecname == 'x':
@@ -7652,10 +9280,18 @@ def get_vecname_perpend1(vecname):
 
 def get_vecname_perpend2(vecname):
 
-    """ gets the other perpendicular vecname (see get_vecname_perpend
+    """ 
+    Gets the other perpendicular vecname (see get_vecname_perpend)
 
-    Args:
-        vec: 'x', '-x', 'y', '-y', 'z', '-z'
+    Parameters
+    ----------
+    vec : str
+        'x', '-x', 'y', '-y', 'z', '-z'
+
+    Returns
+    -------
+    str
+        Perpendicular vector name
     """
 
     if vecname == 'x':
@@ -7673,9 +9309,15 @@ def get_vecname_perpend2(vecname):
 
 
 def get_nameofbasevec (fcvec):
-    """ from a base vector either:
-       (1,0,0), (0,1,0), (0,0,1), (-1,0,0), (0,-1,0), (0,0,-1)
-        gets its name: 'x', 'y',....
+    """ 
+    From a base vector either:
+    (1,0,0), (0,1,0), (0,0,1), (-1,0,0), (0,-1,0), (0,0,-1)
+    Gets its name: 'x', 'y',....
+
+    Returns
+    -------
+    str
+        Vector name
     """
 
     if fcvec.x==1 and fcvec.y==0 and fcvec.z==0:
@@ -7696,10 +9338,22 @@ def get_nameofbasevec (fcvec):
 
 def get_fclist_4perp_vecname (vecname):
 
-    """ gets a list of 4 FreCAD.Vector perpendicular to one vecname
-         for example, from 'x' -> (0,1,0), (0,0,1), (0,-1,0), (0,0,-1)
-    Args:
-        vecname:  'x', '-x', 'y', '-y', 'z', '-z'
+    """ 
+    Gets a list of 4 FreCAD.Vector perpendicular to one vecname
+    for example:
+    ::
+        
+        from 'x' -> (0,1,0), (0,0,1), (0,-1,0), (0,0,-1)
+    
+    Parameters
+    ----------
+    vecname : str
+        'x', '-x', 'y', '-y', 'z', '-z'
+
+    Returns
+    -------
+    list
+        List of FreeCAD.Vector 
     """
 
     fc_p1 = getfcvecofname(get_vecname_perpend1(vecname))
@@ -7708,24 +9362,53 @@ def get_fclist_4perp_vecname (vecname):
     return fc_list
 
 def get_fclist_4perp_fcvec (fcvec):
-    """ gets a list of 4 FreCAD.Vector perpendicular to one base vector
-        fcvec can only be:
+    """ 
+    Gets a list of 4 FreeCAD.Vector perpendicular to one base vector
+    fcvec can only be:
+    * (1,0,0)
+    * (0,1,0)
+    * (0,0,1)
+    * (-1,0,0)
+    * (0,-1,0)
+    * (0,0,-1)
+        
+    For example:
+        ::
+        
+             from (1,0,0) -> (0,1,0), (0,0,1), (0,-1,0), (0,0,-1)
+
+    Parameters
+    ----------
+    fcvec : vector
         (1,0,0), (0,1,0), (0,0,1), (-1,0,0), (0,-1,0), (0,0,-1)
-        for example, from (1,0,0) -> (0,1,0), (0,0,1), (0,-1,0), (0,0,-1)
-    Args:
-        fcvec: 
-        (1,0,0), (0,1,0), (0,0,1), (-1,0,0), (0,-1,0), (0,0,-1)
+
+    Returns
+    -------
+    list
+        List of FreeCAD.Vector 
     """
     return (get_fclist_4perp_vecname(get_nameofbasevec(fcvec)))
 
 
 def get_fclist_4perp2_vecname (vecname):
 
-    """ gets a list of 4 FreCAD.Vector perpendicular to one vecname
-         different from get_fclist_4perp_vecname
-         for example, from 'x' -> (0,1,1), (0,-1,1), (0,-1,-1), (0,1,-1)
-    Args:
-        vecname:  'x', '-x', 'y', '-y', 'z', '-z'
+    """ 
+    Gets a list of 4 FreCAD.Vector perpendicular to one vecname
+    different from get_fclist_4perp_vecname
+    For example:
+    ::
+        
+        from 'x' -> (0,1,1), (0,-1,1), (0,-1,-1), (0,1,-1)
+
+    Parameters
+    ----------
+    vecname : str
+        'x', '-x', 'y', '-y', 'z', '-z'
+
+    Returns
+    -------
+    list
+        List of FreeCAD.Vector
     """
 
     fc_p1 = getfcvecofname(get_vecname_perpend1(vecname))
@@ -7741,23 +9424,49 @@ def get_fclist_4perp2_vecname (vecname):
   
 def get_fclist_4perp2_fcvec (fcvec):
 
-    """ gets a list of 4 FreCAD.Vector perpendicular to one base vector
-        fcvec can only be:
+    """ 
+    Gets a list of 4 FreCAD.Vector perpendicular to one base vector
+    fcvec can only be:
+    * (1,0,0)
+    * (0,1,0)
+    * (0,0,1)
+    * (-1,0,0)
+    * (0,-1,0)
+    * (0,0,-1)
+
+    For example:
+        ::
+        
+             from (1,0,0) -> (0,1,0), (0,0,1), (0,-1,0), (0,0,-1)
+    
+    Parameters
+    ----------
+    fcvec : vector
         (1,0,0), (0,1,0), (0,0,1), (-1,0,0), (0,-1,0), (0,0,-1)
-        for example, from (1,0,0) -> (0,1,1), (0,-1,1), (0,-1,-1), (0,1,-1)
-    Args:
-        fcvec: 
-        (1,0,0), (0,1,0), (0,0,1), (-1,0,0), (0,-1,0), (0,0,-1)
+
+    Returns
+    -------
+    list
+        List of FreeCAD.Vector 
     """
     return (get_fclist_4perp2_vecname(get_nameofbasevec(fcvec)))
 
 def get_positive_vecname (vecname):
 
-    """ it just get 'x' when vecname is 'x' or '-x', and the same
-        for the others, because some functions receive only positive
-        base vector
-    Args:
-        vecname:  'x', '-x', 'y', '-y', 'z', '-z'
+    """ 
+    It just get 'x' when vecname is 'x' or '-x', and the same
+    for the others, because some functions receive only positive
+    base vector
+    
+    Parameters
+    ----------
+    vecname : str
+        'x', '-x', 'y', '-y', 'z', '-z'
+
+    Returns
+    -------
+    str
+        Vector name
     """
 
     if vecname == 'x' or vecname == '-x':
@@ -7768,9 +9477,3 @@ def get_positive_vecname (vecname):
         return 'z'
     else:
         logger.error('Not a valid base vector name')
-
-
-
-     
-
-

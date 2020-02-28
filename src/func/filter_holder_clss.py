@@ -101,7 +101,7 @@ logger = logging.getLogger(__name__)
 
 class ShpFilterHolder (shp_clss.Obj3D):
     """ Creates the filter holder shape
-
+    ::
 
                                beltpost_l = 3*lr_beltpost_r + sm_beltpost_r
        pos_h         axis_h   :   :
@@ -201,120 +201,130 @@ class ShpFilterHolder (shp_clss.Obj3D):
 
         pos_o (origin) is at pos_d=0, pos_w=0, pos_h=0, It marked with x
 
-    Parameters:
+    Parameters
     -----------
     filter_l : float
-        length of the filter (it will be along axis_w). Larger dimension
+        Length of the filter (it will be along axis_w). Larger dimension
     filter_w : float
-        width of the filter (it will be along axis_d). Shorter dimension
+        Width of the filter (it will be along axis_d). Shorter dimension
     filter_t : float
-        thickness/height of the filter (it will be along axis_h). Very short
+        Thickness/height of the filter (it will be along axis_h). Very short
     base_h : float
-        height of the base
+        Height of the base
     hold_d : float
-        depth of the holder (just the part that holds)
+        Depth of the holder (just the part that holds)
     filt_supp_in : float
-        how much the filter support goes inside from the filter hole
+        How much the filter support goes inside from the filter hole
     filt_cen_d : float
-        distance from the filter center to the beginning of the filter holder
+        Distance from the filter center to the beginning of the filter holder
         along axis_d
-        0: it will take the minimum distance
-           or if it is smaller than the minimum distance
+
+            * 0: it will take the minimum distance
+              or if it is smaller than the minimum distance
+
     filt_rim : float
-        distance from the filter to the edge of the base
+        Distance from the filter to the edge of the base
     fillet_r : float
-        radius of the fillets
+        Radius of the fillets
     boltcol1_dist : float
-        distance to the center along axis_w of the first column of bolts
+        Distance to the center along axis_w of the first column of bolts
     boltcol2_dist : float
-        distance to the center along axis_w of the 2nd column of bolts
+        Distance to the center along axis_w of the 2nd column of bolts
     boltcol3_dist : float
-        distance to the center along axis_w of the 3rd column of bolts
+        Distance to the center along axis_w of the 3rd column of bolts
         This column could be closer to the center than the 2nd, if distance
         is smaller
     boltrow1_h : float
-        distance from the top of the filter base to the first row of bolts
-        0: the distance will be the largest head diameter in the first row
-           in any case, it has to be larger than this
+        Distance from the top of the filter base to the first row of bolts
+         
+            * 0: the distance will be the largest head diameter in the first row
+              in any case, it has to be larger than this
+
     boltrow1_2_dist : float
-        distance from the first row of bolts to the second
+        Distance from the first row of bolts to the second
     boltrow1_3_dist : float
-        distance from the first row of bolts to the third
+        Distance from the first row of bolts to the third
     boltrow1_4_dist : float
-        distance from the first row of bolts to the 4th
+        Distance from the first row of bolts to the 4th
     bolt_cen_mtr : integer (could be float: 2.5)
-        diameter (metric) of the bolts at the center or at columns other than
+        Diameter (metric) of the bolts at the center or at columns other than
         2nd column
     bolt_linguide_mtr : integer (could be float: 2.5)
-        diameter (metric) of the bolts at the 2nd column, to attach to a
+        Diameter (metric) of the bolts at the 2nd column, to attach to a
         linear guide
     beltclamp_t : float
-        thickness of the hole for the belt. Inside de belt clamp blocks
+        Thickness of the hole for the belt. Inside de belt clamp blocks
         (along axis_d)
     beltclamp_l : float
-        length of the belt clamp (along axis_w)
+        Length of the belt clamp (along axis_w)
     beltclamp_h : float
-        height of the belt clamp: belt width + 2
+        Height of the belt clamp: belt width + 2
         (along axis_h)
     clamp_post_dist : float
-        distance from the belt clamp to the belt clamp post
+        Distance from the belt clamp to the belt clamp post
     sm_beltpost_r : float
-        small radius of the belt post
-
-
+        Small radius of the belt post
     tol : float
         Tolerances to print
     axis_d : FreeCAD.Vector
-        length/depth vector of coordinate system
+        Length/depth vector of coordinate system
     axis_w : FreeCAD.Vector
-        width vector of coordinate system
+        Width vector of coordinate system
         if V0: it will be calculated using the cross product: axis_d x axis_h
     axis_h : FreeCAD.Vector
-        height vector of coordinate system
+        Height vector of coordinate system
     pos_d : int
-        location of pos along the axis_d (0,1,2,3,4,5), see drawing
-        0: at the back of the holder
-        1: at the end of the first clamp block
-        2: at the center of the holder
-        3: at the beginning of the second clamp block
-        4: at the beginning of the bolt head hole for the central bolt
-        5: at the beginning of the bolt head hole for the linguide bolts
-        6: at the front side of the holder
-        7: at the beginning of the hole for the porta
-        8: at the inner side of the porta thruhole
-        9: at the center of the porta
-        10: at the outer side of the porta thruhole
-        11: at the end of the porta
-        12: at the end of the piece
+        Location of pos along the axis_d (0,1,2,3,4,5), see drawing
+        
+            * 0: at the back of the holder
+            * 1: at the end of the first clamp block
+            * 2: at the center of the holder
+            * 3: at the beginning of the second clamp block
+            * 4: at the beginning of the bolt head hole for the central bolt
+            * 5: at the beginning of the bolt head hole for the linguide bolts
+            * 6: at the front side of the holder
+            * 7: at the beginning of the hole for the porta
+            * 8: at the inner side of the porta thruhole
+            * 9: at the center of the porta
+            * 10: at the outer side of the porta thruhole
+            * 11: at the end of the porta
+            * 12: at the end of the piece
+
     pos_w : int
-        location of pos along the axis_w (0-7) symmetrical
-        0: at the center of symmetry
-        1: at the first bolt column
-        2: at the second bolt column
-        3: at the third bolt column
-        4: at the inner side of the clamp post (larger circle)
-        5: at the outer side of the clamp post (smaller circle)
-        6: at the inner side of the clamp rails
-        7: at the end of the piece
+        Location of pos along the axis_w (0-7) symmetrical
+        
+            * 0: at the center of symmetry
+            * 1: at the first bolt column
+            * 2: at the second bolt column
+            * 3: at the third bolt column
+            * 4: at the inner side of the clamp post (larger circle)
+            * 5: at the outer side of the clamp post (smaller circle)
+            * 6: at the inner side of the clamp rails
+            * 7: at the end of the piece
+
     pos_h : int
-        location of pos along the axis_h (0-8)
-        0: at the bottom (base)
-        1: at the base for the porta
-        2: at the top of the base
-        3: first row of bolts
-        4: second row of bolts
-        5: third row of bolts
-        6: 4th row of bolts
-        7: at the base of the belt clamp
-        8: at the middle of the belt clamp
-        9: at the top of the piece
+        Location of pos along the axis_h (0-8)
+        
+            * 0: at the bottom (base)
+            * 1: at the base for the porta
+            * 2: at the top of the base
+            * 3: first row of bolts
+            * 4: second row of bolts
+            * 5: third row of bolts
+            * 6: 4th row of bolts
+            * 7: at the base of the belt clamp
+            * 8: at the middle of the belt clamp
+            * 9: at the top of the piece
+
     pos : FreeCAD.Vector
         Position of the cylinder, taking into account where the center is
 
-    Attributes:
-    -----------
-    All the parameters and attributes of parent class SinglePart
+    Note
+    ----
+        All the parameters and attributes of parent class SinglePart
 
+    Attributes
+    -----------
     Dimensional attributes:
     filt_hole_d : float
         depth of the hole for the filter (for filter_w)
@@ -340,10 +350,12 @@ class ShpFilterHolder (shp_clss.Obj3D):
     h0_cen : int
         indicates if pos_h = 0 (pos_d, pos_w) is at the center along
         axis_h, axis_d, axis_w, or if it is at the end.
-        1 : at the center (symmetrical, or almost symmetrical)
-        0 : at the end
+        
+            * 1 : at the center (symmetrical, or almost symmetrical)
+            * 0 : at the end
 
 
+    ::
 
                   lr_beltpost_r  clamp_lrbeltpostcen_dist
                               + ..+..
@@ -829,7 +841,8 @@ class ShpFilterHolder (shp_clss.Obj3D):
 
 
 class PartFilterHolder (fc_clss.SinglePart, ShpFilterHolder):
-    """ Integration of a ShpFilterHolder object into a PartFilterHolder
+    """ 
+    Integration of a ShpFilterHolder object into a PartFilterHolder
     object, so it is a FreeCAD object that can be visualized in FreeCAD
     """
 
