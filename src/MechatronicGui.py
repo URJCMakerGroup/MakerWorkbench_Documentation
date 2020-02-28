@@ -319,7 +319,7 @@ class SimpleEndStopHolder_TaskPanel:
         self.Type_Label = QtGui.QLabel("Type:")
         # ComboBox
         self.Type_ComboBox = QtGui.QComboBox()
-        Type_text = ["A","B"]
+        Type_text = ["A","B","D3V"]
         self.Type_ComboBox.addItems(Type_text)
         self.Type_ComboBox.setCurrentIndex(0)
 
@@ -347,7 +347,7 @@ class SimpleEndStopHolder_TaskPanel:
 
         
     def accept(self):
-        Type_values = {0:kcomp.ENDSTOP_A, 1:kcomp.ENDSTOP_B}
+        Type_values = {0:kcomp.ENDSTOP_A, 1:kcomp.ENDSTOP_B, 2:kcomp.ENDSTOP_D3V}
         Type = Type_values[self.Type_ComboBox.currentIndex()]
         Rail_L = self.Rail_Value.value()
         parts.SimpleEndstopHolder(d_endstop = Type,
@@ -1913,7 +1913,7 @@ class Aluproft_TaskPanel:
 
         # ---- row 0: Size ----
         #Label:
-        self.Prof_Label = QtGui.QLabel("1 - Select object to move")  
+        self.Prof_Label = QtGui.QLabel("Size")  
         # ComboBox:
         self.prof_size = ["5", "10", "15", "20", "30", "40"]
         self.profile = QtGui.QComboBox()

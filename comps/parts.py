@@ -1057,7 +1057,7 @@ class AluProfBracketPerpTwin (object):
         Axis of the bracket on the aligned profile, see picture
     fc_wide_ax : FreeCAD.Vector
         Axis of the bracket on wide direction, see picture
-                       its direction shows where the other aligned profile is
+        its direction shows where the other aligned profile is
     pos : FreeCAD.Vector
         Position of the center of the bracket on the intersection
     wfco : int 
@@ -2000,24 +2000,30 @@ class SimpleEndstopHolder (object):
         Axis along the height
     ref_d : int
         Reference (zero) of fc_axis_d
-            1 = at the end on the side of the rails
-            2 = at the circle center of one rail (closer to 1)
-            3 = at the circle center of the other rail, closer to endstop
-            4 = at the bolt of the endstop
-            5 = at the end of the endstop (the holder ends before that)
+
+            * 1 = at the end on the side of the rails
+            * 2 = at the circle center of one rail (closer to 1)
+            * 3 = at the circle center of the other rail, closer to endstop
+            * 4 = at the bolt of the endstop
+            * 5 = at the end of the endstop (the holder ends before that)
+
     ref_w : int
         Reference on fc_axis_w. it is symmetrical, only the negative side
-            1 = centered
-            2 = at one endstop bolt
-            the other endstop bolt will be on the direction of fc_axis_w
-            3 = at one rail center
-            the rail center will be on the direction of fc_axis_w
-            4 = at the end
-            the end will be on the direction of fc_axis_w
+
+            * 1 = centered
+            * 2 = at one endstop bolt
+              the other endstop bolt will be on the direction of fc_axis_w
+            * 3 = at one rail center
+              the rail center will be on the direction of fc_axis_w
+            * 4 = at the end
+              the end will be on the direction of fc_axis_w
+
     ref_h : int
         Reference (zero) of fc_axis_h
-            1: at the bottom
-            2: on top
+
+            * 1: at the bottom
+            * 2: on top
+
     pos : FreeCAD.Vector
         Object placement
     wfco : int
@@ -2484,19 +2490,16 @@ class ThinLinBearHouse1rail (object):
     boltcen_axis_dist : float
     boltcen_perp_dist : float
 
-    Dimensions
-    ^^^^^^^^^^
-    tot_h, tot_w, tot_l
-    housing_l, base_h
 
-    FreeCAD objects
-    ^^^^^^^^^^^^^^^
-    fco_top :
-        Top part of the linear bearing housing
-    fco_bot :
-        Bottom part of the linear bearing housing
+    Dimensions:
+        * tot_h, tot_w, tot_l
+        * housing_l, base_h
 
-        ::
+    FreeCAD objects:
+        * fco_top : Top part of the linear bearing housing
+        * fco_bot : Bottom part of the linear bearing housing
+
+    ::
 
            ________                           ______________
           | ::...::|                         | ::........:: |
@@ -2888,11 +2891,13 @@ class ThinLinBearHouse (object):
         perpendicular direction. Not useful unless bolt_center == 1
         if = V0 it doesn't matter
     axis_h : int
-        Distance from the bottom to the rod axis       
-            0: take the minimum distance
-            X: (any value) take that value, if it is smaller than the 
-            minimum it will raise an error and would not take that 
-            value
+        Distance from the bottom to the rod axis  
+
+            * 0: take the minimum distance
+            * X: (any value) take that value, if it is smaller than the 
+              minimum it will raise an error and would not take that 
+              value
+
     bolts_side : int
         See picture, indicates the side where is bolt
     axis_center : int
@@ -2906,7 +2911,7 @@ class ThinLinBearHouse (object):
         Position of the reference point,
 
     Attributes
-    ----------
+    ----------    
     n1_slide_axis : FreeCAD.Vector
     n1_bot_axis : FreeCAD.Vector
     n1_perp : FreeCAD.Vector
@@ -2914,18 +2919,16 @@ class ThinLinBearHouse (object):
     boltcen_axis_dist : float
     boltcen_perp_dist : float
 
-    Dimensions
-    ^^^^^^^^^^
-    H, W, L
 
-    FreeCAD objects
-    ^^^^^^^^^^^^^^^
-    fco_top :
-        Top part of the linear bearing housing
-    fco_bot :
-        Bottom part of the linear bearing housing
+    Dimensions:    
+        * H, W, L
 
-        ::
+    FreeCAD objects:
+        * fco_top : Top part of the linear bearing housing
+        * fco_bot : Bottom part of the linear bearing housing
+
+
+    ::
 
            ________                           ______________
           | ::...::|                         | ::........:: |
@@ -2960,7 +2963,6 @@ class ThinLinBearHouse (object):
           :........:
               + 
               W
-
 
          bolts_side = 0            bolts_side = 1
           _________                
@@ -3595,8 +3597,6 @@ class ThinLinBearHouseAsim (object):
         | :     : |
         | :.....: |
         |__0:_:0__|
- 
-        
          ________                           ______________
         | ::...::|                         | ::........:: |
         | ::   ::|    Upper part           |.::        ::.|
@@ -3655,10 +3655,12 @@ class ThinLinBearHouseAsim (object):
         if = V0 it doesn't matter
     axis_h : float
         Distance from the bottom to the rod axis
-            0: take the minimum distance
-            X: (any value) take that value, if it is smaller than the 
-            minimum it will raise an error and would not take that 
-            value
+
+            * 0: take the minimum distance
+            * X: (any value) take that value, if it is smaller than the 
+              minimum it will raise an error and would not take that 
+              value
+
     refcen_hei : int
         See picture, indicates the reference point
     refcen_dep : int
@@ -3680,23 +3682,25 @@ class ThinLinBearHouseAsim (object):
     bolt2cen_wid_p : float
     bolt2bolt_wid : bolt2cen_wid_n + bolt2cen_wid_p
 
-    Dimensions
-    ^^^^^^^^^^
-    D : float
-        housing_d
-    W : float
-        housing_w
-    H : float
-        housing_h
 
-    FreeCAD objects
-    ^^^^^^^^^^^^^^^
-    fco_top :
-        Top part of the linear bearing housing
-    fco_bot :
-        Bottom part of the linear bearing housing
+    Dimensions:
+        * D : float
+
+            housing_d
+
+        * W : float
             
-        ::
+            housing_w
+
+        * H : float
+            
+            housing_h
+
+    FreeCAD objects:
+        * fco_top : Top part of the linear bearing housing
+        * fco_bot : Bottom part of the linear bearing housing
+            
+    ::
 
            ________                           ______________
           | ::...::|                         | ::........:: |

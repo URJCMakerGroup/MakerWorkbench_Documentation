@@ -370,7 +370,8 @@ class Sk_dir (object):
         
     Returns
     -------
-        FreeCAD Object
+    FreeCAD Object
+        FreeCAD Object of a shaft holder
 
     """
 
@@ -1627,6 +1628,7 @@ class PartAluProf (fc_clss.SinglePart, ShpAluProf):
         Axis along the width direction
     pos_d : int
         Location of pos along axis_d (see drawing)
+
             * 0: start point, counting xtr_nd,
               if xtr_nd == 0 -> pos_d 0 and 1 will be the same
             * 1: start point, not counting xtr_nd
@@ -1650,6 +1652,7 @@ class PartAluProf (fc_clss.SinglePart, ShpAluProf):
         Position of point defined by pos_d, pos_w, pos_h
     model_type : int
         Kind of model
+        
             * 1: dimensional model: it can be printed to assemble a model,but the part
               will not work as defined. For example, if printed this aluminum
               profile will not work as defined, and also, it is not exact

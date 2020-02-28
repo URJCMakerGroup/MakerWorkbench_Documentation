@@ -24,26 +24,30 @@ class Obj3D (object):
     It is the parent class of other classes, no instantiation of this class
 
     These objects have their own coordinate axes:
-    * axis_d: depth
-    * axis_w: width
-    * axis_h: height
+
+        * axis_d: depth
+        * axis_w: width
+        * axis_h: height
 
     They have an origin point pos_o (created in a child class)
     and have different interesting points
-    * d_o
-    * w_o
-    * h_o
+    
+        * d_o
+        * w_o
+        * h_o
 
     and methods to get to them
 
     pos_o_adjustment : FreeCAD.Vector
+
         if not V0 indicates that shape has not been placed at pos_o, so the FreeCAD object
         will need to be placed at pos_o_adjust
 
     This object could be a FreeCAD Object or not
     fco: FreeCAD Object
-    * if fco = 1 create FreeCAD Object
-    * if fco = 0 not FreeCAD Object
+
+        * if fco = 1 create FreeCAD Object
+        * if fco = 0 not FreeCAD Object
             
     """
     def __init__(self, axis_d = None, axis_w = None, axis_h = None, name = None):
@@ -96,6 +100,7 @@ class Obj3D (object):
         ----------
         d : float
             Depth: lenght of the vector along axis_d
+
         """
 
         # self.axis_d is normalized, so no need to use DraftVecUtils.scaleTo
@@ -136,9 +141,10 @@ class Obj3D (object):
 
     def vec_d_w_h(self, d, w, h):
         """ creates a vector with:
-            depth  : along axis_d
-            width  : along axis_w
-            height : along axis_h
+
+            * depth  : along axis_d
+            * width  : along axis_w
+            * height : along axis_h
 
         Parameters
         ----------
@@ -148,6 +154,7 @@ class Obj3D (object):
         Returns
         -------
         FreeCAD.Vector
+            FreeCAD Vector with depth, widht and height
         """
 
         vec = self.vec_d(d) + self.vec_w(w) + self.vec_h(h)
@@ -160,8 +167,8 @@ class Obj3D (object):
         Parameters
         ----------
         adjust : int
-             1: If, when created, wasnt possible to set the piece at pos_o,
-                and it was placed at pos, then the position will be adjusted
+            1: If, when created, wasnt possible to set the piece at pos_o,
+            and it was placed at pos, then the position will be adjusted
         """
 
         vec_from_pos_o =  (  self.get_o_to_d(self.pos_d)
@@ -339,7 +346,7 @@ class Obj3D (object):
         
         * if name is empty, it will take default_name.
         * if change == 1, it will change the self.name attribute to name, 
-            default_name
+          default_name
         * if change == 0, if self.name is not empty, it will preserve it
 
         Parameters

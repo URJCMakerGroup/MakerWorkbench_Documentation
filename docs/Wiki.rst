@@ -477,6 +477,22 @@ parts
               LinBearHouse,
               ThinLinBearHouseAsim
 
+.. automodule:: filter_holder_clss
+    :members: 
+
+.. currentmodule:: tensioner_clss
+.. autoclass:: TensionerSet
+
+.. currentmodule:: beltcl
+.. autoclass:: BeltClamp
+.. autoclass:: DoubleBeltClamp
+
+.. currentmodule:: fc_clss
+.. autoclass:: Din934Nut
+.. autoclass:: Din125Washer
+.. autoclass:: Din9021Washer
+.. autoclass:: Din912Bolt
+
 Functions details
 --------------------
 

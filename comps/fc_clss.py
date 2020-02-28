@@ -81,7 +81,7 @@ class SinglePart (object):
     All the pieces have 3 axis that define their 3 main perpendicular directions
     Depth, Width, Height
 
-    Attributes:
+    Attributes
     ------------
     fco: FreeCAD Object
         The freecad object of this part
@@ -128,7 +128,7 @@ class SinglePart (object):
     def set_color (self, color = (1.,1.,1.)):
         """ Sets a new color for the piece
 
-        Parameters:
+        Parameters
         -----------
         color : tuple of 3 floats from 0. to 1.
             RGB colors
@@ -141,7 +141,7 @@ class SinglePart (object):
     def set_line_color (self, color = (1.,1.,1.)):
         """ Sets a new color for the vertex lines of the piece
 
-        Parameters:
+        Parameters
         -----------
         color : tuple of 3 floats from 0. to 1.
             RGB colors
@@ -155,7 +155,7 @@ class SinglePart (object):
     def set_line_width (self, width = 1.):
         """ Sets the line width of the vertexes
 
-        Parameters:
+        Parameters
         -----------
         width : float from 0. to 1.
 
@@ -168,7 +168,7 @@ class SinglePart (object):
     def set_point_size (self, size = 1.):
         """ Sets the point size
 
-        Parameters:
+        Parameters
         -----------
         size : float
             it seems it goes from 1. up to 64
@@ -185,7 +185,7 @@ class SinglePart (object):
             default_name
         if change == 0, if self.name is not empty, it will preserve it
 
-        Parameters:
+        Parameters
         -----------
         name : str
             This is the name, but it can be empty.
@@ -208,7 +208,7 @@ class SinglePart (object):
     def create_fco (self, name = ''):
         """ creates a FreeCAD object of the TopoShape in self.shp
 
-        Parameters:
+        Parameters
         -----------
         name : str
             it is optional if there is a self.name
@@ -236,7 +236,7 @@ class SinglePart (object):
     def set_place (self, place = V0):
         """ Sets a new placement for the piece
 
-        Parameters:
+        Parameters
         -----------
         place : FreeCAD.Vector
             new position of the pieces
@@ -251,7 +251,7 @@ class SinglePart (object):
     def export_stl(self, prefix = "", name = "", stl_path = ""):
         """ exports to stl the piece to print 
 
-        Parameters:
+        Parameters
         -----------
         prefix : str
             Prefix to the piece, may be useful if name is not given
@@ -454,7 +454,7 @@ class PartsSet (shp_clss.Obj3D):
         """ Sets a new color for the whole set of parts or for the selected
         parts
 
-        Parameters:
+        Parameters
         -----------
         color : tuple of 3 floats from 0. to 1.
             RGB colors
@@ -499,7 +499,7 @@ class PartsSet (shp_clss.Obj3D):
         """ exports to stl the part or the parts to print
         Save them in a STL file
 
-        Parameters:
+        Parameters
         -----------
         part_i : int
             index of the part to print
@@ -568,7 +568,7 @@ class PartsSet (shp_clss.Obj3D):
 class Washer (SinglePart, shp_clss.ShpCylHole):
     """ Washer, that is, a cylinder with a inner hole
 
-    Parameters:
+    Parameters
     -----------
     r_out : float
         external (outside) radius
@@ -596,7 +596,7 @@ class Washer (SinglePart, shp_clss.ShpCylHole):
     pos : FreeCAD.Vector
         Position of the cylinder, taking into account where the center is
 
-    Attributes:
+    Attributes
     -----------
     All the parameters and attributes of parent classes SinglePart ShpCylHole
 
@@ -641,32 +641,41 @@ class Washer (SinglePart, shp_clss.ShpCylHole):
 class Din125Washer (Washer):
     """ Din 125 Washer, this is the regular washer
 
-    Parameters:
+    Parameters
     -----------
     metric : int (maybe float: 2.5)
  
     axis_h : FreeCAD.Vector
-        vector along the cylinder height
+        Vector along the cylinder height
     pos_h : int
-        location of pos along axis_h (0,1)
-        0: the cylinder pos is at its base
-        1: the cylinder pos is centered along its height
+        Location of pos along axis_h (0,1)
+        
+            * 0: the cylinder pos is at its base
+            * 1: the cylinder pos is centered along its height
+
     tol : float
         Tolerance for the inner and outer radius.
         It is the tolerance for the diameter, so the radius will be added/subs
-        have of this tolerance
-        tol will be added to the inner radius (so it will be larger)
-        tol will be substracted to the outer radius (so it will be smaller)
+        have of this tolerance.
+
+            * tol will be added to the inner radius (so it will be larger).
+            * tol will be substracted to the outer radius (so it will be smaller).
+
     model_type : int
-        type of model:
-        0: exact, 1: outline
+        Type of model:
+        
+            * 0: exact
+            * 1: outline
+
     pos : FreeCAD.Vector
         Position of the cylinder, taking into account where the center is
 
-    Attributes:
-    -----------
+    Note
+    ----
     All the parameters and attributes of father class CylHole
 
+    Attributes
+    -----------
     metric : int or float (in case of M2.5) or even str for inches ?
         Metric of the washer
 
@@ -695,32 +704,41 @@ class Din125Washer (Washer):
 class Din9021Washer (Washer):
     """ Din 9021 Washer, this is the larger washer
 
-    Parameters:
+    Parameters
     -----------
     metric : int (maybe float: 2.5)
  
     axis_h : FreeCAD.Vector
-        vector along the cylinder height
+        Vector along the cylinder height
     pos_h : int
-        location of pos along axis_h (0,1)
-        0: the cylinder pos is at its base
-        1: the cylinder pos is centered along its height
+        Location of pos along axis_h (0,1)
+        
+            * 0: the cylinder pos is at its base
+            * 1: the cylinder pos is centered along its height
+
     tol : float
         Tolerance for the inner and outer radius.
         It is the tolerance for the diameter, so the radius will be added/subs
         have of this tolerance
-        tol will be added to the inner radius (so it will be larger)
-        tol will be substracted to the outer radius (so it will be smaller)
+            
+            * tol will be added to the inner radius (so it will be larger)
+            * tol will be substracted to the outer radius (so it will be smaller)
+
     model_type : int
-        type of model:
-        0: exact, 1: outline
+        Type of model:
+            
+            * 0: exact
+            * 1: outline
+
     pos : FreeCAD.Vector
         Position of the cylinder, taking into account where the center is
 
-    Attributes:
-    -----------
+    Note
+    ----
     All the parameters and attributes of father class CylHole
 
+    Attributes
+    -----------
     metric : int or float (in case of M2.5) or even str for inches ?
         Metric of the washer
 
@@ -764,7 +782,7 @@ class BearingOutl (SinglePart, shp_clss.ShpCylHole):
     """ Bearing outline , that is, a cylinder with a inner hole.
     It does not include the balls and parts
 
-    Parameters:
+    Parameters
     -----------
     bearing_nb : int
         Bearing number code
@@ -805,7 +823,7 @@ class BearingOutl (SinglePart, shp_clss.ShpCylHole):
     pos : FreeCAD.Vector
         Position of the cylinder, taking into account where the center is
 
-    Attributes:
+    Attributes
     -----------
     All the parameters and attributes of parent classes SinglePart ShpCylHole
 
@@ -877,7 +895,7 @@ class Nut (SinglePart, shp_clss.ShpPrismHole):
     Creates a Nut, using shp_clss.ShpPrismHole
     See comments of ShpPrismHole
 
-    Parameters:
+    Parameters
     -----------
     r_out : float
         circumradius of the hexagon (side)
@@ -985,58 +1003,66 @@ class Nut (SinglePart, shp_clss.ShpPrismHole):
 class Din934Nut (Nut):
     """ Din 934 Nut
 
-    Parameters:
+    Parameters
     -----------
     metric : int (maybe float: 2.5)
 
     axis_h : 
     axis_d_apo : int
-        0: default: axis_d points to the vertex
-        1: axis_d points to the center of a side
+        * 0: default: axis_d points to the vertex
+        * 1: axis_d points to the center of a side
     h_offset : float
-        0: default
         Distance from the top, just to place the Nut, see pos_h
         if negative, from the bottom
+    
+            * 0: default
+    
     axis_h : FreeCAD.Vector
-        vector along the axis, height
+        Vector along the axis, height
     axis_d : FreeCAD.Vector
-        vector along the first vertex, a direction perpendicular to axis_h
-        it is not necessary if pos_d == 0
+        Vector along the first vertex, a direction perpendicular to axis_h.
+        It is not necessary if pos_d == 0. 
         It can be None, but if None, axis_w has to be None
     axis_w : FreeCAD.Vector
-        vector along the cylinder radius,
-        a direction perpendicular to axis_h and axis_d
-        it is not necessary if pos_w == 0
+        Vector along the cylinder radius,
+        a direction perpendicular to axis_h and axis_d.
+        It is not necessary if pos_w == 0. 
         It can be None
     pos_h : int
-        location of pos along axis_h
-         0: at the center
-        -1: at the base
-         1: at the top
-        -2: at the base + h_offset
-         2: at the top + h_offset
+        Location of pos along axis_h
+
+            *  0: at the center
+            * -1: at the base
+            *  1: at the top
+            * -2: at the base + h_offset
+            *  2: at the top + h_offset
+
     pos_d : int
-        location of pos along axis_d (-2, -1, 0, 1, 2)
-        0: pos is at the circunference center (axis)
-        1: pos is at the inner circunsference, on axis_d, at r_in from the
-           circle center
-        2: pos is at the apothem, on axis_d
-        3: pos is at the outer circunsference, on axis_d, at r_out from the
-           circle center
+        Location of pos along axis_d (-2, -1, 0, 1, 2)
+        
+            * 0: pos is at the circunference center (axis)
+            * 1: pos is at the inner circunsference, on axis_d, at r_in from the
+              circle center
+            * 2: pos is at the apothem, on axis_d
+            * 3: pos is at the outer circunsference, on axis_d, at r_out from the
+              circle center
+
     pos_w : int
-        location of pos along axis_w (-2, -1, 0, 1, 2)
-        0: pos is at the circunference center
-        1: pos is at the inner circunsference, on axis_w, at r_in from the
-           circle center
-        2: pos is at the apothem, on axis_w
-        3: pos is at the outer circunsference, on axis_w, at r_out from the
-           center
+        Location of pos along axis_w (-2, -1, 0, 1, 2)
+        
+            * 0: pos is at the circunference center
+            * 1: pos is at the inner circunsference, on axis_w, at r_in from the
+              circle center
+            * 2: pos is at the apothem, on axis_w
+            * 3: pos is at the outer circunsference, on axis_w, at r_out from the
+              center
+
     pos : FreeCAD.Vector
         Position of the prism, taking into account where the center is
     model_type : 0 
-        not to print, just an outline
+        Not to print, just an outline
     name : str
-        name of the bolt
+        Name of the bolt
 
     """
 
@@ -1091,7 +1117,7 @@ class Bolt (SinglePart, shp_clss.ShpBolt):
     It is an approximate model. The thread is not made, it is just a little
     smaller just to see where it is
 
-    Parameters:
+    Parameters
     -----------
     shank_r : float
         radius of the shank
@@ -1165,7 +1191,7 @@ class Bolt (SinglePart, shp_clss.ShpBolt):
     name : str
         name of the bolt
 
-    Attributes:
+    Attributes
     -----------
     pos_o : FreeCAD.Vector
         Position of the origin of the shape
@@ -1176,6 +1202,7 @@ class Bolt (SinglePart, shp_clss.ShpBolt):
         The shape of this part
 
 
+    ::
 
                                    axis_h
                                      :
@@ -1286,68 +1313,86 @@ class Bolt (SinglePart, shp_clss.ShpBolt):
 class Din912Bolt (Bolt):
     """ Din 912 bolt. hex socket bolt
 
-    Parameters:
+    Parameters
     -----------
     metric : int (may be float: 2.5
 
     shank_l : float
         length of the bolt, not including the head
     shank_l_adjust : int
-         0: shank length will be the size of the parameter shank_l
-        -1: shank length will be the size of the closest shorter or equal
-            to shank_l available lengths for this type of bolts
-         1: shank length will be the size of the closest larger or equal
-            to shank_l available lengths for this type of bolts
+
+        * 0: shank length will be the size of the parameter shank_l
+        * -1: shank length will be the size of the closest shorter or equal
+          to shank_l available lengths for this type of bolts
+        * 1: shank length will be the size of the closest larger or equal
+          to shank_l available lengths for this type of bolts
+
     shank_out : float
-        0: default
-        distance to the end of the shank, just for positioning, it doesnt
+        Distance to the end of the shank, just for positioning, it doesnt
         change shank_l
+        
+            * 0: default
+        
+        Note
+        ---
         I dont think it is necessary, but just in case
+
     head_out : float
-        0: default
-        distance to the end of the head, just for positioning, it doesnt
+        Distance to the end of the head, just for positioning, it doesnt
         change head_l
+        
+            * 0: default
+        
+        Note
+        ----
         I dont think it is necessary, but just in case
+
     axis_h : FreeCAD.Vector
-        vector along the axis of the bolt, pointing from the head to the shank
+        Vector along the axis of the bolt, pointing from the head to the shank
     axis_d : FreeCAD.Vector
-        vector along the radius, a direction perpendicular to axis_h
+        Vector along the radius, a direction perpendicular to axis_h
         If the head is hexagonal, the direction of one vertex
     axis_w : FreeCAD.Vector
-        vector along the cylinder radius,
-        a direction perpendicular to axis_h and axis_d
-        it is not necessary if pos_w == 0
+        Vector along the cylinder radius,
+        a direction perpendicular to axis_h and axis_d.
+        It is not necessary if pos_w == 0.
         It can be None
     pos_h : int
-        location of pos along axis_h
-        0: top of the head, considering head_out,
-        1: position of the head not considering head_out
-           if head_out = 0, it will be the same as pos_h = 0
-        2: end of the socket, if no socket, will be the same as pos_h = 0
-        3: union of the head and the shank
-        4: where the screw starts, if all the shank is screwed, it will be
-           the same as pos_h = 2
-        5: end of the shank, not considering shank_out
-        6: end of the shank, if shank_out = 0, will be the same as pos_h = 5
-        6: top of the head, considering xtr_head_l, if xtr_head_l = 0
-           will be the same as pos_h = 0
+        Location of pos along axis_h
+        
+            * 0: top of the head, considering head_out,
+            * 1: position of the head not considering head_out
+              if head_out = 0, it will be the same as pos_h = 0
+            * 2: end of the socket, if no socket, will be the same as pos_h = 0
+            * 3: union of the head and the shank
+            * 4: where the screw starts, if all the shank is screwed, it will be
+              the same as pos_h = 2
+            * 5: end of the shank, not considering shank_out
+            * 6: end of the shank, if shank_out = 0, will be the same as pos_h = 5
+            * 7: top of the head, considering xtr_head_l, if xtr_head_l = 0
+              will be the same as pos_h = 0
+
     pos_d : int
-        location of pos along axis_d (symmetric)
-        0: pos is at the central axis
-        1: radius of the shank
-        2: radius of the head
+        Location of pos along axis_d (symmetric)
+        
+            * 0: pos is at the central axis
+            * 1: radius of the shank
+            * 2: radius of the head
+
     pos_w : int
-        location of pos along axis_d (symmetric)
-        0: pos is at the central axis
-        1: radius of the shank
-        2: radius of the head
+        Location of pos along axis_d (symmetric)
+            
+            * 0: pos is at the central axis
+            * 1: radius of the shank
+            * 2: radius of the head
+
     pos : FreeCAD.Vector
         Position of the bolt, taking into account where the pos_h, pos_d, pos_w
         are
     model_type : 0 
-        not to print, just an outline
+        Not to print, just an outline
     name : str
-        name of the bolt
+        Name of the bolt
     """
 
     def __init__(self, metric, shank_l,

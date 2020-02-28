@@ -261,6 +261,7 @@ def get_fc_perpend1(fcv):
     
     Returns
     -------
+    FreeCAD.Vector
         Random perpendicular vector
     """
 
@@ -342,21 +343,22 @@ def get_tangent_circle_pt (ext_pt,
 
     Returns
     -------
-        * If axis_side is not given:
+        If axis_side is not given:
           returns a list with the 2 points that each point forms a line tangent
           to the circle. The 2 lines are defined by one of each point and the 
           external point.
-        * If axis_side is given:
+        If axis_side is given:
           Only returns a point (FreeCAD.Vector) with the tangent point defined
           by the direction of axis_side
 
-    * If there is an error it will return 0
+        If there is an error it will return 0
 
-    Note
-    ----
-    **Interesting Parameters**
+    Notes
+    -----
+    **Interesting Parameters**  
 
     axis_p (FreeCAD.Vector)
+
         Vector of the circle plane, perpendicular to axis_d. It can have
         to possible directions. If paremeter axis_side is defined, it will
         have the direction that has less than 90 degress related to axis_side
@@ -506,7 +508,9 @@ def get_tangent_2circles (center1_pt,
     Returns
     -------
         * If axis_side is given:  
+
             - Returns a list of lists (matrix)
+
                 * Element [0][0] is the point tangent to circle 1 at side axis_side
                 * Element [0][1] is the point tangent to circle 2 at side axis_side
                 * Element [1][0] is the point tangent to circle 1 at opposite side of
@@ -521,6 +525,7 @@ def get_tangent_2circles (center1_pt,
     Notes
     -----
     **Interesting variables**
+
     axis_p (FreeCAD.Vecrtor)
 
         Vector of the circle plane, perpendicular to axis_d. It can have
@@ -688,6 +693,7 @@ def addBox(x, y, z, name, cx= False, cy=False):
     Returns
     -------
     FreeCAD.Object
+        FreeCAD.Object with the shape of a box
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -735,7 +741,8 @@ def addBox_cen(x, y, z, name, cx= False, cy=False, cz=False):
 
     Returns
     -------
-        FreeCAD.Object
+    FreeCAD.Object
+        FreeCAD.Object with the shape of a box
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -807,7 +814,8 @@ def shp_boxcen(x, y, z, cx= False, cy=False, cz=False, pos=V0):
 
     Returns
     --------
-        TopoShape
+    TopoShape
+        Shape of a box
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -920,7 +928,8 @@ def shp_boxcenxtr(x, y, z, cx= False, cy=False, cz=False,
 
     Returns
     --------
-        TopoShape
+    TopoShape
+        Shape of a box
 
     """
     # we have to bring the active document
@@ -991,7 +1000,8 @@ def shp_boxcenfill (x, y, z, fillrad,
 
     Returns
     --------
-        TopoShape
+    TopoShape
+        Shape of a box
     """
 
 
@@ -1046,7 +1056,8 @@ def shp_boxcenchmf (x, y, z, chmfrad,
 
     Returns
     --------
-        TopoShape
+    TopoShape
+        Shape of a box
     """
 
 
@@ -1103,8 +1114,8 @@ def shp_box_rot (box_w, box_d, box_h,
     axis_nh : str
         Can be: *x, -x, y, -y, z, -z*
 
-    Note
-    ----
+    Notes
+    -----
     Check if it makes sense to have this small function
     """
 
@@ -1202,7 +1213,8 @@ def shp_box_dir (box_w, box_d, box_h,
 
     Returns
     --------
-        TopoShape
+    TopoShape
+        Shape of a box
     """
         # box_w: width of the box
         # box_d: depth of the box
@@ -1372,10 +1384,11 @@ def shp_box_dir_xtr (box_w, box_d, box_h,
 
     Returns
     -------- 
-        TopoShape
+    TopoShape
+        FreeCAD.Object with a shape of a box
 
-    Note
-    ----
+    Notes
+    -----
     **fc_axis_w** not necessary, unless cw=0, then it indicates the 
     direction of w, it has to be perpendicular to the previous
 
@@ -1594,6 +1607,7 @@ def shp_boxdir_fillchmfplane (
 
     Returns
     --------
+    TopoShape
         Shape of the filleted/chamfered box
 
     """
@@ -1753,7 +1767,8 @@ def shp_face_lgrail (rail_w, rail_h, axis_l = 'x', axis_b = '-z'):
         'x', 'y', 'z', '-x', '-y', '-z',
     Returns
     --------
-        FreeCAD Shape Face
+    Shape 
+        FreeCAD Shape Face of a rail
     """
 
     #First we do it on like it is axis_l = 'x' and axis_h = 'z' 
@@ -1849,7 +1864,8 @@ def wire_lgrail (rail_w,  rail_h,
 
     Returns
     -------
-        Wire
+    FreeCAD Wire
+        Wire of a rail
 
     """
 
@@ -1978,7 +1994,8 @@ def shp_face_rail (rail_w, rail_ws, rail_h,
     
     Returns
     -------- 
-        TopoShape
+    Shape 
+        FreeCAD Shape Face of a rail
     """
 # hole_relpos_z is the relative position referenced to rail_h
 
@@ -2047,7 +2064,8 @@ def addCyl (r, h, name):
 
     Returns
     --------
-        FreeCAD Object
+    FreeCAD Object
+        Cylinder
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -2096,7 +2114,8 @@ def addCyl_pos (r, h, name, axis = 'z', h_disp = 0):
 
     Returns
     --------
-        FreeCAD Object
+    FreeCAD Object
+        Cylinder
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -2160,7 +2179,8 @@ def addCylPos (r, h, name, normal = VZ, pos = V0):
 
     Returns
     --------
-        FreeCAD Object
+    FreeCAD Object
+        Cylinder
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -2209,7 +2229,8 @@ def shp_cyl (r, h, normal = VZ, pos = V0):
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape of a cylinder
 
     """
     cir =  Part.makeCircle (r,   # Radius
@@ -2263,7 +2284,8 @@ def shp_cylcenxtr (r, h, normal = VZ,
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape of a cylinder
     """
     # Normalize the normal, in case it is not one:
     nnormal = DraftVecUtils.scaleTo(normal, 1)
@@ -2396,17 +2418,20 @@ def shp_cyl_gen (r, h, axis_h = VZ,
         It can be None
     pos_h : int
         Location of pos along axis_h (0, 1)
+
             * 0: the cylinder pos is centered along its height
             * 1: the cylinder pos is at its base (not considering xtr_h)
 
     pos_ra : int
         Location of pos along axis_ra (0, 1)
+
             * 0: pos is at the circunference center
             * 1: pos is at the circunsference, on axis_ra, at r from the circle center
               (not at r + xtr_r)
 
     pos_rb : int
         Location of pos along axis_rb (0, 1)
+
             * 0: pos is at the circunference center
             * 1: pos is at the circunsference, on axis_rb, at r from the circle center
               (not at r + xtr_r)
@@ -2427,7 +2452,8 @@ def shp_cyl_gen (r, h, axis_h = VZ,
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape of a cylinder
    """
    
 
@@ -2522,7 +2548,8 @@ def addCylHole (r_ext, r_int, h, name, axis = 'z', h_disp = 0):
     
     Returns
     -------- 
-        FreeCAD Object
+    FreeCAD.Object
+        Cylinder with hole
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -2580,18 +2607,21 @@ def shp_cylhole (r_ext, r_int, h, axis = 'z', h_disp = 0.):
         Height 
     axis : str
         'x', 'y' or 'z'
+
             * 'x' will along the x axis
             * 'y' will along the y axis
             * 'z' will be vertical
 
     h_disp : int
         Displacement on the height. 
+
             * if 0, the base of the cylinder will be on the plane
             * if -h/2: the plane will be cutting h/2
     
     Returns
     -------
-        TopoShape
+    Shape
+        FreeCAD Shape of a cylinder with hole
     """
 
     normal = getfcvecofname(axis)
@@ -2640,7 +2670,8 @@ def addCylHolePos (r_out, r_in, h, name, normal = VZ, pos = V0):
 
     Returns
     -------- 
-        FreeCAD Object
+    Shape
+        FreeCAD Shape of a cylinder with hole
     """
 
     # we have to bring the active document
@@ -2693,7 +2724,8 @@ def shp_cylholedir (r_out, r_in, h, normal = VZ, pos = V0):
 
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape of a cylinder with hole
     """
 
     cir_out =  Part.makeCircle (r_out,   # Radius
@@ -2810,12 +2842,14 @@ def shp_cylhole_gen (r_out, r_in, h,
         It can be None
     pos_h : int
         Location of pos along axis_h (0, 1)
+
             * 0: the cylinder pos is centered along its height, not considering
               xtr_top, xtr_bot
             * 1: the cylinder pos is at its base (not considering xtr_h)
 
     pos_ra : int
         Location of pos along axis_ra (0, 1)
+
             * 0: pos is at the circunference center
             * 1: pos is at the inner circunsference, on axis_ra, at r_in from the
               circle center (not at r_in + xtr_r_in)
@@ -2824,6 +2858,7 @@ def shp_cylhole_gen (r_out, r_in, h,
 
     pos_rb : int
         Location of pos along axis_ra (0, 1)
+
             * 0: pos is at the circunference center
             * 1: pos is at the inner circunsference, on axis_rb, at r_in from the
               circle center (not at r_in + xtr_r_in)
@@ -2832,7 +2867,7 @@ def shp_cylhole_gen (r_out, r_in, h,
 
     xtr_top : float
         Extra height on top, it is not taken under consideration when
-                    calculating the cylinder center along the height
+        calculating the cylinder center along the height
     xtr_bot : float
         Extra height at the bottom, it is not taken under consideration when
         calculating the cylinder center along the height or the position of
@@ -2850,7 +2885,8 @@ def shp_cylhole_gen (r_out, r_in, h,
 
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape of a cylinder with hole
    """
    
     # calculate pos_o, which is at the center of the circle and at the base
@@ -3005,21 +3041,23 @@ def shp_cylhole_arc (r_out, r_in, h,
         Rotating from axis_ra in the direction determined by axis_h 
     pos_h : int
         Location of pos along axis_h (0, 1)
+
             * 0: the cylinder pos is centered along its height, not considering
               xtr_top, xtr_bot
             * 1: the cylinder pos is at its base (not considering xtr_h)
 
     pos_ra : int
         Location of pos along axis_ra (0, 1)
+
             * 0: pos is at the circunference center
             * 1: pos is at the inner circunsference, on axis_ra, at r_in from the
               circle center (not at r_in + xtr_r_in)
             * 2: pos is at the outer circunsference, on axis_ra, at r_out from the
               circle center (not at r_out + xtr_r_out)
 
-
     pos_rb : int
         Location of pos along axis_ra (0, 1)
+
             * 0: pos is at the circunference center
             * 1: pos is at the inner circunsference, on axis_rb, at r_in from the
               circle center (not at r_in + xtr_r_in)
@@ -3046,7 +3084,8 @@ def shp_cylhole_arc (r_out, r_in, h,
 
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape of a arc of the cylinder
    """
    
     # calculate pos_o, which is at the center of the circle and at the base
@@ -3248,7 +3287,8 @@ def add2CylsHole (r1, h1, r2, h2, thick,
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape of a two cylinders
     """
 
     # normalize de axis just in case:
@@ -3358,7 +3398,8 @@ def add3CylsHole (r1, h1, r2, h2, rring, hring, thick,
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape of a three cylinders
     """
 
     # normalize de axis just in case:
@@ -3464,7 +3505,8 @@ def shp_stadium_wire (l, r, axis_rect='x', pos_z=0):
 
     Returns
     --------
-        Wire
+    Shape Wire
+        FreeCAD Wire of a stadium
     """
 
     # considering axis_rect == 'x', if not, later it is rotated
@@ -3512,7 +3554,8 @@ def shp_stadium_face (l, r, axis_rect='x', pos_z=0):
 
     Returns
     --------
-        TopoShape
+    Shape Face
+        FreeCAD Face of a stadium
     """
 
     shpStadiumWire = shp_stadium_wire (l, r, axis_rect, pos_z)
@@ -3564,6 +3607,7 @@ def shp_stadium_wire_dir (length, radius, fc_axis_l = VX,
         Vector on the direction perpendicular to the paralles
     ref_l : int
         Reference (zero) of the fc_axis_l
+
             * 1 reference on the center (makes axis_s symmetrical)
             * 2 reference at one of the semicircle centers (point 2)
               the other circle center will be on the direction of fc_axis_l
@@ -3572,6 +3616,7 @@ def shp_stadium_wire_dir (length, radius, fc_axis_l = VX,
 
     ref_s : int
         Reference (zero) of the fc_axis_s
+
             * 1 reference at the center (makes axis_l symmetrical): p 1,2,3
             * 2 reference at the parallels lines: p: 4, 5 
               the other parallel will be on the direction of fc_axis_s
@@ -3581,7 +3626,8 @@ def shp_stadium_wire_dir (length, radius, fc_axis_l = VX,
 
     Returns
     --------
-    TopoShape of the wire
+    Shape Wire
+        FreeCAD Wire of a stadium
     """
 
     # normalize the axis
@@ -3724,6 +3770,7 @@ def shp_stadium_dir (
         Vector on the height direction
     ref_l : int
         Reference (zero) of the fc_axis_l
+
             * 1: reference on the center (makes axis_s symmetrical)
             * 2: reference at one of the semicircle centers (point 2)
               the other circle center will be on the direction of fc_axis_l
@@ -3732,6 +3779,7 @@ def shp_stadium_dir (
 
     ref_s : int
         Reference (zero) of the fc_axis_s
+
             * 1: reference at the center (makes axis_l symmetrical): p 1,2,3
             * 2: reference at the parallels lines: p: 4, 5 
               the other parallel will be on the direction of fc_axis_s
@@ -3750,7 +3798,8 @@ def shp_stadium_dir (
         
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape of a stadium
     """
 
     # normalize the axis
@@ -3878,6 +3927,7 @@ def shp_2stadium_dir (
         Vector on the direction of the parallels, 
     ref_l : int
         Reference (zero) of the fc_axis_l
+
             * 1: reference on the center (makes axis_s symmetrical)
             * 2: reference at one of the semicircle centers (point 2)
               the other circle center will be on the direction of fc_axis_l
@@ -3897,7 +3947,8 @@ def shp_2stadium_dir (
 
     Returns
     --------
-        TopoShype
+    Shape
+        FreeCAD Shape of a two stadiums
     """
 
     # normalize the axis_h
@@ -4011,7 +4062,8 @@ def shp_belt_wire_dir (center_sep, rad1, rad2, fc_axis_l = VX,
         Vector on the direction perpendicular to fc_axis_l, on the plane
         of the wire
     ref_l : int
-        Reference (zero) of the fc_axis_l       
+        Reference (zero) of the fc_axis_l     
+
             * 1: reference on the center 
             * 2: reference at one of the semicircle centers (point 2)
               the other circle center will be on the direction of fc_axis_l
@@ -4023,7 +4075,8 @@ def shp_belt_wire_dir (center_sep, rad1, rad2, fc_axis_l = VX,
 
     Returns
     --------
-        TopoShape of the wire
+    Shape Wire
+        FreeCAD Wire of a belt
     """
 
     # normalize the axis
@@ -4172,6 +4225,7 @@ def shp_belt_dir (center_sep, rad1, rad2, height,
         Vector on the hieght direction
     ref_l : int
         Reference (zero) of the fc_axis_l
+
             * 1: reference on the center 
             * 2: reference at rad1 semicircle centers (point 2)
               the other circle center will be on the direction of fc_axis_l
@@ -4186,13 +4240,14 @@ def shp_belt_dir (center_sep, rad1, rad2, height,
         If >0 it will be that extra height on the direction of fc_axis_h
     xtr_nh : float
         If >0 it will be that extra height on the opositve direction of
-             fc_axis_h
+        fc_axis_h
     pos : FreeCAD.Vector
         Position of the reference
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape of a belt
     """
 
         # normalize the axis
@@ -4266,6 +4321,7 @@ def shp_hollowbelt_dir (center_sep, rad1, rad2,
         Vector on the hieght direction
     ref_l : int
         Reference (zero) of the fc_axis_l
+
             * 1: reference on the center 
             * 2: reference at one of the semicircle centers (point 2)
               the other circle center will be on the direction of fc_axis_l
@@ -4285,7 +4341,8 @@ def shp_hollowbelt_dir (center_sep, rad1, rad2,
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape 
     """
 
 
@@ -4388,7 +4445,8 @@ def shpRndRectWire (x=1, y=1, r= 0.5, zpos = 0):
 
     Returns
     --------
-        TopoShape of the wire
+    Shape Wire
+        FreeCAD Wire of a rounded edges rectangle
     """
 
     #doc = FreeCAD.ActiveDocument
@@ -4529,7 +4587,8 @@ def shp_rndrect_face (x, y, r=0.5, pos_z=0):
 
     Returns
     --------
-        Face
+    Shape Face
+        FreeCAD Face of a rounded edges rectangle
     """
 
     shp_RndRectWire = shpRndRectWire (x, y, r=r, zpos= pos_z)
@@ -4708,6 +4767,7 @@ def wire_cableturn (d, w, corner_r,
         Radius of the corners
     conn_d : float
         Depth/length of the connector part
+
             * 0: there is no connecting wire
 
     xtr_conn_d : float
@@ -4726,6 +4786,7 @@ def wire_cableturn (d, w, corner_r,
         Coordinate System Vector along the width
     pos_d : int
         Location of pos along the axis_d (0,1,2,3), see drawing
+
             * 0: reference at the beginning of the connector
             * 1: reference at the beginning of the turn, at the side of the connector
             * 2: reference at the middle of the turn
@@ -4733,6 +4794,7 @@ def wire_cableturn (d, w, corner_r,
 
     pos_w : int
         Location of pos along the axis_w (0,1), see drawing
+        
             * 0: reference at the center of simmetry
             * 1: reference at the end of the turn
 
@@ -4741,7 +4803,8 @@ def wire_cableturn (d, w, corner_r,
 
     Returns
     --------
-        Wire
+    Shape Wire
+        FreeCAD Wire of a electrical wire
     """
 
     # normalize the axis
@@ -5010,7 +5073,9 @@ def shp_cableturn (d, w, thick_d, corner_r,
         Radius of the corners
     conn_d : float
         Depth/length of the connector part
-        * 0: there is no connecting wire
+            
+            * 0: there is no connecting wire
+
     xtr_conn_d : float
         If conn_d > 0, there can be and extra length of connector to make 
         unions, it will not be counted as pos_d = 0
@@ -5027,6 +5092,7 @@ def shp_cableturn (d, w, thick_d, corner_r,
         Coordinate System Vector along the width
     pos_d : int
         Location of pos along the axis_d (0,1,2,3), see drawing
+
             * 0: reference at the beginning of the connector
             * 1: reference at the beginning of the turn, at the side of the connector
             * 2: reference at the middle of the turn
@@ -5034,6 +5100,7 @@ def shp_cableturn (d, w, thick_d, corner_r,
 
     pos_w : int
         Location of pos along the axis_w (0,1), see drawing
+
             * 0: reference at the center of simmetry
             * 1: reference at the end of the turn
 
@@ -5042,8 +5109,8 @@ def shp_cableturn (d, w, thick_d, corner_r,
 
     Returns
     --------
-        TopoShape
-
+    Shape 
+        FreeCAD Shape of a electrical wire
     """
 
     # normalize the axis
@@ -5206,7 +5273,7 @@ def wire_beltclamp (d, w, corner_r,
         axis_w
     clamp_pull1_d : float
         Separation between the clamp (side closer to the center) and the center
-                          of the pulley1
+        of the pulley1
     clamp_pull1_w : float
         Separation between the center of the clamp and the center of the
         pulley1
@@ -5231,6 +5298,7 @@ def wire_beltclamp (d, w, corner_r,
         Coordinate System Vector along the width
     pos_d : int
         Location of pos along the axis_d, see drawing
+
             * 0: center of the pulley 1
             * 1: end of pulley 1
             * 2: end of clamp 1, closest end to pulley 1
@@ -5246,6 +5314,7 @@ def wire_beltclamp (d, w, corner_r,
 
     pos_w : int
         Location of pos along the axis_w, see drawing
+
             * 0: center of pulley 1
             * 1: center of pulley 2
             * 2: end (radius) of pulley 1 along axis_w
@@ -5261,7 +5330,8 @@ def wire_beltclamp (d, w, corner_r,
 
     Returns
     --------
-        TopoShape of the wire
+    Shape Wire
+        FreeCAD Wire of a belt clamped
     """
     """
 
@@ -5486,6 +5556,7 @@ def regpolygon_vecl (n_sides, radius, x_angle=0):
 
     Returns
     --------
+    List
         List of FreeCAD.Vector of the vertexes
 
     """
@@ -5532,6 +5603,7 @@ def regpolygon_dir_vecl (n_sides, radius, fc_normal, fc_verx1, pos):
 
     Returns
     --------
+    List
         List of FreeCAD.Vector of the vertexes
     """
 
@@ -5586,7 +5658,8 @@ def shp_regpolygon_face (n_sides, radius,
 
     Returns
     -------
-        TopoShape of the face
+    Shape Face
+        FreeCAD Face of a regular polygon
 
     """
 
@@ -5622,7 +5695,8 @@ def shp_regpolygon_dir_face (n_sides, radius,
 
     Returns
     --------
-        TopoShape of the face
+    Shape Face
+        FreeCAD Face of a regular polygon
 
     """
 
@@ -5654,7 +5728,7 @@ def shp_regprism (n_sides, radius, length,
         Perpendicular to n_axis, pointing to the first vertex,
         unless, x_angle is != 0. the vertex will be rotated
         x_angle degrees for v_axis
-     centered : int
+    centered : int
         1 if the extrusion is centered on pos (symmetrical)
     x_angle : float
         if zero, the first vertex will be on axis v_axis 
@@ -5664,7 +5738,8 @@ def shp_regprism (n_sides, radius, length,
 
     Returns
     --------
-        TopoShape of the regular prism
+    Shape
+        FreeCAD Shape of a regular prism
 
     """
 
@@ -5719,7 +5794,8 @@ def shp_regprism_xtr (n_sides, radius, length,
 
     Returns
     --------
-        TopoShape of the regular prism
+    Shape 
+        FreeCAD Shape of a regular prism
 
     """
 
@@ -5780,7 +5856,8 @@ def shp_regprism_dirxtr (n_sides, radius, length,
 
     Returns
     --------
-        TopoShape of the regular prism
+    Shape 
+        FreeCAD Shape of a regular prism
 
     """
 
@@ -5898,6 +5975,7 @@ def shp_cylhole_bolthole (r_out, r_in, h,
     r_bolt2cen : float
         Distance (radius) from the cylinder center to the bolt hole centers
     bolt_axis_ra : int
+
         * 1: the first bolt will be on axis ra
         * 0: the first bolt will be rotated half of the angle between to bolt
           holes -> centered on the side
@@ -5914,12 +5992,14 @@ def shp_cylhole_bolthole (r_out, r_in, h,
         It can be None
     pos_h : int
         Location of pos along axis_h (0, 1)
+
             * 0: the cylinder pos is centered along its height, not considering
               xtr_top, xtr_bot
             * 1: the cylinder pos is at its base (not considering xtr_h)
 
     pos_ra : int
         Location of pos along axis_ra (0, 1)
+
             * 0: pos is at the circunference center
             * 1: pos is at the inner circunsference, on axis_ra, at r_in from the
               circle center (not at r_in + xtr_r_in)
@@ -5929,6 +6009,7 @@ def shp_cylhole_bolthole (r_out, r_in, h,
 
     pos_rb : int
         Location of pos along axis_ra (0, 1)
+
             * 0: pos is at the circunference center
             * 1: pos is at the inner circunsference, on axis_rb, at r_in from the
               circle center (not at r_in + xtr_r_in)
@@ -5956,7 +6037,8 @@ def shp_cylhole_bolthole (r_out, r_in, h,
 
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape of a cylinder with hole
    """
    
 
@@ -6077,7 +6159,8 @@ def shp_extrud_face (face, length, vec_extr_axis, centered=0):
 
     Returns
     --------
-        TopoShape
+    Shape 
+        FreeCAD Shape of the Face
     """
     
     # Normalize the extrusion vector
@@ -6163,7 +6246,8 @@ def shp_extrud_face_rot (face, vec_facenormal, vec_edgx, length, centered=0,
     
     Returns
     --------
-         TopoShape
+    Shape 
+        FreeCAD Shape of a face
     """
     
     # since vec2 of calc_rot is referenced to VNZ, vec_facenomal is negated
@@ -6232,7 +6316,8 @@ def addBolt (r_shank, l_bolt, r_head, l_head,
 
     Returns
     --------
-        FreeCAD Objects
+    FreeCAD Object
+        FreeCAD Object of a bolt
     """
 
     # we have to bring the active document
@@ -6349,8 +6434,10 @@ def shp_bolt (r_shank, l_bolt, r_head, l_head,
         Length of the head
     hex_head : int
         Inidicates if the head is hexagonal or rounded
+
             * 1: hexagonal
             * 0: rounded
+
     h_layer3d : float
         Height of the layer for printing, if 0, means that the
         support is not needed
@@ -6405,7 +6492,8 @@ def shp_bolt (r_shank, l_bolt, r_head, l_head,
 
     Returns
     --------
-        TopoShape
+    Shape 
+        FreeCAD Shape of a bolt
     """
 
     elements = []
@@ -6526,6 +6614,7 @@ def shp_bolt_dir (r_shank, l_bolt, r_head, l_head,
         Length of the head
     hex_head : int 
         Inidicates if the head is hexagonal or rounded
+
             * 1: hexagonal
             * 0: rounded
 
@@ -6579,6 +6668,7 @@ def shp_bolt_dir (r_shank, l_bolt, r_head, l_head,
         it has to be perpendicular to fc_normal, 
     pos_n : int
         Location of pos along the normal, at the cylinder center
+
             * 0: at the top of the head (excluding xtr_head)
             * 1: at the union of the head and the shank
             * 2: at the end of the shank (excluding xtr_shank)
@@ -6588,7 +6678,8 @@ def shp_bolt_dir (r_shank, l_bolt, r_head, l_head,
 
     Returns
     -------
-        TopoShape
+    Shape
+        FreeCAD Shape of a bolt
     """
 
     elements = []
@@ -6748,7 +6839,8 @@ def addBoltNut_hole (r_shank,        l_bolt,
     
     Returns
     --------
-        FreeCAD Objesct
+    FreeCAD Object
+        FreeCAD Object of a Nut Hole
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -6853,6 +6945,7 @@ def shp_boltnut_dir_hole (r_shank,        l_bolt,
         but how long you want the nut to be inserted
     hex_head : int
         Inidicates if the head is hexagonal or rounded
+
             * 1: hexagonal
             * 0: rounded
 
@@ -6887,7 +6980,8 @@ def shp_boltnut_dir_hole (r_shank,        l_bolt,
     
     Returns
     --------
-        TopoShape
+    FreeCAD Object
+        FreeCAD Object of a Nut Hole
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -7073,6 +7167,7 @@ def aluprof_vec (width, thick, slot, insquare):
 
     Returns
     --------
+    Vector
         The points of the aluminum profile positive quadrant
     """
 
@@ -7188,12 +7283,14 @@ def shp_aluwire_dir (width, thick, slot, insquare,
         Diameter of the inner hole
     fc_axis_x : int
         Is a generic X axis, can be any
+
             * 1: reference (zero) at the center
             * 2: reference (zero) at the side, the other end side will be on the
               direction of fc_axis_x
 
     fc_axis_y : int
         Is a generic Y axis, can be any perpendicular to fc_axis_y
+
             * 1: reference (zero) at the center
             * 2: reference (zero) at the side, the other end side will be on the
               direction of fc_axis_y
@@ -7207,7 +7304,8 @@ def shp_aluwire_dir (width, thick, slot, insquare,
     
     Returns
     --------
-        TopoShape
+    Shape Wire
+        FreeCAD Shape Wire of a aluminium profile
     """
 
     axis_x = DraftVecUtils.scaleTo(fc_axis_x, 1)
@@ -7312,8 +7410,8 @@ def shp_aluwire_dir (width, thick, slot, insquare,
 
 class NutHole (object):
     """
-    Adding a Nut hole (hexagonal) with a prism attached to introduce the nut
-    tolerances are included
+    Adding a Nut hole (hexagonal) with a prism attached to introduce the nut.
+    Tolerances are included
     ::
     
         0               1       
@@ -7360,7 +7458,8 @@ class NutHole (object):
     
     Returns
     --------
-        FreeCAD Object
+    FreeCAD Object
+        FreeCAD object of a nut hole
     """
 
     def __init__(self, nut_r, nut_h, hole_h, name,
@@ -7530,7 +7629,8 @@ def shp_nuthole (nut_r, nut_h, hole_h,
 
     Returns
     --------
-        TopoShape
+    Shape 
+        FreeCAD Shape of a nut hole
     """
     doc = FreeCAD.ActiveDocument
     # normalize axis:
@@ -7651,7 +7751,8 @@ def fillet_len (box, e_len, radius, name):
 
     Returns
     --------
-        FreeCAD Object
+    FreeCAD Object
+        FreeCAD Object with fillet made
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -7885,6 +7986,8 @@ def edgeonaxis (edge, axis):
     Returns
     -------
     boolean
+        True: edge on an axis
+        False: edge not on an axis
     """
 
     vex0 = edge.Vertexes[0]
@@ -7946,7 +8049,8 @@ def shp_filletchamfer_dir (shp, fc_axis = VZ,  fillet = 1, radius=1):
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -8008,7 +8112,8 @@ def shp_filletchamfer_dirs (shp, fc_axis_l, fillet = 1, radius=1):
 
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -8079,7 +8184,8 @@ def shp_filletchamfer_dirpt (shp, fc_axis = VZ, fc_pt = V0,  fillet = 1,
 
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -8154,7 +8260,8 @@ def shp_filletchamfer_dirpts (shp, fc_axis, fc_pts,  fillet = 1,
 
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -8229,7 +8336,8 @@ def shp_cir_fillchmf (shp, circen_pos = V0,  fillet = 1, radius=1):
     
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -8278,7 +8386,8 @@ def shp_cylfilletchamfer (shp, fillet = 1, radius=1):
 
     Returns
     -------- 
-        TopoShape
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -8356,13 +8465,14 @@ def shp_filletchamfer (shp, e_len, fillet = 1, radius=1, axis='x',
     zpos : float
         The Z position
 
-    Note
-    ----
+    Notes
+    -----
     If axis = 'x', x_pos_check will not make sense
 
     Returns
     --------
-        TopoShape
+    Shape
+        FreeCAD Shape with fillet/chamfer made
     """
     # we have to bring the active document
     doc = FreeCAD.ActiveDocument
@@ -8482,13 +8592,14 @@ def filletchamfer (fco, e_len, name, fillet = 1, radius=1, axis='x',
     name : str
         Name of the fco we want to create
 
-    Note
-    ----
+    Notes
+    -----
     If axis = 'x', x_pos_check will not make sense
 
     Returns
     --------
-        FreeCAD Object
+    FreeCAD Object
+        FreeCAD Object with fillet/chamfer made
     """
 
     # we have to bring the active document
@@ -8647,7 +8758,8 @@ def calc_rot (vec1, vec2):
 
     Returns
     --------
-        FreeCAD.Rotation
+    FreeCAD.Rotation
+
     """
            
     # rotation calculation
@@ -8769,7 +8881,8 @@ def get_fcvectup (tup):
 
     Returns
     -------- 
-        FreeCAD.Vector
+    FreeCAD.Vector
+        FreeCAD.Vector of a tuple
     """
 
     fcvec = FreeCAD.Vector(tup[0], tup[1], tup[2])
@@ -8805,7 +8918,8 @@ def calc_rot_z (v_refz, v_refx):
 
     Returns
     --------
-        FreeCAD.Rotation 
+    FreeCAD.Rotation 
+
     """
 
     if type(v_refz) is tuple:
@@ -8827,8 +8941,8 @@ def get_rot (v1, v2):
     The difference with DraftVecUtils.getRotation is that getRotation doesnt
     work for vectors with 180 degrees.
 
-    Note
-    ----
+    Notes
+    -----
         MAYBE IT IS NOT NECESSARY, just use FreeCAD.Rotation
         rotation.Axis, math.degrees(rotation.Angle)
 
@@ -8841,6 +8955,7 @@ def get_rot (v1, v2):
 
     Returns
     --------
+    FreeCAD.Rotation
         Tuple representing a quaternion rotation between v2 and v1
     """
 
@@ -8967,7 +9082,8 @@ def calc_desp_ncen (Length, Width, Height,
 
     Returns
     --------
-        FreeCAD.Vector
+    FreeCAD.Vector
+        Vector of the displacement
     """
     # rotation calculation
     x = 0
@@ -9144,6 +9260,7 @@ def get_vecname_perpend1(vecname):
 
     Returns
     --------
+    str
         Perpendicular vector name
     """
 
@@ -9172,7 +9289,8 @@ def get_vecname_perpend2(vecname):
         'x', '-x', 'y', '-y', 'z', '-z'
 
     Returns
-    --------
+    -------
+    str
         Perpendicular vector name
     """
 
@@ -9197,7 +9315,8 @@ def get_nameofbasevec (fcvec):
     Gets its name: 'x', 'y',....
 
     Returns
-    --------
+    -------
+    str
         Vector name
     """
 
@@ -9232,7 +9351,8 @@ def get_fclist_4perp_vecname (vecname):
         'x', '-x', 'y', '-y', 'z', '-z'
 
     Returns
-    --------
+    -------
+    list
         List of FreeCAD.Vector 
     """
 
@@ -9263,7 +9383,8 @@ def get_fclist_4perp_fcvec (fcvec):
         (1,0,0), (0,1,0), (0,0,1), (-1,0,0), (0,-1,0), (0,0,-1)
 
     Returns
-    --------
+    -------
+    list
         List of FreeCAD.Vector 
     """
     return (get_fclist_4perp_vecname(get_nameofbasevec(fcvec)))
@@ -9285,7 +9406,8 @@ def get_fclist_4perp2_vecname (vecname):
         'x', '-x', 'y', '-y', 'z', '-z'
 
     Returns
-    --------
+    -------
+    list
         List of FreeCAD.Vector
     """
 
@@ -9323,7 +9445,8 @@ def get_fclist_4perp2_fcvec (fcvec):
         (1,0,0), (0,1,0), (0,0,1), (-1,0,0), (0,-1,0), (0,0,-1)
 
     Returns
-    --------
+    -------
+    list
         List of FreeCAD.Vector 
     """
     return (get_fclist_4perp2_vecname(get_nameofbasevec(fcvec)))
@@ -9341,7 +9464,8 @@ def get_positive_vecname (vecname):
         'x', '-x', 'y', '-y', 'z', '-z'
 
     Returns
-    --------
+    -------
+    str
         Vector name
     """
 
