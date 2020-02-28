@@ -3553,7 +3553,8 @@ class LinBearHouse (object):
 class ThinLinBearHouseAsim (object):
 
     """
-    There are:
+    There are
+    
         +-------------+---------------------------+-----------------------+
         |3 axis:      | 3 planes (normal to axis) |  3 distances to plane |
         +=============+===========================+=======================+

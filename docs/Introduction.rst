@@ -7,7 +7,7 @@ Introduccion
 Mechatronic
 -----------
 Mechatronic is a Workbench for FreeCAD that allows the modification of parametric models that includes and
-facilitates assembly and composition. It also provides a library of functions with which to generate new
+simplify the assembly and composition. It also provides a library of functions with which to generate new
 parametric models to be included in the Workbench.
 
 How it works
@@ -36,7 +36,7 @@ History
 -------
 Mechatronic Workbench started with the Filter Stage project. In this project, we designed a support for the 
 sample holder of a microscope to the URJC.
-To be able to modify the design and adapt it to the required dimensions, we chose to make a parametric design.
+In order to be able to modify the design and adapt it to the required dimensions, we chose to make a parametric design.
 Parametric design requires the use of a programming language to describe the model, in this case we use Python.
 
 Based on this parameterizable design, a final degree work was conceived to create a Workbench 
