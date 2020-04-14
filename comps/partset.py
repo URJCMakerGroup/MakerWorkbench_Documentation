@@ -739,10 +739,11 @@ class Din934NutWashSet (fc_clss.PartsSet):
 
 
 class NemaMotorPulleySet (fc_clss.PartsSet):
-    """ Set composed of a Nema Motor and a pulley
+    """ 
+    Set composed of a Nema Motor and a pulley
 
     Number positions of the pulley will be after the positions of the motor
-
+    ::
 
             axis_h
                 :
@@ -815,49 +816,109 @@ class NemaMotorPulleySet (fc_clss.PartsSet):
                   +
                motor_w (same as d): Nema size in inches /10
 
-    pos_o (origin) is at pos_d=0, pos_w=0, pos_h=1
+     pos_o (origin) is at pos_d=0, pos_w=0, pos_h=1
 
-    Parameters:
+    Parameters
     -----------
-
+    nema_size: dict
+        List of sizes defines in kcomps NEMA motor dimensions.
+    base_l: float,
+        Length (height) of the base
+    shaft_l = float,
+        Length (height) of the shaft, including the small cylinder (circle)
+        at the base
+    shaft_r: float,
+        Radius of the shaft, if not defined, it will take the dimension defined
+        in kcomp
+    circle_r: float,
+        Radius of the cylinder (circle) at the base of the shaft
+        if 0 or circle_h = 0 -> no cylinder
+    circle_h: float,
+        Height of the cylinder at the base of the shaft
+        if 0 or circle_r = 0 -> no cylinder
+    chmf_r: float, 
+        Chamfer radius of the chamfer along the base length (height)
+    rear_shaft_l: float
+        Length of the rear shaft, 0 : no rear shaft
+    bolt_depth: float
+        Depth of the bolt holes of the motor
+    pulley_pitch: float/int
+        Distance between teeth: Typically 2mm, or 3mm
+    pulley_n_teeth: int
+        Number of teeth of the pulley
+    pulley_toothed_h: float
+        Height of the toothed part of the pulley
+    pulley_top_flange_h: float
+        Height (thickness) of the top flange, if 0, no top flange
+    pulley_bot_flange_h: float
+        Height (thickness) of the bot flange, if 0, no bottom flange
+    pulley_tot_h: float
+        Total height of the pulley
+    pulley_flange_d: float
+        Flange diameter, if 0, it will be the same as the base_d
+    pulley_base_d: float
+        Base diameter
+    pulley_tol: float
+        Tolerance for radius (it will substracted to the radius)
+        twice for the diameter. Or added if a shape to substract
     pulley_pos_h : float
         position in mm of the pulley along the shaft
-        0:  it is at the base of the shaft
-        -1: the top of the pulley will be aligned with the end of the shaft
+
+            * 0:  it is at the base of the shaft
+            * -1: the top of the pulley will be aligned with the end of the shaft
+
+    axis_d: FreeCAD.Vector
+        Depth vector of coordinate system (perpendicular to the height)
+    axis_w: FreeCAD.Vector
+        Width vector of coordinate system
+        if V0: it will be calculated using the cross product: axis_h x axis_d
+    axis_h: FreeCAD.Vector
+        Height vector of coordinate system
 
     pos_d: int
         location of pos along the axis_d  see drawing
-           Locations coinciding with the motor
-        0: at the axis of the shaft
-        1: at the radius of the shaft
-        2: at the end of the circle(cylinder) at the base of the shaft
-        3: at the bolts
-        4: at the end of the piece
-           Locations of the pulley
-        5: at the inner radius
-        7: at the external radius
-        7: at the pitch radius (outside the toothed part)
-        8: at the end of the base (not the toothed part)
-        9: at the end of the flange (V0 is no flange)
+            * Locations coinciding with the motor
+            
+                * 0: at the axis of the shaft
+                * 1: at the radius of the shaft
+                * 2: at the end of the circle(cylinder) at the base of the shaft
+                * 3: at the bolts
+                * 4: at the end of the piece
+            
+            * Locations of the pulley
+            
+                * 5: at the inner radius
+                * 7: at the external radius
+                * 7: at the pitch radius (outside the toothed part)
+                * 8: at the end of the base (not the toothed part)
+                * 9: at the end of the flange (V0 is no flange)
 
-    pos_h : int
+    pos_w: int
+        location of pos along the axis_w see drawing
+            * Same locations of pos_d
+    
+    pos_h: int
         location of pos along the axis_h, see drawing
-        0: at the base of the shaft (not including the circle at the base
-           of the shaft)
-        1: at the end of the circle at the base of the shaft
-        2: at the end of the shaft
-        3: at the end of the bolt holes
-        4: at the bottom base
-        5: at the end of the rear shaft, if no rear shaft, it will be
-           the same as pos_h = 4
-        6: at the base of the pulley
-        7: at the base of the bottom flange of the pulley
-        8: at the base of the toothed part of the pulley
-        9: at the center of the toothed part of the pulley
-        10: at the end (top) of the toothed part of the pulley
-        11: at the end (top) of the pulley of the pulley
+            
+            * 0: at the base of the shaft (not including the circle at the base
+              of the shaft)
+            * 1: at the end of the circle at the base of the shaft
+            * 2: at the end of the shaft
+            * 3: at the end of the bolt holes
+            * 4: at the bottom base
+            * 5: at the end of the rear shaft, if no rear shaft, it will be
+              the same as pos_h = 4
+            * 6: at the base of the pulley
+            * 7: at the base of the bottom flange of the pulley
+            * 8: at the base of the toothed part of the pulley
+            * 9: at the center of the toothed part of the pulley
+            * 10: at the end (top) of the toothed part of the pulley
+            * 11: at the end (top) of the pulley of the pulley
 
-       
+    pos : FreeCAD.Vector
+        Position of the model
+    name: str
+        Object name
     """
 
     def __init__ (self,

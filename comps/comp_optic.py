@@ -51,28 +51,47 @@ logger = logging.getLogger(__name__)
 
 class CageCube (object):
 
-    """ Creates Cage Cube for optics
-        taps are only drawn with their max diameter, 
-        setscrews and taps to secure the rods are not drawn
-    Args
-        side_l: length of the side of the cube
-        thru_hole_d: big thru-hole on 2 sides, not threaded, centered
-        thru_thread_d: 2 big thru-hole threaded, on 4 sides, centered
-        thru_rod_d: 4 thru holes, on 2 sides
-        thru_rod_sep: separation of the rods
-        rod_thread_d: on the sides other than the thru_rods, there are threads
-            to insert a rod
-        rod_thread_l: depth of the thread for the rods
-        tap_d: diameter of the tap to connect accesories
-        tap_l: depth of the taps to connect accesories
-        tap_sep_l: separation of the tap to connect, large
-        tap_sep_s: separation of the tap to connect, sort
-        axis_thru_rods: direction of rods: 'x', 'y', 'z'
-        axis_thru_hole: direction big thru_hole: 'x', 'y', 'z'.
-           Cannot be the same as axis_thru_rods
-           There are 6 posible orientations:
-           Thru-rods can be on X, Y or Z axis
-           thru-hole can be on X, Y, or Z axis, but not in the same as thru-rods
+    """ 
+    Creates Cage Cube for optics
+    taps are only drawn with their max diameter, 
+    setscrews and taps to secure the rods are not drawn
+    
+    Parameters
+    ----------
+    side_l: float
+        Length of the side of the cube
+    thru_hole_d: float
+        Big thru-hole on 2 sides, not threaded, centered
+    thru_thread_d: float
+        2 big thru-hole threaded, on 4 sides, centered
+    thru_rod_d: float 
+        4 thru holes, on 2 sides
+    thru_rod_sep: float
+        Separation of the rods
+    rod_thread_d: float
+        On the sides other than the thru_rods, there are threads
+        to insert a rod
+    rod_thread_l: float
+        Depth of the thread for the rods
+    tap_d: float
+        Diameter of the tap to connect accesories
+    tap_l: float
+        Depth of the taps to connect accesories
+    tap_sep_l: float
+        Separation of the tap to connect, large
+    tap_sep_s: float
+        Separation of the tap to connect, sort
+    axis_thru_rods: str
+        Direction of rods: 'x', 'y', 'z'
+    axis_thru_hole: str
+        Direction big thru_hole: 'x', 'y', 'z'.
+        
+        Note
+        ----
+        Cannot be the same as axis_thru_rods
+        There are 6 posible orientations:
+        Thru-rods can be on X, Y or Z axis
+        thru-hole can be on X, Y, or Z axis, but not in the same as thru-rods
     """
     ROD_SCREWS = kcomp_optic.ROD_SCREWS
     THRU_RODS = kcomp_optic.THRU_RODS
@@ -290,25 +309,37 @@ def f_cagecube (d_cagecube,
                 axis_thru_rods = 'x',
                 axis_thru_hole = 'y',
                 name = 'cagecube',
-                toprint_tol = 0,
-               ):
+                toprint_tol = 0):
 
-    """ creates a cage cube, it creates from a dictionary
+    """ 
+    Creates a cage cube, it creates from a dictionary
 
-    Args
-        d_cagecube: dictionary with the dimensions of the cage cube,
-                    defined in kcomp_optic.py
-        axis_thru_rods: direction of rods: 'x', 'y', 'z'
-        axis_thru_hole: direction big thru_hole: 'x', 'y', 'z'.
-           Cannot be the same as axis_thru_rods
-           There are 6 posible orientations:
-           Thru-rods can be on X, Y or Z axis
-           thru-hole can be on X, Y, or Z axis, but not in the same as thru-rods
-        toprint_tol: 0, dimensions as they are.
-                     >0 value of tolerances of the holes.
-                     multiplies the normal tolerance in kcomp.TOL
+    Parameters
+    ----------
+    d_cagecube: 
+        Dictionary with the dimensions of the cage cube,
+        defined in kcomp_optic.py
+    axis_thru_rods: str
+        Direction of rods: 'x', 'y', 'z'
+    axis_thru_hole: str
+        Direction big thru_hole: 'x', 'y', 'z'.
 
-    Returns a class of a CageCube. The freeCAD object can be accessed by the
+        Note
+        ----
+        Cannot be the same as axis_thru_rods
+        There are 6 posible orientations:
+        Thru-rods can be on X, Y or Z axis
+        thru-hole can be on X, Y, or Z axis, but not in the same as thru-rods
+
+    toprint_tol: float
+        
+        * 0, dimensions as they are.
+        * >0 value of tolerances of the holes.
+          multiplies the normal tolerance in kcomp.TOL
+
+    Returns
+    -------
+        CageCube. The freeCAD object can be accessed by the
         attribute .fco
     """
 
@@ -354,38 +385,61 @@ def f_cagecube (d_cagecube,
 
 class CageCubeHalf (object):
 
-    """ Creates a Half Cage Cube for optics, so you can put the lense
-        at 45
-        taps are only drawn with their max diameter, 
-        setscrews and taps to secure the rods are not drawn
-        Many other details are not drawn, neither the cover for the lense
+    """ 
+    Creates a Half Cage Cube for optics, so you can put the lense
+    at 45
+    taps are only drawn with their max diameter, 
+    setscrews and taps to secure the rods are not drawn
+    
+    Many other details are not drawn, neither the cover for the lense
+    The right angle sides are identical, but there is a difference
+    regarding to the tapped holes on the sides, the can have different
+    sizes
 
-        The right angle sides are identical, but there is a difference
-        regarding to the tapped holes on the sides, the can have different
-        sizes
-    Args
-        side_l: length of the side of the cube (then it will be halved)
-        thread_d: 2 big threads, on the 2 perpendicular sides, centered
-        thru_hole_d: internal hole after the thread
-        thru_hole_depth: depth from which the thru hole starts
-        lenshole_45_d: hole from the 45 angle side that will go to the center
-        rod_d: 4 holes, on 2 sides, perpendicular sides. The rods will be 
-               secured with screws, but those screws are not drawn
-        rod_sep: separation of the rods
-        rod_depth: how deep are the holes
-        rod_thread_l: depth of the thread for the rods
-        tap_d: diameter of the tap to connect accesories
-        tap_l: depth of the taps to connect accesories
-        tap_sep_l: separation of the tap to connect, large
-        tap_sep_s: separation of the tap to connect, sort
-        axis_1: direction of the first right side:
-                'x', 'y', 'z', '-x', '-y', '-z'
-        axis_2: direction big the other right side: 
-                'x', 'y', 'z', '-x', '-y', '-z'
-           Cannot be the same as axis_1, or its negated. Has to be perpendicular
-           There are 24 posible orientations:
-           6 posible axis_1 and 4 axis_2 for each axis_1
-        name: name of the freecad object
+    Parameters
+    ----------
+    side_l: float
+        Length of the side of the cube (then it will be halved)
+    thread_d: float
+        2 big threads, on the 2 perpendicular sides, centered
+    thru_hole_d: float
+        Internal hole after the thread
+    thru_hole_depth: float
+        Depth from which the thru hole starts
+    lenshole_45_d: float
+        Hole from the 45 angle side that will go to the center
+    rod_d: float
+        4 holes, on 2 sides, perpendicular sides. The rods will be 
+        secured with screws, but those screws are not drawn
+    rod_sep: float
+        Separation of the rods
+    rod_depth: float
+        How deep are the holes
+    rod_thread_l: float
+        Depth of the thread for the rods
+    tap_d: float
+        Diameter of the tap to connect accesories
+    tap_l: float
+        Depth of the taps to connect accesories
+    tap_sep_l: float
+        Separation of the tap to connect, large
+    tap_sep_s: float
+        Separation of the tap to connect, sort
+    axis_1: str
+        Direction of the first right side:
+        'x', 'y', 'z', '-x', '-y', '-z'
+    axis_2: str
+        Direction big the other right side: 
+        'x', 'y', 'z', '-x', '-y', '-z'
+
+        Note
+        -----
+        Cannot be the same as axis_1, or its negated. Has to be perpendicular
+        There are 24 posible orientations:
+        6 posible axis_1 and 4 axis_2 for each axis_1
+    
+    name: str
+        Name of the freecad object
     """
 
     def __init__ (self, side_l,
@@ -579,21 +633,30 @@ def f_cagecubehalf (d_cagecubehalf,
                     name = 'cagecubehalf'
                    ):
 
-    """ creates a half cage cube: 2 perpendicular sides, and a 45 degree angle
-        side,
-        it creates from a dictionary
+    """ 
+    Dreates a half cage cube: 2 perpendicular sides, and a 45 degree angle
+    side. It creates from a dictionary
 
-    Args
-        d_cagecubehalf: dictionary with the dimensions of the cage cube,
-                    defined in kcomp_optic.py
-        axis_1: direction of the first right side:
-                'x', 'y', 'z', '-x', '-y', '-z'
-        axis_2: direction big the other right side: 
-                'x', 'y', 'z', '-x', '-y', '-z'
-           Cannot be the same as axis_1, or its negated. Has to be perpendicular
-           There are 24 posible orientations:
-           6 posible axis_1 and 4 axis_2 for each axis_1
-        name: name of the freecad object
+    Parameters
+    ----------
+    d_cagecubehalf: dict 
+        Dictionary with the dimensions of the cage cube,
+        defined in kcomp_optic.py
+    axis_1: str
+        Direction of the first right side:
+        'x', 'y', 'z', '-x', '-y', '-z'
+    axis_2: str
+        Direction big the other right side: 
+        'x', 'y', 'z', '-x', '-y', '-z'
+
+        Note
+        ----
+        Cannot be the same as axis_1, or its negated. Has to be perpendicular
+        There are 24 posible orientations:
+        6 posible axis_1 and 4 axis_2 for each axis_1
+    
+    name: str
+        Name of the freecad object
 
     """
 
@@ -643,6 +706,7 @@ def f_cagecubehalf (d_cagecubehalf,
 class Lb1cPlate (object):
     """
     Creates a LB1C/M plate from thorlabs. The plate is centered
+    ::
 
                   fc_axis_l: axis on the large separation
                     |
@@ -672,17 +736,26 @@ class Lb1cPlate (object):
          |__::___H______________|              V fc_axis_h
 
 
-    Args
-        d_plate: dictionary with the dimensions
-        fc_axis_h: FreeCAD.Vector on the direction of the vertical (thickness)
-        fc_axis_l: FreeCAD.Vector on the direction of the large distance of
-                the counterbored asymetrical holes
-        ref_in: 1: fc_axis_h starts on the inside to outside of the plate
-                0: fc_axis_h starts on the outside to inside of the plate
-        pos :  position of the center. FreeCAD.Vector. The center is on the 
-               center of the plate, but on the axis_h can be in either side
-               depending on ref_in
-        name: name 
+    Parameters
+    ----------
+    d_plate: dict
+        Dictionary with the dimensions
+    fc_axis_h: FreeCAD.Vector 
+        Direction of the vertical (thickness)
+    fc_axis_l: FreeCAD.Vector 
+        Direction of the large distance of
+        the counterbored asymetrical holes
+    ref_in: int
+        
+        * 1: fc_axis_h starts on the inside to outside of the plate
+        * 0: fc_axis_h starts on the outside to inside of the plate
+
+    pos: FreeCAD.Vector
+        Position of the center. The center is on the 
+        center of the plate, but on the axis_h can be in either side
+        depending on ref_in
+    name: str
+        Name 
 
     """
 
@@ -826,9 +899,12 @@ def plate_thruhole_hole8 (side_l,
            name = 'plate'):
 
     """
-    draws a square plate, with a thru-hole in the center.
-    4 sets of holes in symetrical positions for screws
-    4 sets of holes for cap-screws
+    Draws a square plate, with a thru-hole in the center.
+    
+    * 4 sets of holes in symetrical positions for screws
+    * 4 sets of holes for cap-screws
+
+    ::
 
                    fc_axis_l: axis on the large separation
                     |
@@ -849,27 +925,51 @@ def plate_thruhole_hole8 (side_l,
          |______________________|
 
 
-    Arguments:
-        side_l: length of the plate (two sides)
-        thick : thickness (height of the plate)
-        thruhole_d: diamenter of the central hole
-        sym_hole_d: diamenter of the symetrical holes
-        sym_hole_sep: distance between the centers of the symetrical holes 
-        cbore_hole_d: diameter of the shank of the counter bored hole
-        cbore_hole_head_d: diameter of the cap of the counterbored screw
-        cbore_hole_head_l: length of the cap (head) of the counterbored screw
-        cbore_hole_sep_l: large separation of the counterbored holes
-        cbore_hole_sep_s: small separation of the counterbored holes
-        fc_axis_h: FreeCAD.Vector on the direction of the vertical (thickness)
-                   from the inside of the plate
-        fc_axis_l: FreeCAD.Vector on the direction of the large distance of
-                the counterbored asymetrical holes
-        cl: 1: centered on the fc_axis_l direction
-        cw: 1: centered on the axis_small direction (perpendicular to fc_axis_l
+    Parametes:
+    ----------
+    side_l: float
+        Length of the plate (two sides)
+    thick: float 
+        Thickness (height of the plate)
+    thruhole_d: float
+        Diamenter of the central hole
+    sym_hole_d: float
+        Diamenter of the symetrical holes
+    sym_hole_sep: float
+        Distance between the centers of the symetrical holes 
+    cbore_hole_d: float
+        Diameter of the shank of the counter bored hole
+    cbore_hole_head_d: float
+        Diameter of the cap of the counterbored screw
+    cbore_hole_head_l: float
+        Length of the cap (head) of the counterbored screw
+    cbore_hole_sep_l: float
+        Large separation of the counterbored holes
+    cbore_hole_sep_s: float
+        Small separation of the counterbored holes
+    fc_axis_h: FreeCAD.Vector
+        Direction of the vertical (thickness)
+        from the inside of the plate
+    fc_axis_l: FreeCAD.Vector 
+        Direction of the large distance of
+        the counterbored asymetrical holes
+    cl: int
+        
+        1: centered on the fc_axis_l direction
+    
+    cw: int
+
+        * 1: centered on the axis_small direction (perpendicular to fc_axis_l
                and fc_axis_h)
-        ch: 1: centered on the vertical direction (thickness)
-        pos :  position of the center. FreeCAD.Vector
-        name: name 
+    
+    ch: int 
+    
+        * 1: centered on the vertical direction (thickness)
+    
+    pos:  FreeCAD.Vector
+        Position of the center.
+    name: str
+        name 
 
     """
 
@@ -1000,8 +1100,33 @@ def plate_lb2c (
  
 
 class Lb2cPlate (object):
+    """Same as plate_lb2c, but it creates an object.
 
-    """ Same as plate_lb2c, but it creates an object """
+    Parameters
+    ----------
+    fc_axis_h: FreeCAD.Vector 
+        Direction of the vertical (thickness)
+    fc_axis_l: FreeCAD.Vector 
+        Direction of the large distance of
+        the counterbored asymetrical holes
+    cl: int
+        * 1: centered on the fc_axis_l direction
+    
+    cw: int
+        * 1: centered on the axis_small direction (perpendicular to fc_axis_l
+          and fc_axis_h)
+    
+    ch: int 
+        * 1: centered on the vertical direction (thickness)
+   
+   pos: FreeCAD.Vector
+        Position of the center. The center is on the 
+        center of the plate, but on the axis_h can be in either side
+        depending on ref_in
+    name: str
+        Name 
+    
+    """
 
     def __init__(self,
            fc_axis_h,
@@ -1071,12 +1196,14 @@ class Lb2cPlate (object):
 class PlateThruholeMhole (object):
 
     """
-    draws a square plate, with a thru-hole in the center.
-    1 hole on the side to mount it
-    4 sets of holes in symetrical positions for screws
-    4 sets of holes for cap-screws
+    Draws a square plate, with a thru-hole in the center.
+    
+        * 1 hole on the side to mount it
+        * 4 sets of holes in symetrical positions for screws
+        * 4 sets of holes for cap-screws
 
     if any of these holes are zero, they will not be made
+    ::
 
                    fc_axis_m: axis on the mounting hole
                     :
@@ -1096,7 +1223,7 @@ class PlateThruholeMhole (object):
          |       O ...  O       | -------------------
          5_________:1:__________|
                     mounting hole
-                   / \
+                   / \ 
                     : fc_axis_m
 
 
@@ -1109,45 +1236,71 @@ class PlateThruholeMhole (object):
 
                     mounting hole (4)
 
-    Arguments:
-        side_l: length of the plate (two sides)
-        thick : thickness (height of the plate)
-        thruhole_d: diamenter of the central hole
-                    if 0: no hole
-        mhole_d: diameter of the mounting hole
-        mhole_l: length (depth) of the mounting hole
-                    if 0: no hole
-        sym_hole_d: diamenter of the symetrical holes
-                    if 0: no hole
-        sym_hole_sep: distance between the centers of the symetrical holes 
-        cbore_hole_d: diameter of the shank of the counter bored hole
-                    if 0: no hole
-        cbore_hole_head_d: diameter of the cap of the counterbored screw
-        cbore_hole_head_l: length of the cap (head) of the counterbored screw
-        cbore_hole_sep_l: large separation of the counterbored holes
-        cbore_hole_sep_s: small separation of the counterbored holes
-        cbore_hole_sep_l_axis_m: if the long separation of the cbore holes
-            are in the direction of the axis_m or not
-            1: like the drawing
-            0: switchin cbore_hole_sep_l for cbore_hole_sep_s in the drawing
-        chmf_r: if >0 vertical edges are chamfered
-        fc_axis_h: FreeCAD.Vector on the direction of the vertical (thickness)
-                   from the inside of the plate
-        fc_axis_m: FreeCAD.Vector on the direction of the mounting hole
-                goes in the mounting hole
-        fc_axis_p: FreeCAD.Vector on the perpendicular direction of
-                axis_h and axis_m, only used if not centered on this axis
+    Parameters
+    ----------
+    side_l: float
+        Length of the plate (two sides)
+    thick: float
+        Thickness (height of the plate)
+    thruhole_d: float
+        Diamenter of the central hole. If 0: no hole
+    mhole_d:float
+        Diameter of the mounting hole
+    mhole_l:
+        Length (depth) of the mounting hole. If 0: no hole
+    sym_hole_d:
+        Diamenter of the symetrical holes. If 0: no hole
+    sym_hole_sep: float
+        Distance between the centers of the symetrical holes 
+    cbore_hole_d: float
+        Diameter of the shank of the counter bored hole. If 0: no hole
+    cbore_hole_head_d: float
+        Diameter of the cap of the counterbored screw
+    cbore_hole_head_l: float
+        Length of the cap (head) of the counterbored screw
+    cbore_hole_sep_l: float
+        Large separation of the counterbored holes
+    cbore_hole_sep_s: float
+        Small separation of the counterbored holes
+    cbore_hole_sep_l_axis_m: float
+        if the long separation of the cbore holes
+        are in the direction of the axis_m or not
         
-        cm: 1: centered on the fc_axis_m direction (point 2)
-            0: it will be on the mounting hole (point 1)
-        cp: 1: centered on the perpendicular direction of fc_axis_m
-               and fc_axis_h), if 0, fc_axis_p needs to be defined
-            0: points 5 (cm==0)  or 6 (cm==1)
-        ch: 1: centered on the vertical direction (thickness)
-        
-        pos :  position of the center. FreeCAD.Vector
-        name: name 
+            * 1: like the drawing
+            * 0: switchin cbore_hole_sep_l for cbore_hole_sep_s in the drawing
 
+    chmf_r: float
+        If >0 vertical edges are chamfered
+    fc_axis_h: FreeCAD.Vector
+        Direction of the vertical (thickness)
+        from the inside of the plate
+    fc_axis_m: FreeCAD.Vector
+        Direction of the mounting hole
+        goes in the mounting hole
+    fc_axis_p: FreeCAD.Vector
+        perpendicular direction of
+        axis_h and axis_m, only used if not centered on this axis    
+    cm: int
+
+        * 0: it will be on the mounting hole (point 1)
+        * 1: centered on the fc_axis_m direction (point 2)
+
+    cp: int
+        
+        * 0: points 5 (cm==0)  or 6 (cm==1)
+        * 1: centered on the perpendicular direction of fc_axis_m
+          and fc_axis_h), if 0, fc_axis_p needs to be defined
+
+    ch: int
+        
+        * 1: centered on the vertical direction (thickness)
+        
+    pos: FreeCAD.Vector
+        Position of the center. 
+    name: str
+        Name of the object 
+
+    ::
 
          _______________________
          |       O      O       | -------------------
@@ -1392,31 +1545,49 @@ def lcp01m_plate (d_lcp01m_plate = kcomp_optic.LCP01M_PLATE,
                   name = 'LCP01M_PLATE'
                    ):
 
-    """ creates a lcp01m_plate
-        side,
-        it creates from a dictionary
+    """ 
+    Creates a lcp01m_plate side.
 
-    Args
-        d_lcp01m_plate: dictionary with the dimensions of the plate
-                    defined in kcomp_optic.py
-        fc_axis_h: FreeCAD.Vector on the direction of the vertical (thickness)
-                   from the inside of the plate
-        fc_axis_m: FreeCAD.Vector on the direction of the mounting hole
-                goes in the mounting hole
-        fc_axis_p: FreeCAD.Vector on the perpendicular direction of
-                axis_h and axis_m, only used if not centered on this axis
+    It creates from a dictionary
+
+    Parameters
+    ----------
+    d_lcp01m_plate: dict
+        Dictionary with the dimensions of the plate
+        defined in kcomp_optic.py
+    fc_axis_h: FreeCAD.Vector
+        Direction of the vertical (thickness)
+        from the inside of the plate
+    fc_axis_m: FreeCAD.Vector
+        Direction of the mounting hole
+        goes in the mounting hole
+    fc_axis_p: FreeCAD.Vector
+        Perpendicular direction of
+        axis_h and axis_m, only used if not centered on this axis
+    cm:  int
         
-        cm: 1: centered on the fc_axis_m direction (point 2)
-            0: it will be on the mounting hole (point 1)
-        cp: 1: centered on the perpendicular direction of fc_axis_m
-               and fc_axis_h), if 0, fc_axis_p needs to be defined
-            0: points 5 (cm==0)  or 6 (cm==1)
-        ch: 1: centered on the vertical direction (thickness)
+        * 1: centered on the fc_axis_m direction (point 2)
+        * 0: it will be on the mounting hole (point 1)
+
+    cp:  int
         
-        pos :  position of the center. FreeCAD.Vector
-        wfco: 1: a FreeCAD object is created
-              0: only de shape is created
-        name: name of the freecad object (if created)
+        * 1: centered on the perpendicular direction of fc_axis_m
+          and fc_axis_h), if 0, fc_axis_p needs to be defined
+        * 0: points 5 (cm==0)  or 6 (cm==1)
+
+    ch:  int
+
+        * 1: centered on the vertical direction (thickness)
+        
+    pos: FreeCAD.Vector
+        Position of the center.
+    wfco: int
+        
+        * 1: a FreeCAD object is created
+        * 0: only de shape is created
+
+    name: str
+        name of the freecad object (if created)
 
     """
 
@@ -1463,49 +1634,49 @@ def lcp01m_plate (d_lcp01m_plate = kcomp_optic.LCP01M_PLATE,
 class Lcpb1mBase (object):
 
     """ Creates a mounting base, Thorlabs LCPB1_M
-
-                   fc_axis_h
-                       :
-            ___________:____________ ....                _.........
-           |________________________|...:h_lip        ..| |___    :
-           |                        |            h_sup+ |     |   + h_tot
-     ______|                        |______...        : |_____|   :
-    |_|__|____________________________|__|_|.:h_slot  :.|_____|...:..>fc_axis_d
-
-        
-
-                s_mholes_dist (small mounting holes)
-                 .....+......
-                :            :      
-     ___________:____________:_____________....................... fc_axis_w
-    |      |________________________|      |...: d_lip :d_mount   :
-    |  /\  |    o    (O)     o      |  /\  |-----------:         + d_tot
-    |_|  |_|________________________|_|  |_|.....................:
-    :  :   :        l_mhole         :   :  :
-    :  :   :                        :   :  :
-    :  :   :                        :   :  :
-    :  :   :........ w_sup .........:   :  :
-    :  :                                :  :
-    :  :........... slot_dist ..........:  :
-    :                                      :
-    :............... w_tot ................:
-
-
-                    ref_h
-            ________________________                 _
-           |___________2____________|               | |__2
-           |                        |               |    |
-     ______|                        |______         |____|
-    3_|2_|_____________1______________|__|_|        1_2__3  ref_d
-    ref_w                                            
-                   
-        
-                     ref_d
-     __________________1___________________
-    |      |________________________|      |
-    |  /\  |    o     (2)    o      |  /\  |
-    |_|  |_|___________3____________|_|  |_|
-
+    ::
+                    fc_axis_h
+                        :
+             ___________:____________ ....                _.........
+            |________________________|...:h_lip        ..| |___    :
+            |                        |            h_sup+ |     |   + h_tot
+      ______|                        |______...        : |_____|   :
+     |_|__|____________________________|__|_|.:h_slot  :.|_____|...:..>fc_axis_d
+ 
+         
+ 
+                 s_mholes_dist (small mounting holes)
+                  .....+......
+                 :            :      
+      ___________:____________:_____________....................... fc_axis_w
+     |      |________________________|      |...: d_lip :d_mount   :
+     |  /\  |    o    (O)     o      |  /\  |-----------:         + d_tot
+     |_|  |_|________________________|_|  |_|.....................:
+     :  :   :        l_mhole         :   :  :
+     :  :   :                        :   :  :
+     :  :   :                        :   :  :
+     :  :   :........ w_sup .........:   :  :
+     :  :                                :  :
+     :  :........... slot_dist ..........:  :
+     :                                      :
+     :............... w_tot ................:
+ 
+ 
+                     ref_h
+             ________________________                 _
+            |___________2____________|               | |__2
+            |                        |               |    |
+      ______|                        |______         |____|
+     3_|2_|_____________1______________|__|_|        1_2__3  ref_d
+     ref_w                                            
+                    
+         
+                      ref_d
+      __________________1___________________
+     |      |________________________|      |
+     |  /\  |    o     (2)    o      |  /\  |
+     |_|  |_|___________3____________|_|  |_|
+ 
 
     """
 
@@ -1711,14 +1882,53 @@ def lcpb1m_base (d_lcpb1m_base = kcomp_optic.LCPB1M_BASE,
                   ref_d = 1, ref_w = 1, ref_h = 1,
                   pos = V0, wfco = 1, toprint= 0, name = 'Lcpb1mBase'):
 
-    """ creates a lcpb1m_base for plates
-        side,
-        it creates from a dictionary
+    """ 
+    Creates a lcpb1m_base for plates side,
+    it creates from a dictionary
 
-        pos :  position of the center. FreeCAD.Vector
-        wfco: 1: a FreeCAD object is created
-              0: only de shape is created
-        name: name of the freecad object (if created)
+    Parameters
+    ----------
+    d_lcpb1m_base: dict
+        Dictionary with the dimensions
+    fc_axis_d: FreeCAD.Vector
+        Direction of the deep
+    fc_axis_w: FreeCAD.Vector
+        Direction of the width
+    fc_axis_h: FreeCAD.Vector
+        Direction of the height
+    ref_d: int
+        Position in the fc_axis_d:
+
+            * 1: top side
+            * 2: center
+            * 3: lower side
+
+    ref_w: int
+        Postion in the fc_axis_w:
+
+            * 1: center
+            * 2: center in left slot
+            * 3: left side
+
+    ref_h: int
+        Positionin the fc_axis_h:
+
+            * 1: base
+            * 2: top
+
+    pos: FreeCAD.Vector
+        Position of the center.
+    wfco: int
+
+        * 1: a FreeCAD object is created
+        * 0: only de shape is created
+    
+    toprint: int
+        1 if you want to include a triangle between the shank and the
+        head to support the shank and not building the head on the
+        air using kcomp.LAYER3D_H
+    name: str
+        Name of the freecad object (if created)
 
     """
 
@@ -1761,15 +1971,21 @@ def lcpb1m_base (d_lcpb1m_base = kcomp_optic.LCPB1M_BASE,
 
 class SM1TubelensSm2 (object):
 
-    """ Creates a componente formed by joining:
-        the lens tube SM1LXX + SM1A2 + SM2T2, so we have:
-        - on one side a SM1 external thread
-        - on the other side a SM2 external thread
-        And inside we have a SM1 tube lens
-        Since there are threads, they may be inserted differently, so 
-        size may vary. Therefore, size are approximate, and also, details
-        are not drawn, such as threads, or even the part that contains the
-        thread is not drawn:
+    """ 
+    Creates a componente formed by joining:
+    the lens tube SM1LXX + SM1A2 + SM2T2, so we have:
+    
+        * on one side a SM1 external thread
+        * on the other side a SM2 external thread
+
+    And inside we have a SM1 tube lens
+    Since there are threads, they may be inserted differently, so 
+    size may vary. Therefore, size are approximate, and also, details
+    are not drawn, such as threads, or even the part that contains the
+    thread is not drawn:
+    
+    ::
+    
                                           .........................
                         lens tube     _HH ...........             :
                                      ||..|          :             :
@@ -1808,16 +2024,28 @@ class SM1TubelensSm2 (object):
 
         The 3mm thread on the left is not drawn
 
-    Args
-        sm1l_size: length of the side of the cube (then it will be halved)
-        fc_axis: direction of the tube lens: FreeCAD.Vector
-        axis_2: direction big the other right side: 
-        ref_sm1: 1: if the position is referred to the sm1 end
-                 0: if the position is referred to the ring end
-        pos : position of the object
-        ring : 1: if there is ring
-               0: there is no ring, so just the thread, at it is not drawn
-        name: name of the freecad object
+    Parameters
+    ----------
+    sm1l_size: float
+        Length of the side of the cube (then it will be halved)
+    fc_axis: FreeCAD.Vector
+        Direction of the tube lens: FreeCAD.Vector
+    axis_2: FreeCAD.Vector
+        Direction big the other right side: 
+    ref_sm1: int
+        
+        * 1: if the position is referred to the sm1 end
+        * 0: if the position is referred to the ring end
+
+    pos: FreeCAD.Vector 
+        Position of the object
+    ring: int
+
+        * 1: if there is ring
+        * 0: there is no ring, so just the thread, at it is not drawn
+
+    name: str
+        Name of the freecad object
     """
 
     def __init__ (self, sm1l_size,
@@ -1893,34 +2121,45 @@ class SM1TubelensSm2 (object):
 
 class ThLed30 (object):
 
-    """ Creates the shape of a Thorlabs Led with 30.5 mm Heat Sink diameter
-        The drawing is very rough
-                                 
-                          :....35...:
-                          :         :
-                          :         :
-                          :  Cable  :
-                         | | diam ? :
-                         | |        :
-                     ____|_|________:..................
-            ......__|       | | | | |                 :
-            :    |  :       | | | | |                 :
-            :    |  :       | | | | |                 :
-       <- ? +   C|  0       | | | | |                 + 30.5
-    fc_axis :    |          | | | | |                 :
-            :....|__        | | | | |                 :
-                :   |_______________|.................:
-                :   :               :
-                :   :......50.......:
-                :                   :
-                :........60.4.......:
-                            :       :
-                            :       :
-                            : heatsinks_totl
+    """ 
+    Creates the shape of a Thorlabs Led with 30.5 mm Heat Sink diameter
+    The drawing is very rough
+    ::
 
-    The reference is marked with a 0 in the drawing
+                           :....35...:
+                           :         :
+                           :         :
+                           :  Cable  :
+                          | | diam ? :
+                          | |        :
+                      ____|_|________:..................
+             ......__|       | | | | |                 :
+             :    |  :       | | | | |                 :
+             :    |  :       | | | | |                 :
+        <- ? +   C|  0       | | | | |                 + 30.5
+     fc_axis :    |          | | | | |                 :
+             :....|__        | | | | |                 :
+                 :   |_______________|.................:
+                 :   :               :
+                 :   :......50.......:
+                 :                   :
+                 :........60.4.......:
+                             :       :
+                             :       :
+                             : heatsinks_totl
 
-    fc_axis : axis on the direction of the led
+     The reference is marked with a 0 in the drawing
+
+    Parameters
+    ----------
+    fc_axis: FreeCAD.Vector
+        axis on the direction of the led
+    fc_axis_cable: FreeCAD.Vector
+        axis on the direction of the cable
+    pos: FreeCAD.Vector
+        Placement of the object
+    name: str
+        Object name
                                 
     """
 
@@ -1974,7 +2213,7 @@ class ThLed30 (object):
                         + DraftVecUtils.scaleTo(n_axis,
                                d_led['ext_l'] - heatsinks_totl + heatsink_w))
         pos_heatsink_add =  DraftVecUtils.scaleTo(n_axis, 2* heatsink_w)
-        for i in xrange(4): #0, 1, 2, 3
+        for i in range(4): #0, 1, 2, 3
             shp_heatsink = fcfun.shp_cyl(
                               r = d_led['ext_d']/2.,
                               h = heatsink_w,
@@ -2018,46 +2257,53 @@ class ThLed30 (object):
 
 class PrizLed (object):
 
-    """ Creates the shape of a Prizmatix UHP-T-Led 
-        The drawing is very rough, and the original drawing lacks many 
-        dimensions
+    """ 
+    Creates the shape of a Prizmatix UHP-T-Led 
+    The drawing is very rough, and the original drawing lacks many 
+    dimensions
+    ::
 
-               ...22....                        ........50.........
-               :       :                        :                 :
-       ........:________________             vtl:_________________:vtr.....
-       : 10.5+ |              | |___________    |                 |   :   :
-       :     :.|       O M6   | |           |   |      ____       |   +25 :
-       :       |              | |           |   |     /     \     |   :   :
-       +39.5   |              | |  Fan      |   |    | SM1   |    |...:   :
-       :.......|       O      | |           |   |     \____ /     |       :
-               |              | |           |   |                 |       + 90
-               |              | |___________|   |      KEEP       |       :
-               |              | |               |      CLEAR      |       :
-               |              | |               |      |  |       |       :
-               |              | |               |      V  V       |       :
-               |              | |               |_________________|       :
-                \_____________|_|               |_________________|.......:
-                                                         :
-               :15:                                      :
-               :  :                                      V
-               :__:__________________________         fc_axis_clear
-               |              | |           |          
-               |  O           | |           |
-    fc_axis_led|              | |           |
-          <--- |              | |           |
-               |              | |           | 
-               |              | |           |
-               |  O M6        | |           |
-               |______________|_|___________|
-               :                            :
-               :...........98.75............:
+                ...22....                        ........50.........
+                :       :                        :                 :
+        ........:________________             vtl:_________________:vtr.....
+        : 10.5+ |              | |___________    |                 |   :   :
+        :     :.|       O M6   | |           |   |      ____       |   +25 :
+        :       |              | |           |   |     /     \     |   :   :
+        +39.5   |              | |  Fan      |   |    | SM1   |    |...:   :
+        :.......|       O      | |           |   |     \____ /     |       :
+                |              | |           |   |                 |       + 90
+                |              | |___________|   |      KEEP       |       :
+                |              | |               |      CLEAR      |       :
+                |              | |               |      |  |       |       :
+                |              | |               |      V  V       |       :
+                |              | |               |_________________|       :
+                 \_____________|_|               |_________________|.......:
+                                                          :
+                :15:                                      :
+                :  :                                      V
+                :__:__________________________         fc_axis_clear
+                |              | |           |          
+                |  O           | |           |
+     fc_axis_led|              | |           |
+           <--- |              | |           |
+                |              | |           | 
+                |              | |           |
+                |  O M6        | |           |
+                |______________|_|___________|
+                :                            :
+                :...........98.75............:
 
-    Arguments:
-        fc_axis_led: FreeCAD.Vector on the direction of the led
-        fc_axis_clear: FreeCAD.Vector on the direction of the arrows
-                       indicating to keep clear
-        pos: position of the LED, on the center of the SM1 thread
-
+    Parameters
+    ----------
+    fc_axis_led: FreeCAD.Vector 
+        Direction of the led
+    fc_axis_clear: FreeCAD.Vector
+        Direction of the arrows
+        indicating to keep clear
+    pos: FreeCAD.Vector
+        Position of the LED, on the center of the SM1 thread
+    name: str
+        Object name
     """
 
     def __init__ (self, fc_axis_led = VX, fc_axis_clear = VZN,
@@ -2415,8 +2661,39 @@ def f_breadboard (d_breadboard,
                   pos = V0,
                   name = 'breadboard'
                    ):
+    """
+    Parameters
+    ----------
+    d_breadboard: dict
+        Dictionary with the values
+    length: float
+    width: float
+    cl : int
+        * 1: the length dimension is centered
+        * 0: it is not centered
 
+    cw : int
+        * 1: the width dimension is centered
+        * 0: it is not centered
 
+    ch : int 
+        * 1: the height dimension is centered
+        * 0: it is not centered
+
+    fc_dir_h: FreeCAD.Vector
+        Vector with the direction of the height
+    fc_dir_w: FreeCAD.Vector
+        Vector with the direction of the width
+    pos: FreeCAD.Vector
+        Placement of the model
+    name: str
+        object name
+    
+    Returns
+    --------
+    FreeCAD Object 
+        Object with the sape of a BreadBoard
+    """
 
     if max(length,width) >= d_breadboard['minw_cencbore']:
         central_cbore = 1

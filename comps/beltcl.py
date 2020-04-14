@@ -925,6 +925,7 @@ class ShpBeltClamped (shp_clss.WireBeltClamped):
     """ Creates a belt from a wire of the trajectory of the belt and its
     section. The shape is not toothed, it is just a rough shape
 
+    ::
 
       axis_w
         :
@@ -990,7 +991,7 @@ class ShpBeltClamped (shp_clss.WireBeltClamped):
          clamp_pull1_d
          
 
-    Section of the belt. The belt starts at point x (see upper drawing)
+     Section of the belt. The belt starts at point x (see upper drawing)
 
                     axis_h
                        :
@@ -1017,33 +1018,35 @@ class ShpBeltClamped (shp_clss.WireBeltClamped):
     Parameters:
     -----------
     pull1_dm: float
-        diameter of pulley 1
+        Diameter of pulley 1
     pull2_dm: float
-        diameter of pulley 2
+        Diameter of pulley 2
     pull_sep_d : float
-        separation between the 2 pulleys centers along axis_d
+        Separation between the 2 pulleys centers along axis_d
     pull_sep_w : float
-        separation between the 2 pulleys centers along axis_w
-        if positive, pulley 2 is further away in the direction of axis_w
-        if negative, pulley 2 is further away opposite to the direction of
-           axis_w
+        Separation between the 2 pulleys centers along axis_w
+
+        * if positive, pulley 2 is further away in the direction of axis_w
+        * if negative, pulley 2 is further away opposite to the direction of
+          axis_w
+
     clamp_pull1_d : float
-        separation between the clamp (side closer to the center) and the center
+        Separation between the clamp (side closer to the center) and the center
         of the pulley1 along axis d
     clamp_pull1_w : float
-        separation between the center of the clamp and the center of the
+        Separation between the center of the clamp and the center of the
         pulley1 along axis w
     clamp_pull2_d : float
-        separation between the clamp (side closer to the center) and the center
+        Separation between the clamp (side closer to the center) and the center
         of the pulley1 along axis d
         clamp_pull2_w can be calculated because the clamps are aligned along
         axis_d, so it will be clamp_pull1_d + pull_sep_w
     clamp_d : float
-        length of the clamp (same for each clamp)
+        Length of the clamp (same for each clamp)
     clamp_w : float
-        width of inner space (same for each clamp)
+        Width of inner space (same for each clamp)
     clamp_cyl_sep : float
-        separation between clamp and the center of the cylinder (or the center)
+        Separation between clamp and the center of the cylinder (or the center)
         of the larger cylinder (when is a belt shape)
     cyl_r : float
         Radius of the cylinder for the belt, if it is not a cylinder but a
@@ -1060,41 +1063,47 @@ class ShpBeltClamped (shp_clss.WireBeltClamped):
     axis_h :  FreeCAD.Vector
         Coordinate System Vector along the height
     pos_d : int
-        location of pos along the axis_d, see drawing
-        0: center of the pulley 1
-        1: end of pulley 1
-        2: end of clamp 1, closest end to pulley 1
-        3: other end of clamp 1, closest to cylinder
-        4: center of cylinder (or shape < ) 1
-        5: external radius of cylinder 1
-        6: external radius of cylinder 2
-        7: center of cylinder (or shape ( > 2
-        8: end of clamp 2, closest to cylinder
-        9: other end of clamp 2, closest end to pulley 2
-        10: center of pulley 2
-        11: end of pulley 2
+        Location of pos along the axis_d, see drawing
+
+        * 0: center of the pulley 1
+        * 1: end of pulley 1
+        * 2: end of clamp 1, closest end to pulley 1
+        * 3: other end of clamp 1, closest to cylinder
+        * 4: center of cylinder (or shape < ) 1
+        * 5: external radius of cylinder 1
+        * 6: external radius of cylinder 2
+        * 7: center of cylinder (or shape ( > 2
+        * 8: end of clamp 2, closest to cylinder
+        * 9: other end of clamp 2, closest end to pulley 2
+        * 10: center of pulley 2
+        * 11: end of pulley 2
+
     pos_w : int
-        location of pos along the axis_w, see drawing
-        0: center of pulley 1
-        1: center of pulley 2
-        2: end (radius) of pulley 1 along axis_w
-        3: end (radius) of pulley 2 along axis_w
-        4: other end (radius) of pulley 1 opposite to axis_w
-        5: other end (radius) of pulley 2 opposite to axis_w
-        6: clamp space, closest to the pulley
-        7: center of clamp space
-        8: clamp space, far away from the pulley
+        Location of pos along the axis_w, see drawing
+
+        * 0: center of pulley 1
+        * 1: center of pulley 2
+        * 2: end (radius) of pulley 1 along axis_w
+        * 3: end (radius) of pulley 2 along axis_w
+        * 4: other end (radius) of pulley 1 opposite to axis_w
+        * 5: other end (radius) of pulley 2 opposite to axis_w
+        * 6: clamp space, closest to the pulley
+        * 7: center of clamp space
+        * 8: clamp space, far away from the pulley
+
     pos_h : int
-        location of pos along the axis_h, see drawing
-        0: center of symmetry
-        1: top of the belt
-        since it is symmetric -1 will be at the bottom of the belt
+        Location of pos along the axis_h, see drawing
+
+        * 0: center of symmetry
+        * 1: top of the belt
+          since it is symmetric -1 will be at the bottom of the belt
+
     pos: FreeCAD vector of the position of the reference
 
     Attributes:
     -----------
     clamp_sep : float
-        separation between clamps, the closest ends
+        Separation between clamps, the closest ends
 
     """
 

@@ -1,16 +1,20 @@
 .. Documento con toda la información sobre las piezas y las funciones
 
 Wiki
-====
+****
 
 .. note:: 
     This is a basic view of the Wiki
 
 3D Model library
-----------------
+================
+
+Mechatronic
+-----------
 
 Shaft Holder
 ^^^^^^^^^^^^^
+
     * Size
     * Low profile: Only in size 8
 
@@ -57,11 +61,11 @@ Limit Switches Holder
 
     .. image:: ../parts/img/endstop_holder_30.png
         :height: 148px
-        :alt: 
+        :alt: Holder for endstop with a 30mm rail
 
     .. image:: ../parts/img/d3v_endstop_holder_r25_m4.png
         :height: 148px
-        :alt: 
+        :alt: Holder for endstop type d3v with a 25mm rail
 
 .. toggle-header::
     :header: Details
@@ -109,15 +113,15 @@ Bracket
  
     .. image:: ../parts/img/bracket_30x30_m6.png
         :height: 148px
-        :alt: 
+        :alt: Bracket 30x30mm with holes for M6 bolt
 
     .. image:: ../parts/img/bracket_30x30_m6_rail15.png
         :height: 148px
-        :alt: 
+        :alt: Bracket 30x30mm with 15mm of rail for M6 bolt
 
     .. image:: ../parts/img/bracket_30x30_m6_rail20_6thick.png
         :height: 148px
-        :alt: 
+        :alt: Bracket 30x30mm with 20mm of rail for M6 bolt
 
 .. toggle-header::
     :header: Details
@@ -137,11 +141,11 @@ Motor holder
 
     .. image:: ../parts/img/nema17_holder_rail25_8.png
         :height: 148px
-        :alt: 
+        :alt: Motor Holder to Nema 17 width 25mm of rail
 
     .. image:: ../parts/img/nema17_holder_rail35_8.FCStd.png
         :height: 148px
-        :alt: 
+        :alt: Motor Holder to Nema 17 width 35mm of rail
 
 .. toggle-header::
     :header: Details
@@ -150,6 +154,42 @@ Motor holder
     .. autosummary::
         NemaMotorHolder
 
+Motor
+^^^^^
+
+    * Size
+    * Height
+    * Shaft height
+    * Shaft radius
+    * Shaft radius base
+    * Shaft height base
+    * Chamfer radius
+    * Bolt deep
+    * Bolt outside
+    * Pulley pitch
+    * Pulley teeth
+    * Pulley top flange
+    * Pulley bot flange
+    * Position in axis d
+    * Position in axis w
+    * Position in axis h
+    * Placement
+
+    .. image:: ../parts/img/nema17_32.png
+        :height: 148px
+        :alt: Nema 17, 32mm hight
+
+    ..image:: ../parts/img/nema17_20.png
+        :height: 148px
+        :alt: Nema 17, 20mm hight
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: partset
+    .. autosummary::
+        NemaMotorPulleySet
+
 Lin bear house
 ^^^^^^^^^^^^^^
     
@@ -157,10 +197,10 @@ Lin bear house
 
     .. image:: ../parts/img/thinlinbearhouse1rail_lm8.png
         :height: 148px
-        :alt: 
+        :alt: Thin linear bear house 1 rail LM8 
     .. image:: ../parts/img/thinlinbearhouse1rail_lm8_bot.png
         :height: 148px
-        :alt: 
+        :alt: Bottom part of thin linear bear house 1 rail LM8 
 
 .. toggle-header::
     :header: Details
@@ -180,7 +220,7 @@ Filter holder
 
     .. image:: ../parts/img/filter_holder.png
         :height: 148px
-        :alt: 
+        :alt: Filter holder
 
 .. toggle-header::
     :header: Details
@@ -199,7 +239,7 @@ Tensioner
 
     .. image:: ../parts/img/tensioner.png
         :height: 148px
-        :alt:   
+        :alt: Idler pulley tensioner
 
 .. toggle-header::
     :header: Details
@@ -218,11 +258,11 @@ Belt clamp
  
     .. image:: ../parts/img/Belt_clamp_simple.png
         :height: 148px
-        :alt: 
+        :alt: Simple belt clamp
 
     .. image:: ../parts/img/Belt_clamp_double.png
         :height: 148px
-        :alt: 
+        :alt: Double belt clamp
 
 .. toggle-header::
     :header: Details
@@ -230,16 +270,18 @@ Belt clamp
     .. currentmodule:: beltcl 
     .. autosummary::
         BeltClamp
-        DoubleBeltClamp
+        DoubleBeltClamp        
+.. PartBeltClamped
 
 Aluminium profile
 ^^^^^^^^^^^^^^^^^
+
     * Section
     * Length
         
     .. image:: ../parts/img/Profiles.png
         :height: 148px
-        :alt: 
+        :alt: Aluminium profiles width differents lengths
 
 .. toggle-header::
     :header: Details
@@ -248,6 +290,32 @@ Aluminium profile
     .. autosummary::
         PartAluProf
     
+Linear Guide
+^^^^^^^^^^^^
+
+    * Type:
+
+        * SEBW16
+        * SEB15A
+        * SEB8
+        * SEB10
+
+    * Position in axis d
+    * Position in axis w
+    * Position in axis h
+    * Placement
+
+    .. image:: ../parts/img/linear_guide_SEBWM16.png
+        :height: 148px
+        :alt:Linear Guide SEBW16
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: comps
+    .. autosummary::
+        PartLinGuideBlock
+
 Bolts, Nuts & Washers
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -257,15 +325,15 @@ Bolts, Nuts & Washers
 
     .. image:: ../parts/img/Bolts.png
         :height: 148px
-        :alt: 
+        :alt: Bolts of differents sizes
 
     .. image:: ../parts/img/Nuts.png
         :height: 148px
-        :alt: 
+        :alt: Nuts of differents sizes
 
     .. image:: ../parts/img/Washers.png
         :height: 148px
-        :alt: 
+        :alt: Washers of differents sizes
 
 .. toggle-header::
     :header: Details
@@ -277,8 +345,154 @@ Bolts, Nuts & Washers
         Din9021Washer
         Din912Bolt
 
+Optical
+-------
+
+TubeLense
+^^^^^^^^^
+
+    * Length
+    * Placement
+
+    .. image:: ../parts/img/TubeLense_15.png
+        :height: 148 px
+        :alt: TubeLense 15mm
+
+    .. image:: ../parts/img/TubeLense_30.png
+        :height: 148 px
+        :alt: TubeLense 30mm
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: comp_optic
+    .. autosummary:: 
+        SM1TubelensSm2
+    
+LCPB1M Base
+^^^^^^^^^^^
+
+    * Placement
+
+    .. image:: ../part/img/Lcpb1mBase.png
+        :height: 148 px
+        :alt: Lcpb1mBase
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: comp_optic
+    .. autosummary:: 
+        lcpb1m_base
+
+CageCube
+^^^^^^^^
+    
+    *Type:
+
+        * CageCube
+        * CageCubeHalf
+
+    .. image:: ../part/img/CageBube.png
+        :height: 148 px
+        :alt: CageCube
+
+    .. image:: ../part/img/CageBubeHalf.png
+        :height: 148 px
+        :alt: CageCubeHalf
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: comp_optic
+    .. autosummary:: 
+        f_cagecube
+        f_cagecubehalf
+
+Plate
+^^^^^
+
+    * Plate dictionary:
+
+        * Lb1cm_Plate
+        * Lb2c_Plate
+        * Lcp01m_plate
+    
+    * Placement
+    
+    .. image:: ../part/img/Lb1cm_Plate.png
+        :height: 148 px
+        :alt: Lb1cm_Plate
+    
+    .. image:: ../part/img/Lb2c_Plate.png
+        :height: 148 px
+        :alt: Lb2c_Plate
+
+    .. image:: ../part/img/Lcp01m_plate.png
+        :height: 148 px
+        :alt: Lcp01m_plate
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: comp_optic
+    .. autosummary:: 
+        Lb1cPlate
+        Lb2cPlate
+        lcp01m_plate
+
+ThLed30
+^^^^^^^
+
+    * Placement
+
+    .. image:: ../part/img/ThLed30.png
+        :height: 148 px
+        :alt: ThLed30
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: comp_optic
+    .. autosummary:: 
+        ThLed30
+
+PrizLed
+^^^^^^^
+
+    * Placement
+
+    .. image:: ../part/img/PrizMatrix_Led.png
+        :height: 148 px
+        :alt: PrizLed
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: comp_optic
+    .. autosummary:: 
+        PrizLed
+
+BreadBoard
+^^^^^^^^^^
+
+    * Length
+    * Width
+    * Placement
+
+    .. image:: ../part/img/BreadBoard.png
+        :height: 148 px
+        :alt: BreadBoard 99x99mm
+
+.. toggle-header::
+    :header: Details
+
+    .. currentmodule:: comp_optic
+    .. autosummary:: 
+        f_breadboard
+
 Systems library
----------------
+===============
 
 Filter Stage
 ^^^^^^^^^^^^
@@ -302,7 +516,7 @@ Filter Stage
 .. _functions library:
 
 Functions Library
------------------
+=================
 
 fcfun
 ^^^^^
@@ -411,20 +625,21 @@ fcfun
     wire_lgrail
     wire_sim_xy
 
-Class library
--------------
 
-Nueva Clase
-^^^^^^^^^^^^
-.. currentmodule:: NuevaClase
-.. autosummary:: 
-    Obj3D
+.. Class library
+    -------------
+
+.. Nueva Clase
+    ^^^^^^^^^^^^
+    .. currentmodule:: NuevaClase
+    .. autosummary:: 
+        Obj3D
     
 
 .. _UML:
 
 UML
----
+===
 
 The UML (Unified Modeling Language) is the base diagram for software development.
 It is a visual description of the relationships between class objects. 
@@ -453,16 +668,13 @@ The rest of the classes that generate the different 3D models will be part of th
 .. blank line - image bigger than text
 
 3D model details
-----------------
+================
 
-comps
-^^^^^
+Mechanical
+----------
 
 .. automodule:: comps
-    :members: Sk_dir, PartAluProf
-
-parts
-^^^^^
+    :members: Sk_dir, PartAluProf, PartLinGuideBlock
 
 .. automodule:: parts
     :members: IdlePulleyHolder,
@@ -483,9 +695,13 @@ parts
 .. currentmodule:: tensioner_clss
 .. autoclass:: TensionerSet
 
+.. currentmodule:: partset
+.. autoclass:: NemaMotorPulleySet
+
 .. currentmodule:: beltcl
 .. autoclass:: BeltClamp
 .. autoclass:: DoubleBeltClamp
+.. .. autoclass:: PartBeltClamped
 
 .. currentmodule:: fc_clss
 .. autoclass:: Din934Nut
@@ -493,8 +709,22 @@ parts
 .. autoclass:: Din9021Washer
 .. autoclass:: Din912Bolt
 
+Optical
+-------
+.. currentmodule:: comp_optic
+.. autofunction:: f_breadboard
+.. autofunction:: f_cagecube
+.. autofunction:: f_cagecubehalf
+.. autoclass:: Lb1cPlate
+.. autoclass:: Lb2cPlate
+.. autofunction:: lcp01m_plate
+.. autofunction:: lcpb1m_base
+.. autofunction:: PrizLed
+.. autofunction:: SM1TubelensSm2
+.. autofunction:: ThLed30
+
 Functions details
---------------------
+=================
 
 fcfun
 ^^^^^
@@ -502,10 +732,11 @@ fcfun
 .. automodule:: fcfun
     :members:
 
-Class details
-------------------
+.. Class details
+    ------------------
 
-Nueva Clase
-^^^^^^^^^^^^
-.. automodule:: NuevaClase
-    :members:
+.. Nueva Clase
+    ^^^^^^^^^^^^
+    automodule:: NuevaClase
+        :members:
+

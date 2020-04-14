@@ -32,10 +32,10 @@ import FreeCAD
 import FreeCADGui
 import logging
 
-import comps
+import comps, comp_optic
 from fcfun import V0, VX, VY, VZ, VZN
 import parts
-import kcomp
+import kcomp, kcomp_optic
 import partset
 import beltcl
 from filter_stage_fun import filter_stage_fun
@@ -55,9 +55,12 @@ __dir__ = os.path.dirname(__file__)
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-###############################################################################
-#***************************************SK*************************************
-class _Sk_Dir_Cmd:
+#  _________________________________________________________________
+# |                                                                 |
+# |                               SK                                |
+# |_________________________________________________________________|
+
+class _SkDirCmd:
     def Activated(self):
         baseWidget = QtGui.QWidget()
         panel = Sk_Dir_TaskPanel(baseWidget)
@@ -84,37 +87,26 @@ class Sk_Dir_TaskPanel:
         self.form = widget
         layout = QtGui.QGridLayout(self.form)
 
-        # ---- row 0: Size
-        # Label:
+        # ---- row 0: Size ----
         self.Size_Label = QtGui.QLabel("Size:")
-        # Spin Box that takes doubles
         self.Size_ComboBox = QtGui.QComboBox()
-        # text:
         self.Size_text = ["6","8","10","12"]
         self.Size_ComboBox.addItems(self.Size_text)
         self.Size_ComboBox.setCurrentIndex(0)
         
-
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Size_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Size_ComboBox,0,1,1,1)
-
-        # ---- row 1: Pillow
-        # Label:
+        # ---- row 1: Pillow ----
         self.Pillow_Label = QtGui.QLabel("Pillow:")
         self.Pillow_Label2 = QtGui.QLabel("(only for size 8)")
-        # Spin Box that takes doubles
         self.Pillow_ComboBox = QtGui.QComboBox()
-        # Add values in ComboBox
         self.V_Pillow = ["No","Yes"]
         self.Pillow_ComboBox.addItems(self.V_Pillow)
         self.Pillow_ComboBox.setCurrentIndex(self.V_Pillow.index('No'))
         
-        # row 1, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Size_Label,0,0,1,1)
+        layout.addWidget(self.Size_ComboBox,0,1,1,1)
         layout.addWidget(self.Pillow_Label,1,0,1,1)
         layout.addWidget(self.Pillow_Label2,2,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Pillow_ComboBox,1,1,1,1)
     
     def accept(self):
@@ -153,9 +145,12 @@ class Sk_Dir_TaskPanel:
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
 
-###############################################################################
-#*****************************IDLE**PULLEY**HOLDER*****************************
-class _IdlePulleyHolder_Cmd:
+#  _________________________________________________________________
+# |                                                                 |
+# |                        Idle Pulley Holder                       |
+# |_________________________________________________________________|
+
+class _IdlePulleyHolderCmd:
     def Activated(self):
         baseWidget = QtGui.QWidget()
         panel = IdlePulleyHolder_TaskPanel(baseWidget)
@@ -182,79 +177,49 @@ class IdlePulleyHolder_TaskPanel:
         self.form = widget
         layout = QtGui.QGridLayout(self.form)
 
-        # ---- row 0: Aluprof
-        # Label:
+        # ---- row 0: Aluprof ----
         self.ALuprof_Label = QtGui.QLabel("Aluminium profile:")
-        # Combo Box
         self.Aluprof_ComboBox = QtGui.QComboBox()
-        # Add items
         self.Aluprof_Str = ["20mm","30mm"]
         self.Aluprof_ComboBox.addItems(self.Aluprof_Str)
         self.Aluprof_ComboBox.setCurrentIndex(0)
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.ALuprof_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Aluprof_ComboBox,0,1,1,1)
-
-        # ---- row 1: Nut Bolt
-        # Label:
+        # ---- row 1: Nut Bolt ----
         self.NutBolt_Label = QtGui.QLabel("Nut bolt:")
-        # Combo Box 
         self.NutBolt_Str = ["2.5","3","4","5","6"]
         self.NutBolt_ComboBox = QtGui.QComboBox()
-        # Add items
         self.NutBolt_ComboBox.addItems(self.NutBolt_Str)
         self.NutBolt_ComboBox.setCurrentIndex(3)
 
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.NutBolt_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.NutBolt_ComboBox,1,1,1,1)
-
-        # ---- row 2: High to profile
-        # Label:
+        # ---- row 2: High to profile ----
         self.HighToProfile_Label = QtGui.QLabel("High to profile:")
-        # Spin Box that takes doubles
         self.HighToProfile_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.HighToProfile_Value.setValue(40)
-        # suffix to indicate the units
         self.HighToProfile_Value.setSuffix(' mm')
 
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.HighToProfile_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.HighToProfile_Value,2,1,1,1)
-
-        # ---- row 3: End Stop Side
-        # Label:
+        # ---- row 3: End Stop Side ----
         self.EndSide_Label = QtGui.QLabel("End Stop Side:")
-        # Spin Box that takes doubles
         self.EndSide_ComboBox = QtGui.QComboBox()
-        # Add items
         self.EndSide_Str = ["1","0","-1"]
         self.EndSide_ComboBox.addItems(self.EndSide_Str)
         self.EndSide_ComboBox.setCurrentIndex(1)
 
-        # row 3, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.EndSide_Label,3,0,1,1)
-        # row 3, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.EndSide_ComboBox,3,1,1,1)
-
-        # ---- row 4: End Stop High
-        # Label:
+        # ---- row 4: End Stop High ----
         self.EndStopHigh_Label = QtGui.QLabel("End Stop Pos:")
-        # Spin Box that takes doubles
         self.EndStopHigh_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.EndStopHigh_Value.setValue(0)
-        # suffix to indicate the units
         self.EndStopHigh_Value.setSuffix(' mm')
 
-        # row 4, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.ALuprof_Label,0,0,1,1)
+        layout.addWidget(self.Aluprof_ComboBox,0,1,1,1)
+        layout.addWidget(self.NutBolt_Label,1,0,1,1)
+        layout.addWidget(self.NutBolt_ComboBox,1,1,1,1)
+        layout.addWidget(self.HighToProfile_Label,2,0,1,1)
+        layout.addWidget(self.HighToProfile_Value,2,1,1,1)
+        layout.addWidget(self.EndSide_Label,3,0,1,1)
+        layout.addWidget(self.EndSide_ComboBox,3,1,1,1)
         layout.addWidget(self.EndStopHigh_Label,4,0,1,1)
-        # row 4, column 1, rowspan 1, colspan 1
         layout.addWidget(self.EndStopHigh_Value,4,1,1,1)
 
     def accept(self):
@@ -286,9 +251,12 @@ class IdlePulleyHolder_TaskPanel:
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
 
-###############################################################################
-#**************************SIMPLE**END***STOP**HOLDER**************************
-class _SimpleEndStopHolder_Cmd:
+#  _________________________________________________________________
+# |                                                                 |
+# |                  Simple End Stop Holder Bracket                 |
+# |_________________________________________________________________|
+
+class _SimpleEndStopHolderCmd:
     def Activated(self):
         baseWidget = QtGui.QWidget()
         panel = SimpleEndStopHolder_TaskPanel(baseWidget)
@@ -315,36 +283,23 @@ class SimpleEndStopHolder_TaskPanel:
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: 
-        # Label:
         self.Type_Label = QtGui.QLabel("Type:")
-        # ComboBox
         self.Type_ComboBox = QtGui.QComboBox()
         Type_text = ["A","B","D3V"]
         self.Type_ComboBox.addItems(Type_text)
         self.Type_ComboBox.setCurrentIndex(0)
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Type_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Type_ComboBox,0,1,1,1)
-
         # ---- row 1: 
-        # Label:
         self.Rail_Label = QtGui.QLabel("Rail Length:")
-        # Spin Box that takes doubles
         self.Rail_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Rail_Value.setValue(15)
-        # suffix to indicate the units
         self.Rail_Value.setSuffix(' mm')
 
-        # row 1, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Type_Label,0,0,1,1)
+        layout.addWidget(self.Type_ComboBox,0,1,1,1)
         layout.addWidget(self.Rail_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Rail_Value,1,1,1,1)
-
-
-
         
     def accept(self):
         Type_values = {0:kcomp.ENDSTOP_A, 1:kcomp.ENDSTOP_B, 2:kcomp.ENDSTOP_D3V}
@@ -373,12 +328,14 @@ class SimpleEndStopHolder_TaskPanel:
         FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
         FreeCADGui.Control.closeDialog() #close the dialog
 
-###############################################################################
-#*******************************ALUPROF**BRACKET*******************************
-class _AluprofBracket_Cmd:
+#  _________________________________________________________________
+# |                                                                 |
+# |                         Aluprof Bracket                         |
+# |_________________________________________________________________|
+
+class _AluprofBracketCmd:
     def Activated(self):
         baseWidget = QtGui.QWidget()
-        #panel = AluprofBracket_Set_TaskPanel(baseWidget)
         panel = AluprofBracket_TaskPanel(baseWidget)
 
         FreeCADGui.Control.showDialog(panel)
@@ -401,203 +358,127 @@ class _AluprofBracket_Cmd:
 class AluprofBracket_TaskPanel:
     def __init__(self, widget):#,Type):
         self.form = widget
-        # The layout will be a grid
         layout = QtGui.QGridLayout(self.form)
 
-        # ---- row 0: Type
-        # Label:
+        # ---- row 0: Type ----
         self.Type_Label = QtGui.QLabel("Selected Type:")
-        # Label with Bracket selected:
         self.Type_Aluprof = ["2 profiles","2 profiles with flap","3 profiles"]
-        #self.Type_Sel_Label = QtGui.QLabel(self.Type_Aluprof[Type])
         self.Type_ComboBox = QtGui.QComboBox()
         self.Type_Aluprof = ["2 profiles","2 profiles with flap","3 profiles"]
         self.Type_ComboBox.addItems(self.Type_Aluprof)
         self.Type_ComboBox.setCurrentIndex(0)
-        
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Type_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        #layout.addWidget(self.Type_Sel_Label,0,1,1,1)
-        layout.addWidget(self.Type_ComboBox,0,1,1,1)
-
-        # ---- row 1: Size profile line 1
-        # Label:
+    
+        # ---- row 1: Size profile line 1 ----
         self.Size_1_Label = QtGui.QLabel("Size first profile:")
-        # ComboBox
         self.Size_1_ComboBox = QtGui.QComboBox()
         self.Size_text = ["10mm","15mm","20mm","30mm","40mm"]         ##Select profiles kcomp
         self.Size_1_ComboBox.addItems(self.Size_text)
         self.Size_1_ComboBox.setCurrentIndex(self.Size_text.index('20mm'))
-
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Size_1_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Size_1_ComboBox,1,1,1,1)
-
         
-        # ---- row 2: Size profile line 2
-        # Label:
+        # ---- row 2: Size profile line 2 ----
         self.Size_2_Label = QtGui.QLabel("Size second profile:")
-        # ComboBox
         self.Size_2_ComboBox = QtGui.QComboBox()
         self.Size_2_ComboBox.addItems(self.Size_text)
         self.Size_2_ComboBox.setCurrentIndex(self.Size_text.index('20mm'))
-
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Size_2_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Size_2_ComboBox,2,1,1,1)
-
         
-        # ---- row 3: Thikness 
-        # Label:
+        # ---- row 3: Thikness ----
         self.Thikness_Label = QtGui.QLabel("Thikness:")
-        # Spin Box that takes doubles
         self.Thikness_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Thikness_Value.setValue(3)
         self.Thikness_Value.setMinimum(2)
-        # suffix to indicate the units
         self.Thikness_Value.setSuffix(' mm')
-
-        # row 3, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Thikness_Label,3,0,1,1)
-        # row 3, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Thikness_Value,3,1,1,1)
-
         
-        # ---- row 4: Nut profile line 1
-        # Label:
+        # ---- row 4: Nut profile line 1 ----
         self.Nut_Profile_1_Label = QtGui.QLabel("Size of Nut first profile :")
-        #ComboBox for NUt type 1
         self.Nut_Profile_1_ComboBox = QtGui.QComboBox()
         self.NUT_text = ["M3","M4","M5","M6"]    #D912
         self.Nut_Profile_1_ComboBox.addItems(self.NUT_text)
-        self.Nut_Profile_1_ComboBox.setCurrentIndex(0)
-
-        # row 4, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Nut_Profile_1_Label,4,0,1,1)
-        # row 4, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Nut_Profile_1_ComboBox,4,1,1,1)
+        self.Nut_Profile_1_ComboBox.setCurrentIndex(0)        
         
-        
-        # ---- row 5: Nut profile line 2
-        # Label:
+        # ---- row 5: Nut profile line 2 ----
         self.Nut_Profile_2_Label = QtGui.QLabel("Size of Nut second profile :")
-        # ComboBox for Nut type 2
         self.Nut_Profile_2_ComboBox = QtGui.QComboBox()
         self.Nut_Profile_2_ComboBox.addItems(self.NUT_text)
         self.Nut_Profile_2_ComboBox.setCurrentIndex(0)
 
-        # row 5, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Nut_Profile_2_Label,5,0,1,1)
-        # row 5, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Nut_Profile_2_ComboBox,5,1,1,1)
-
-        # ---- row 6: Nº Nut
-        # Label:
+        # ---- row 6: Nº Nut ----
         self.N_Nut_Label = QtGui.QLabel("Number of Nuts:")
-        # Spin Box that takes doubles
         self.N_Nut_ComboBox = QtGui.QComboBox()
         self.N_Nut_text = ["1","2"]
         self.N_Nut_ComboBox.addItems(self.N_Nut_text)
         self.N_Nut_ComboBox.setCurrentIndex(0)
 
-        # row 6, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.N_Nut_Label,6,0,1,1)
-        # row 6, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.N_Nut_ComboBox,6,1,1,1)
-
-        # ---- row 7: Dist Nut
-        # Label:
+        # ---- row 7: Dist Nut ----
         self.Dist_Nut_Label = QtGui.QLabel("Distance between nuts:")
         self.Dist_Nut_Label2 = QtGui.QLabel("(0 = min distance)")
-        # Spin Box that takes doubles
         self.Dist_Nut_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Dist_Nut_Value.setValue(0)
         self.Dist_Nut_Value.setMinimum(0)
-        # suffix to indicate the units
         self.Dist_Nut_Value.setSuffix(' mm')
-
-        # row 7, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Dist_Nut_Label,7,0,1,1)
-        # row 8, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Dist_Nut_Label2,8,0,1,1)
-        # row 7, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Dist_Nut_Value,7,1,1,1)
-
         
-        # ---- row 9: Sunk
-        # Label:
+        # ---- row 9: Sunk ----
         self.Sunk_Label = QtGui.QLabel("Sunk:")
-        # Spin Box that takes doubles
         self.Sunk_ComboBox = QtGui.QComboBox()
         Sunk_Text = ["Hole fot Nut","Without center","Withput reinforce"]
         self.Sunk_ComboBox.addItems(Sunk_Text)
         self.Sunk_ComboBox.setCurrentIndex(0)
-
-        # row 9, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Sunk_Label,9,0,1,1)
-        # row 9, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Sunk_ComboBox,9,1,1,1)        
-
         #if self.Type == 0:
             #self.form.repaint()
-        # ---- row 10: Reinforce
-        # Label:
+
+        # ---- row 10: Reinforce ----
         self.Reinforce_Label = QtGui.QLabel("Reinforce:")
         self.Reinforce_Label2= QtGui.QLabel("(Only for 2 profile)")
-        # Spin Box that takes doubles
         self.Reinforce_ComboBox = QtGui.QComboBox()
         self.Reinforce_text = ["No","Yes"]
         self.Reinforce_ComboBox.addItems(self.Reinforce_text)
         self.Reinforce_ComboBox.setCurrentIndex(0)
-
-        # row 10, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Reinforce_Label,10,0,1,1)
-        layout.addWidget(self.Reinforce_Label2,11,0,1,1)
-        # row 10, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Reinforce_ComboBox,10,1,1,1)
-
         #elif self.Type == 1:
             #self.form.repaint()
-        # ---- row 11: Flap
-        # Label:
+
+        # ---- row 11: Flap ----
         self.Flap_Label = QtGui.QLabel("Flap:")
         self.Flap_Label2 = QtGui.QLabel("(Only for 2 profiles with flap)")
-        # Spin Box that takes doubles
         self.Flap_ComboBox = QtGui.QComboBox()
-        # Default value
         self.Flap_text = ["No","Yes"]
         self.Flap_ComboBox.addItems(self.Flap_text)
         self.Flap_ComboBox.setCurrentIndex(1)
 
-        # row 12, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Flap_Label,12,0,1,1)
-        # row 13, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Flap_Label2,13,0,1,1)
-        # row 12, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Flap_ComboBox,12,1,1,1)
-        
-        # ---- row 14: Dist Between Profiles
-        # Label:
+        # ---- row 14: Dist Between Profiles ----
         self.Dist_Prof_Label = QtGui.QLabel("Dist between profiles:")
         self.Dist_Prof_Label2 = QtGui.QLabel("(Only fot 3 profiles)")
-        # Spin Box that takes doubles
         self.Dist_Prof_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Dist_Prof_Value.setValue(26)
         self.Dist_Prof_Value.setMinimum(26)
-        # suffix to indicate the units
         self.Dist_Prof_Value.setSuffix(' mm')
 
-        # row 14, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Type_Label,0,0,1,1)
+        layout.addWidget(self.Type_ComboBox,0,1,1,1)
+        layout.addWidget(self.Size_1_Label,1,0,1,1)
+        layout.addWidget(self.Size_1_ComboBox,1,1,1,1)
+        layout.addWidget(self.Size_2_Label,2,0,1,1)
+        layout.addWidget(self.Size_2_ComboBox,2,1,1,1)
+        layout.addWidget(self.Thikness_Label,3,0,1,1)
+        layout.addWidget(self.Thikness_Value,3,1,1,1)
+        layout.addWidget(self.Nut_Profile_1_Label,4,0,1,1)
+        layout.addWidget(self.Nut_Profile_1_ComboBox,4,1,1,1)
+        layout.addWidget(self.Nut_Profile_2_Label,5,0,1,1)
+        layout.addWidget(self.Nut_Profile_2_ComboBox,5,1,1,1)
+        layout.addWidget(self.N_Nut_Label,6,0,1,1)
+        layout.addWidget(self.N_Nut_ComboBox,6,1,1,1)
+        layout.addWidget(self.Dist_Nut_Label,7,0,1,1)
+        layout.addWidget(self.Dist_Nut_Label2,8,0,1,1)
+        layout.addWidget(self.Dist_Nut_Value,7,1,1,1)
+        layout.addWidget(self.Sunk_Label,9,0,1,1)
+        layout.addWidget(self.Sunk_ComboBox,9,1,1,1)        
+        layout.addWidget(self.Reinforce_Label,10,0,1,1)
+        layout.addWidget(self.Reinforce_Label2,11,0,1,1)
+        layout.addWidget(self.Reinforce_ComboBox,10,1,1,1)
+        layout.addWidget(self.Flap_Label,12,0,1,1)
+        layout.addWidget(self.Flap_Label2,13,0,1,1)
+        layout.addWidget(self.Flap_ComboBox,12,1,1,1)
         layout.addWidget(self.Dist_Prof_Label,14,0,1,1)
-        # row 15, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Dist_Prof_Label2,15,0,1,1)
-        # row 14, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Dist_Prof_Value,14,1,1,1)
 
 
@@ -677,13 +558,14 @@ class AluprofBracket_TaskPanel:
         FreeCADGui.Control.closeDialog() #close the dialog
 
 
-###############################################################################
-#********************************Motor***Holder********************************
+#  _________________________________________________________________
+# |                                                                 |
+# |                           Motor Holder                          |
+# |_________________________________________________________________|
+
 class _MotorHolderCmd:
     
     def Activated(self):
-        # what is done when the command is clicked
-        # creates a panel with a dialog
         Widget_MotorHolder = QtGui.QWidget()
         Panel_MotorHolder = MotorHolderTaskPanel(Widget_MotorHolder)
         FreeCADGui.Control.showDialog(Panel_MotorHolder) 
@@ -706,49 +588,34 @@ class _MotorHolderCmd:
 class MotorHolderTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        # The layout will be a grid
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Size Holder ----
         self.Size_Holder_Label = QtGui.QLabel("Size")
         self.ComboBox_Size_Holder = QtGui.QComboBox()
-        # Type of Nut
         self.TextSizeHolder = ["8","11","14","17","23","34","42"]
         self.ComboBox_Size_Holder.addItems(self.TextSizeHolder)
-        # Indicate inicial value in ComboBox
         self.ComboBox_Size_Holder.setCurrentIndex(self.TextSizeHolder.index('11'))
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Size_Holder_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_Size_Holder,0,1,1,1)
-
         # ---- row 1: Rail Max High  ----
-        # Label:
         self.motor_high_Label = QtGui.QLabel("Rail max High")
-        # Spin Box that takes doubles
         self.motor_high_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.motor_high_Value.setValue(40)
-        # suffix to indicate the units
         self.motor_high_Value.setSuffix(' mm')
-
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.motor_high_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.motor_high_Value,1,1,1,1)
 
         # ---- row 2: Thikness ----
         self.Thikness_Label = QtGui.QLabel("Thikness:")
         self.Thikness_Value = QtGui.QDoubleSpinBox()
-        #Default value
         self.Thikness_Value.setValue(3)
         self.Thikness_Value.setMinimum(2)
         self.Thikness_Value.setSuffix(' mm')
 
-        # row 2, column 0, rowspan 1, colspan 1        
+        # row X, column X, rowspan X, colspan X        
+        layout.addWidget(self.Size_Holder_Label,0,0,1,1)
+        layout.addWidget(self.ComboBox_Size_Holder,0,1,1,1)
+        layout.addWidget(self.motor_high_Label,1,0,1,1)
+        layout.addWidget(self.motor_high_Value,1,1,1,1)
         layout.addWidget(self.Thikness_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Thikness_Value,2,1,1,1)
 
     def accept(self):
@@ -786,13 +653,258 @@ class MotorHolderTaskPanel:
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
 
+#  _________________________________________________________________
+# |                                                                 |
+# |                           Nema  Motor                           |
+# |_________________________________________________________________|
 
-###############################################################################
-#*****************************Linear**Bear**House*****************************
-class _LinBearHouse_Cmd:
+class _NemaMotorCmd:
     def Activated(self):
-        # what is done when the command is clicked
-        # creates a panel with a dialog
+        Widget_NemaMotor = QtGui.QWidget()
+        Panel_NemaMotor = NemaMotorTaskPanel(Widget_NemaMotor)
+        FreeCADGui.Control.showDialog(Panel_NemaMotor) 
+        
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Nema Motor',
+            'Nema Motor')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            'Nema Motor',
+            'Creates a Motor')
+        return {
+            'Pixmap': __dir__ + '/icons/NemaMotor_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None
+
+class NemaMotorTaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        # The layout will be a grid
+        layout = QtGui.QGridLayout(self.form)
+        
+        # ---- row 0: Size ----
+        self.Label_size = QtGui.QLabel("Size:")
+        self.Size = QtGui.QComboBox()
+        self.Size.addItems(['8','11','14','17','23','34','42'])
+        self.Size.setCurrentIndex(0)
+
+        # --- row 1: Height ----
+        self.Label_Height = QtGui.QLabel("Height without shaft:")
+        self.Height = QtGui.QDoubleSpinBox()
+        self.Height.setValue(32)
+        self.Height.setSuffix(' mm')
+        self.Height.setMinimum(1)
+
+        # ---- row 2: shaft ----
+        self.Label_shaft = QtGui.QLabel("Shaft")
+        self.Label_shaft_h = QtGui.QLabel("height:")
+        self.Label_shaft_r = QtGui.QLabel("radius:")
+        self.Label_shaft_br = QtGui.QLabel("radius base:")
+        self.Label_shaft_bh = QtGui.QLabel("height base:")
+        self.shaft_h = QtGui.QDoubleSpinBox()
+        self.shaft_r = QtGui.QDoubleSpinBox()
+        self.shaft_br = QtGui.QDoubleSpinBox()
+        self.shaft_bh = QtGui.QDoubleSpinBox()
+        self.shaft_h.setValue(24.)
+        self.shaft_r.setValue(0)
+        self.shaft_br.setValue(11)
+        self.shaft_bh.setValue(2)
+        self.shaft_h.setSuffix(' mm')
+        self.shaft_r.setSuffix(' mm')
+        self.shaft_br.setSuffix(' mm')
+        self.shaft_bh.setSuffix(' mm')
+        self.shaft_h.setMinimum(1)
+        self.shaft_r.setMinimum(1)
+        self.shaft_br.setMinimum(1)
+        self.shaft_bh.setMinimum(1)
+
+        # ---- row 6: chamfer ----
+        self.Label_chmf_r = QtGui.QLabel("Chamfer radius:") 
+        self.chmf_r = QtGui.QDoubleSpinBox()
+        self.chmf_r.setValue(1)
+        self.chmf_r.setSuffix(' mm')
+        self.chmf_r.setMinimum(0)
+
+        # ---- row 7: bolt ----
+        self.Label_bolt = QtGui.QLabel("Bolt") 
+        self.Label_bolt_d = QtGui.QLabel("deep:") 
+        self.Label_bolt_o = QtGui.QLabel("outside:") 
+        self.bolt_d = QtGui.QDoubleSpinBox()
+        self.bolt_o = QtGui.QDoubleSpinBox()
+        self.bolt_d.setValue(3)
+        self.bolt_o.setValue(2)
+        self.bolt_d.setSuffix(' mm')
+        self.bolt_o.setSuffix(' mm')
+        self.bolt_d.setMinimum(0)
+        self.bolt_o.setMinimum(0)
+
+        # ---- row 9: Pulley ----
+        self.Label_pulley = QtGui.QLabel("Pulley")
+        self.Label_pulley_pitch = QtGui.QLabel("pitch:")
+        self.Label_pulley_teeth = QtGui.QLabel("teeth:")
+        self.Label_pulley_top_flan = QtGui.QLabel("top flange:")
+        self.Label_pulley_bot_flan = QtGui.QLabel("bot flange:")
+        self.pulley_pitch = QtGui.QDoubleSpinBox()
+        self.pulley_teeth = QtGui.QDoubleSpinBox()
+        self.pulley_top_flan = QtGui.QDoubleSpinBox()
+        self.pulley_bot_flan = QtGui.QDoubleSpinBox()
+        self.pulley_pitch.setValue(2.)
+        self.pulley_teeth.setValue(20)
+        self.pulley_top_flan.setValue(1)
+        self.pulley_bot_flan.setValue(0)
+        self.pulley_pitch.setSuffix(' mm')
+        self.pulley_teeth.setSuffix(' mm')
+        self.pulley_teeth.setSuffix(' mm')
+        self.pulley_bot_flan.setSuffix(' mm')
+        self.pulley_pitch.setMinimum(0)
+        self.pulley_teeth.setMinimum(0)
+        self.pulley_top_flan.setMinimum(0)
+        self.pulley_bot_flan.setMinimum(0)
+
+
+        # ---- row 13: Position ----
+        self.label_position = QtGui.QLabel("Position ")
+
+        # d :
+        self.Label_pos_d = QtGui.QLabel("in d:")
+        self.pos_d = QtGui.QComboBox()
+        self.pos_d.addItems(['0','1','2','3','4'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtGui.QLabel("in w:")
+        self.pos_w = QtGui.QComboBox()
+        self.pos_w.addItems(['0','1','2','3','4'])
+        self.pos_w.setCurrentIndex(0)
+
+        # h :
+        self.Label_pos_h = QtGui.QLabel("in h:")
+        self.pos_h = QtGui.QComboBox()
+        self.pos_h.addItems(['0','1','2','3','4','5'])
+        self.pos_h.setCurrentIndex(1)
+
+        # pos:
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_size,0,0,1,2)
+        layout.addWidget(self.Size,0,1,1,2)
+        layout.addWidget(self.Label_Height,1,0,1,2)
+        layout.addWidget(self.Height,1,1,1,2)
+        layout.addWidget(self.Label_shaft,2,0,1,2)
+        layout.addWidget(self.Label_shaft_h,2,1,1,2)
+        layout.addWidget(self.shaft_h,2,2,1,2)
+        layout.addWidget(self.Label_shaft_r,3,1,1,2)
+        layout.addWidget(self.shaft_r,3,2,1,2)
+        layout.addWidget(self.Label_shaft_br,4,1,1,2)
+        layout.addWidget(self.shaft_br,4,2,1,2)
+        layout.addWidget(self.Label_shaft_bh,5,1,1,2)
+        layout.addWidget(self.shaft_bh,5,2,1,2)
+        layout.addWidget(self.Label_chmf_r,6,0,1,2)
+        layout.addWidget(self.chmf_r,6,1,1,2)
+        layout.addWidget(self.Label_bolt,7,0,1,2)
+        layout.addWidget(self.Label_bolt_d,7,1,1,2)
+        layout.addWidget(self.bolt_d,7,2,1,2)
+        layout.addWidget(self.Label_bolt_o,8,1,1,2)
+        layout.addWidget(self.bolt_o,8,2,1,2)
+        layout.addWidget(self.Label_pulley,9,0,1,2)
+        layout.addWidget(self.Label_pulley_pitch,9,1,1,2)
+        layout.addWidget(self.pulley_pitch,9,2,1,2)
+        layout.addWidget(self.Label_pulley_teeth,10,1,1,2)
+        layout.addWidget(self.pulley_teeth,10,2,1,2)
+        layout.addWidget(self.Label_pulley_top_flan,11,1,1,2)
+        layout.addWidget(self.pulley_top_flan,11,2,1,2)
+        layout.addWidget(self.Label_pulley_bot_flan,12,1,1,2)
+        layout.addWidget(self.pulley_bot_flan,12,2,1,2)
+        layout.addWidget(self.label_position,13,0,1,2)
+        layout.addWidget(self.Label_pos_d,13,1,1,2)
+        layout.addWidget(self.pos_d,13,2,1,2)
+        layout.addWidget(self.Label_pos_w,14,1,1,2)
+        layout.addWidget(self.pos_w,14,2,1,2)
+        layout.addWidget(self.Label_pos_h,15,1,1,2)
+        layout.addWidget(self.pos_h,15,2,1,2)
+        layout.addWidget(self.Label_pos_x,16,1,1,2)
+        layout.addWidget(self.pos_x,16,2,1,2)
+        layout.addWidget(self.Label_pos_y,17,1,1,2)
+        layout.addWidget(self.pos_y,17,2,1,2)
+        layout.addWidget(self.Label_pos_z,18,1,1,2)
+        layout.addWidget(self.pos_z,18,2,1,2)
+
+
+    def accept(self):
+        dict_size = {0: 8, 1: 11, 2: 14, 3: 17, 5: 23, 6: 34, 7: 42}
+        size = dict_size[self.Size.currentIndex()]
+        base_h = self.Height.value()
+        shaft_l = self.shaft_h.value()
+        shaft_r = self.shaft_r.value()
+        shaft_br = self.shaft_br.value()
+        shaft_hr = self.shaft_bh.value()
+        chmf_r = self.chmf_r.value()
+        bolt_d = self.bolt_d.value()
+        bolt_o = self.bolt_o.value()
+        pitch = self.pulley_pitch.value()
+        teeth = self.pulley_teeth.value()
+        top_flan = self.pulley_top_flan.value()
+        bot_flan = self.pulley_bot_flan.value()
+        pos_d = self.pos_d.currentIndex()
+        pos_w = self.pos_w.currentIndex()
+        pos_h = self.pos_h.currentIndex()
+        pos = FreeCAD.Vector(self.pos_x.value(),self.pos_y.value(),self.pos_z.value())
+
+        partset.NemaMotorPulleySet(nema_size = size,
+                                   base_l = base_h,
+                                   shaft_l = shaft_l,
+                                   shaft_r = shaft_r,
+                                   circle_r = shaft_br,
+                                   circle_h = shaft_hr,
+                                   chmf_r = chmf_r, 
+                                   rear_shaft_l=0,
+                                   bolt_depth = bolt_d,
+                                   # pulley parameters
+                                   pulley_pitch = pitch,
+                                   pulley_n_teeth = teeth,
+                                   pulley_toothed_h = 7.5,
+                                   pulley_top_flange_h = top_flan,
+                                   pulley_bot_flange_h = bot_flan,
+                                   pulley_tot_h = 16.,
+                                   pulley_flange_d = 15.,
+                                   pulley_base_d = 15.,
+                                   pulley_tol = 0,
+                                   pulley_pos_h = -1,
+                                   # general parameters
+                                   axis_d = VX,
+                                   axis_w = None,
+                                   axis_h = VZ,
+                                   pos_d = pos_d,
+                                   pos_w = pos_w,
+                                   pos_h = pos_h,
+                                   pos = pos,
+                                   group = 1,
+                                   name = '')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                        Linear Bear House                        |
+# |_________________________________________________________________|
+
+class _LinBearHouseCmd:
+    def Activated(self):
         Widget_LinBearHouse = QtGui.QWidget()
         Panel_LinBearHouse = LinBearHouseTaskPanel(Widget_LinBearHouse)
         FreeCADGui.Control.showDialog(Panel_LinBearHouse) 
@@ -814,37 +926,26 @@ class _LinBearHouse_Cmd:
 class LinBearHouseTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        # The layout will be a grid
         layout = QtGui.QGridLayout(self.form)
         
-        # ---- row 0: Version
-        # Label: 
+        # ---- row 0: Version ----
         self.LinBearHouse_Label = QtGui.QLabel("Select Bear House:")
-        # Combo Box
         self.LinBearHouse_ComboBox = QtGui.QComboBox()
-        # Values and initial
         self.LinBearHouse_text = ["Thin 1 rail", "Thin","Normal (only SC type)","Asimetric"]
         self.LinBearHouse_ComboBox.addItems(self.LinBearHouse_text)
         self.LinBearHouse_ComboBox.setCurrentIndex(0)
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.LinBearHouse_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.LinBearHouse_ComboBox,0,1,1,1)
-
-        # ---- row 1: Type
-        # Label: 
+        # ---- row 1: Type ----
         self.Type_Label = QtGui.QLabel("Type:")
-        # ComboBox
         self.Type_ComboBox = QtGui.QComboBox()
-        # Values and initial
         self.Type_text = ["LMUU 6","LMUU 8","LMUU 10","LMUU 12","LMUU 20","LMEUU 8","LMEUU 10","LMEUU12","LMELUU 12","LMEUU 20","SC8UU_Pr","SC10UU_Pr","SC12UU_Pr","SCE20UU_Pr30","SCE20UU_Pr30b"]
         self.Type_ComboBox.addItems(self.Type_text)
         self.Type_ComboBox.setCurrentIndex(1)
 
-        # row 1, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.LinBearHouse_Label,0,0,1,1)
+        layout.addWidget(self.LinBearHouse_ComboBox,0,1,1,1)
         layout.addWidget(self.Type_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Type_ComboBox,1,1,1,1)
 
     def accept(self):
@@ -915,8 +1016,11 @@ class LinBearHouseTaskPanel:
         FreeCADGui.Control.closeDialog() #close the dialog
         FreeCADGui.SendMsgToActiveView("ViewFit")
 
-###############################################################################
-#*********************************Stop**Holder*********************************
+#  _________________________________________________________________
+# |                                                                 |
+# |                           Stop Holder                           |
+# |_________________________________________________________________|
+
 class _stop_holderCmd:
     def Activated(self):
         baseWidget = QtGui.QWidget()
@@ -943,82 +1047,55 @@ class stop_holderTaskPanel:
         self.form = widget
         layout = QtGui.QGridLayout(self.form)
 
-        # ---- row 0: width
-        # Label:
+        # ---- row 0: width ----
         self.Width_Label = QtGui.QLabel("Width:")
         self.Width_Value = QtGui.QDoubleSpinBox()
         self.Width_Value.setValue(21)
         self.Width_Value.setSuffix("mm")
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Width_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Width_Value,0,1,1,1)
-
-        # ---- row 1: height
-        # Label:
+        # ---- row 1: height ----
         self.Heigth_Label = QtGui.QLabel("Heigth:")
         self.Heigth_Value = QtGui.QDoubleSpinBox()
         self.Heigth_Value.setValue(31)
         self.Heigth_Value.setSuffix("mm")
 
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Width_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Width_Value,1,1,1,1)
-
-        # ---- row 2: Thikness
-        # Label:
+        # ---- row 2: Thikness ----
         self.Thickness_Label = QtGui.QLabel("Thickness:")
         self.Thickness_Value = QtGui.QDoubleSpinBox()
         self.Thickness_Value.setValue(4)
         self.Thickness_Value.setSuffix("mm")
 
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Thickness_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Thickness_Value,2,1,1,1)
-
-        # ---- row 3: Metric Bolt
-        # Label:
+        # ---- row 3: Metric Bolt ----
         self.Bolt_Label = QtGui.QLabel("Metric Bolt")
-        # ComboBox
         self.Bolt_ComboBox = QtGui.QComboBox()
-        # Type of Nut
         self.TextNutType = ["M3","M4","M5","M6"]
         self.Bolt_ComboBox.addItems(self.TextNutType)
-        # Indicate inicial value in ComboBox
         self.Bolt_ComboBox.setCurrentIndex(self.TextNutType.index('M3'))
 
-        # row 3, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Bolt_Label,3,0,1,1)
-        # row 3, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Bolt_ComboBox,3,1,1,1)
-
-        # ---- row 4: Rail
-        # Label
+        # ---- row 4: Rail ----
         self.Rail_Label = QtGui.QLabel("Rail Size:")
-        #ComboBox
         self.Rail_ComboBox = QtGui.QComboBox()
         self.Rail_ComboBox.addItems(["10mm","20mm","30mm"])
         self.Rail_ComboBox.setCurrentIndex(0)
 
-        # row 4, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Rail_Label,4,0,1,1)
-        # row 4, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Rail_ComboBox,4,1,1,1)        
-
-        # ---- row 5: Reinforce
-        # Label:
+        # ---- row 5: Reinforce ----
         self.Reinforce_Label = QtGui.QLabel("Reinforce:")
-        # ComboBox
         self.Reinforce_ComboBox = QtGui.QComboBox()
         self.Reinforce_ComboBox.addItems(["No","Yes"])
         self.Reinforce_ComboBox.setCurrentIndex(1)
 
-        # row 5, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Width_Label,0,0,1,1)
+        layout.addWidget(self.Width_Value,0,1,1,1)
+        layout.addWidget(self.Width_Label,1,0,1,1)
+        layout.addWidget(self.Width_Value,1,1,1,1)
+        layout.addWidget(self.Thickness_Label,2,0,1,1)
+        layout.addWidget(self.Thickness_Value,2,1,1,1)
+        layout.addWidget(self.Bolt_Label,3,0,1,1)
+        layout.addWidget(self.Bolt_ComboBox,3,1,1,1)
+        layout.addWidget(self.Rail_Label,4,0,1,1)
+        layout.addWidget(self.Rail_ComboBox,4,1,1,1)        
         layout.addWidget(self.Reinforce_Label,5,0,1,1)
-        # row 5, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Reinforce_ComboBox,5,1,1,1)
 
     def accept(self):
@@ -1061,20 +1138,18 @@ class stop_holderTaskPanel:
         FreeCADGui.SendMsgToActiveView("ViewFit")
         FreeCADGui.Control.closeDialog() #close the dialog
         
-###############################################################################
-#********************************Filter***Stage********************************
+#  _________________________________________________________________
+# |                                                                 |
+# |                          Filter Stage                           |
+# |_________________________________________________________________|
+
 class _FilterStageCmd:
     def Activated(self):
-        # what is done when the command is clicked
-        # creates a panel with a dialog
         baseWidget = QtGui.QWidget()
         panel = FilterStageTaskPanel(baseWidget)
-        # having a panel with a widget in self.form and the accept and 
-        # reject functions (if needed), we can open it:
         FreeCADGui.Control.showDialog(panel)
 
     def GetResources(self):
-        # icon and command information
         MenuText = QtCore.QT_TRANSLATE_NOOP(
             'Filter_Stage_',
             'Filter Stage')
@@ -1087,163 +1162,97 @@ class _FilterStageCmd:
             'ToolTip': ToolTip}
 
     def IsActive(self):
-        # The command will be active if there is an active document
         return not FreeCAD.ActiveDocument is None
 
 class FilterStageTaskPanel:                                    
     def __init__(self,widget):
         self.form = widget
-        # The layout will be a grid, since the form is an argument
-        # we dont need this statement afterwards: self.form.setLayout(layout)
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Move distance
-        # Label:
         self.move_l_Label = QtGui.QLabel("Move distance:")
-        # Spin Box that takes doubles
         self.move_l_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.move_l_Value.setValue(60)
-        # suffix to indicate the units
         self.move_l_Value.setSuffix(' mm')
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.move_l_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.move_l_Value,0,1,1,1)
-
         # ---- row 1: Filter Length ----
-        # Label:
         self.Filter_Length_Label = QtGui.QLabel("Filter Length")
-        # Spin Box that takes doubles
         self.Filter_Length_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Filter_Length_Value.setValue(60)
-        # suffix to indicate the units
         self.Filter_Length_Value.setSuffix(' mm')
 
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Filter_Length_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Filter_Length_Value,1,1,1,1)
-
         # ---- row 2: Filter Width ----
-        # Label:
         self.Filter_Width_Label = QtGui.QLabel("Filter Width")
-        # Spin Box that takes doubles
         self.Filter_Width_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Filter_Width_Value.setValue(25)
-        # suffix to indicate the units
         self.Filter_Width_Value.setSuffix(' mm')
 
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Filter_Width_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Filter_Width_Value,2,1,1,1)
-
-        # ---- row 3: Base width
-        # Label:
+        # ---- row 3: Base width ----
         self.base_w_Label = QtGui.QLabel("Base width:")  #10/15/20/30/40
-        # Spin Box that takes doubles
         self.ComboBox_base_w = QtGui.QComboBox()
-        # Diferents base
         self.TextBase_W = ["10mm","15mm","20mm","30mm","40mm"] 
         self.ComboBox_base_w.addItems(self.TextBase_W)
         self.ComboBox_base_w.setCurrentIndex(self.TextBase_W.index('20mm'))
-
-        # row 3, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.base_w_Label,3,0,1,1)
-        # row 3, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_base_w,3,1,1,1)
                 
-        # ---- row 4: Tensioner Stroke
-         # Label:
+        # ---- row 4: Tensioner Stroke ----
         self.tens_stroke_Label = QtGui.QLabel("Tensioner stroke:")
-        # Spin Box that takes doubles
         self.tens_stroke_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.tens_stroke_Value.setValue(20)
-        # suffix to indicate the units
         self.tens_stroke_Value.setSuffix(' mm')
 
-        # row 4, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.tens_stroke_Label,4,0,1,1)
-        # row 4, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.tens_stroke_Value,4,1,1,1)
-
-        # ---- row 5: Wall thick
-        # Label:
+        # ---- row 5: Wall thick ----
         self.wall_th_Label = QtGui.QLabel("Wall thick:")
-        # Spin Box that takes doubles
         self.wall_th_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.wall_th_Value.setValue(3)
-        # suffix to indicate the units
         self.wall_th_Value.setSuffix(' mm')
 
-        # row 5, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.wall_th_Label,5,0,1,1)
-        # row 5, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.wall_th_Value,5,1,1,1)
-
-        # ---- row 6: Nut Type
-        #Label:
+        # ---- row 6: Nut Type ----
         self.nut_hole_Label = QtGui.QLabel("Nut Type:")   
-
-        # Combo Box that have multiple choice
         self.ComboBox_Nut_Hole = QtGui.QComboBox()
-        # Type of Nut
         self.TextNutType = ["M3","M4","M5","M6"]
         self.ComboBox_Nut_Hole.addItems(self.TextNutType)
-        # Indicate inicial value in ComboBox
         self.ComboBox_Nut_Hole.setCurrentIndex(self.TextNutType.index('M3'))
-
-        # row 6, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.nut_hole_Label,6,0,1,1)
-        # row 6, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_Nut_Hole,6,1,1,1)
 
         # ---- row 7: Size Holder ----
         self.Size_Holder_Label = QtGui.QLabel("Motor size")
         self.ComboBox_Size_Holder = QtGui.QComboBox()
-        # Type of Nut
         self.TextSizeHolder = ["8","11","14","17","23","34","42"]
         self.ComboBox_Size_Holder.addItems(self.TextSizeHolder)
-        # Indicate inicial value in ComboBox
         self.ComboBox_Size_Holder.setCurrentIndex(self.TextSizeHolder.index('14'))
 
-        # row 7, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Size_Holder_Label,7,0,1,1)
-        # row 7, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_Size_Holder,7,1,1,1)
-
         # ---- row 8: Rail Max High  ----
-        # Label:
         self.motor_high_Label = QtGui.QLabel("Rail high Motor holder")
-        # Spin Box that takes doubles
         self.motor_high_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.motor_high_Value.setValue(25) #Value printed
-        # suffix to indicate the units
         self.motor_high_Value.setSuffix(' mm')
-
-        # row 8, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.motor_high_Label,8,0,1,1)
-        # row 8, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.motor_high_Value,8,1,1,1)
 
         # ---- row 9: Thikness ----
         self.Thikness_Label = QtGui.QLabel("Motor holder thikness:")
         self.Thikness_Value = QtGui.QDoubleSpinBox()
-        #Default value
         self.Thikness_Value.setValue(3)
         self.Thikness_Value.setMinimum(2)
         self.Thikness_Value.setSuffix(' mm')
 
-        # row 9, column 0, rowspan 1, colspan 1        
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.move_l_Label,0,0,1,1)
+        layout.addWidget(self.move_l_Value,0,1,1,1)
+        layout.addWidget(self.Filter_Length_Label,1,0,1,1)
+        layout.addWidget(self.Filter_Length_Value,1,1,1,1)
+        layout.addWidget(self.Filter_Width_Label,2,0,1,1)
+        layout.addWidget(self.Filter_Width_Value,2,1,1,1)
+        layout.addWidget(self.base_w_Label,3,0,1,1)
+        layout.addWidget(self.ComboBox_base_w,3,1,1,1)
+        layout.addWidget(self.tens_stroke_Label,4,0,1,1)
+        layout.addWidget(self.tens_stroke_Value,4,1,1,1)
+        layout.addWidget(self.wall_th_Label,5,0,1,1)
+        layout.addWidget(self.wall_th_Value,5,1,1,1)
+        layout.addWidget(self.nut_hole_Label,6,0,1,1)
+        layout.addWidget(self.ComboBox_Nut_Hole,6,1,1,1)
+        layout.addWidget(self.Size_Holder_Label,7,0,1,1)
+        layout.addWidget(self.ComboBox_Size_Holder,7,1,1,1)
+        layout.addWidget(self.motor_high_Label,8,0,1,1)
+        layout.addWidget(self.motor_high_Value,8,1,1,1)
         layout.addWidget(self.Thikness_Label,9,0,1,1)
-        # row 9, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Thikness_Value,9,1,1,1)
 
 
@@ -1277,12 +1286,13 @@ class FilterStageTaskPanel:
         FreeCADGui.SendMsgToActiveView("ViewFit")
         FreeCADGui.Control.closeDialog() #close the dialog
 
-###############################################################################
-#********************************Filter**Holder********************************
+#  _________________________________________________________________
+# |                                                                 |
+# |                          Filter Holder                          |
+# |_________________________________________________________________|
+
 class _FilterHolderCmd:
     def Activated(self):
-        # what is done when the command is clicked
-        # creates a panel with a dialog
         Widget_FilterHolder = QtGui.QWidget()
         Panel_FilterHolder = FilterHolderTaskPanel(Widget_FilterHolder)
         FreeCADGui.Control.showDialog(Panel_FilterHolder) 
@@ -1304,37 +1314,24 @@ class _FilterHolderCmd:
 class FilterHolderTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        # The layout will be a grid
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Filter Lenth ----
-        # Label:
         self.Filter_Length_Label = QtGui.QLabel("Filter Length")
-        # Spin Box that takes doubles
         self.Filter_Length_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Filter_Length_Value.setValue(60)
-        # suffix to indicate the units
         self.Filter_Length_Value.setSuffix(' mm')
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Filter_Length_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Filter_Length_Value,0,1,1,1)
-
         # ---- row 1: Filter Width ----
-        # Label:
         self.Filter_Width_Label = QtGui.QLabel("Filter Width")
-        # Spin Box that takes doubles
         self.Filter_Width_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Filter_Width_Value.setValue(25)
-        # suffix to indicate the units
         self.Filter_Width_Value.setSuffix(' mm')
 
-        # row 1, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Filter_Length_Label,0,0,1,1)
+        layout.addWidget(self.Filter_Length_Value,0,1,1,1)
         layout.addWidget(self.Filter_Width_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
         layout.addWidget(self.Filter_Width_Value,1,1,1,1)
 
 
@@ -1342,7 +1339,7 @@ class FilterHolderTaskPanel:
         Filter_Length = self.Filter_Length_Value.value()
         Filter_Width = self.Filter_Width_Value.value()
 
-        filter_holder_clss.PartFilterHolder(filter_l = Filter_Length, #60     #########################################################################
+        filter_holder_clss.PartFilterHolder(filter_l = Filter_Length, #60     
                                             filter_w = Filter_Width, #25
                                             filter_t = 2.5,
                                             base_h = 6.,
@@ -1389,8 +1386,11 @@ class FilterHolderTaskPanel:
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
 
-###############################################################################
-#**********************************Tensioner***********************************
+#  _________________________________________________________________
+# |                                                                 |
+# |                            Tensioner                            |
+# |_________________________________________________________________|
+
 class _TensionerCmd:
     
     def Activated(self):
@@ -1418,98 +1418,59 @@ class _TensionerCmd:
 class TensionerTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        # The layout will be a grid
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Belt High ----
-        # Label:
         self.belt_h_Label = QtGui.QLabel("Belt hight:")
-        # Spin Box that takes doubles
         self.belt_h_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.belt_h_Value.setValue(20)
-        # suffix to indicate the units
         self.belt_h_Value.setSuffix(' mm')
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.belt_h_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.belt_h_Value,0,1,1,1)
-
         # ---- row 1: Base width ----
-        # Label:
         self.base_w_Label = QtGui.QLabel("Base width:")  #10/15/20/30/40
-        # Spin Box that takes doubles
         self.ComboBox_base_w = QtGui.QComboBox()
-        # Diferents base
         self.TextBase_W = ["10mm","15mm","20mm","30mm","40mm"] 
         self.ComboBox_base_w.addItems(self.TextBase_W)
         self.ComboBox_base_w.setCurrentIndex(self.TextBase_W.index('20mm'))
-
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.base_w_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_base_w,1,1,1,1)
                 
         # ---- row 2: Tensioner Stroke ----
-         # Label:
         self.tens_stroke_Label = QtGui.QLabel("Tensioner stroke:")
-        # Spin Box that takes doubles
         self.tens_stroke_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.tens_stroke_Value.setValue(20)
-        # suffix to indicate the units
         self.tens_stroke_Value.setSuffix(' mm')
 
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.tens_stroke_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.tens_stroke_Value,2,1,1,1)
-
         # ---- row 3: Wall thick ----
-        # Label:
         self.wall_th_Label = QtGui.QLabel("Wall thick:")
-        # Spin Box that takes doubles
         self.wall_th_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.wall_th_Value.setValue(3)
-        # suffix to indicate the units
         self.wall_th_Value.setSuffix(' mm')
 
-        # row 3, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.wall_th_Label,3,0,1,1)
-        # row 3, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.wall_th_Value,3,1,1,1)
-
         # ---- row 4: Nut Type ----
-        #Label:
         self.nut_hole_Label = QtGui.QLabel("Nut Type:")   
-
-        # Combo Box that have multiple choice
         self.ComboBox_Nut_Hole = QtGui.QComboBox()
-        # Type of Nut
         self.TextNutType = ["M3","M4","M5","M6"]
         self.ComboBox_Nut_Hole.addItems(self.TextNutType)
-        # Indicate inicial value in ComboBox
         self.ComboBox_Nut_Hole.setCurrentIndex(self.TextNutType.index('M3'))
-
-        # row 4, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.nut_hole_Label,4,0,1,1)
-        # row 4, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.ComboBox_Nut_Hole,4,1,1,1)
 
         # ---- row 5: Set Holder ----
         self.Set_Label = QtGui.QLabel("See Set")
         self.ComboBox_Set = QtGui.QComboBox()
-        # Type for ComboBox
         self.TextSet = ["No","Yes"]
         self.ComboBox_Set.addItems(self.TextSet)
-        # Indicate inicial value in ComboBox
         self.ComboBox_Set.setCurrentIndex(self.TextSet.index('No'))
 
-        # row 5, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.belt_h_Label,0,0,1,1)
+        layout.addWidget(self.belt_h_Value,0,1,1,1)
+        layout.addWidget(self.base_w_Label,1,0,1,1)
+        layout.addWidget(self.ComboBox_base_w,1,1,1,1)
+        layout.addWidget(self.tens_stroke_Label,2,0,1,1)
+        layout.addWidget(self.tens_stroke_Value,2,1,1,1)
+        layout.addWidget(self.wall_th_Label,3,0,1,1)
+        layout.addWidget(self.wall_th_Value,3,1,1,1)
+        layout.addWidget(self.nut_hole_Label,4,0,1,1)
+        layout.addWidget(self.ComboBox_Nut_Hole,4,1,1,1)
         layout.addWidget(self.Set_Label,5,0,1,1)
-        # row 5, column 1, rowspan 1, colspan 1
         layout.addWidget(self.ComboBox_Set,5,1,1,1)
 
     def accept(self):
@@ -1588,8 +1549,11 @@ class TensionerTaskPanel:
     #   FreeCADGui.Control.closeDialog()
 
 
-###############################################################################
-#*********************************Belt***Clamp*********************************
+#  _________________________________________________________________
+# |                                                                 |
+# |                           Belt Clamp                            |
+# |_________________________________________________________________|
+
 class _BeltClampCmd:
     def Activated(self):
         Widget_BeltClamp = QtGui.QWidget()
@@ -1615,69 +1579,42 @@ class BeltClampTaskPanel:
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Type ----
-        #Label:
         self.Type_Label = QtGui.QLabel("Type:")   
 
-        # Combo Box that have multiple choice
         self.Type_ComboBox = QtGui.QComboBox()
-        # Type of Nut
         self.TextType = ["Simple","Double"]
         self.Type_ComboBox.addItems(self.TextType)
-        # Indicate inicial value in ComboBox
         self.Type_ComboBox.setCurrentIndex(0)
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Type_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Type_ComboBox,0,1,1,1)
-
         # ---- row 1: Length ----
-        # Label:
         self.Length_Label = QtGui.QLabel("Length:")
-        # Spin Box that takes doubles
         self.Length_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Length_Value.setValue(42)
-        # suffix to indicate the units
         self.Length_Value.setSuffix(' mm')
         self.Length_Value.setMinimum(42)
 
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Length_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Length_Value,1,1,1,1)
-
         # ---- row 2: Width ----
-        # Label:
         self.Width_Label = QtGui.QLabel("Width:")
-        # Spin Box that takes doubles
         self.Width_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Width_Value.setValue(10.8)
-        # suffix to indicate the units
         self.Width_Value.setSuffix(' mm')
         self.Width_Value.setMinimum(10.8)
 
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Width_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Width_Value,2,1,1,1)
-
         # ---- row 3: Nut Type ----
-        #Label:
         self.nut_hole_Label = QtGui.QLabel("Nut Type:")   
-
-        # Combo Box that have multiple choice
         self.ComboBox_Nut_Hole = QtGui.QComboBox()
-        # Type of Nut
         self.TextNutType = ["M3","M4","M5","M6"]
         self.ComboBox_Nut_Hole.addItems(self.TextNutType)
-        # Indicate inicial value in ComboBox
         self.ComboBox_Nut_Hole.setCurrentIndex(self.TextNutType.index('M3'))
 
-        # row 3, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Type_Label,0,0,1,1)
+        layout.addWidget(self.Type_ComboBox,0,1,1,1)
+        layout.addWidget(self.Length_Label,1,0,1,1)
+        layout.addWidget(self.Length_Value,1,1,1,1)
+        layout.addWidget(self.Width_Label,2,0,1,1)
+        layout.addWidget(self.Width_Value,2,1,1,1)
         layout.addWidget(self.nut_hole_Label,3,0,1,1)
-        # row 3, column 1, rowspan 1, colspan 1
         layout.addWidget(self.ComboBox_Nut_Hole,3,1,1,1)
 
     def accept(self):
@@ -1723,9 +1660,270 @@ class BeltClampTaskPanel:
         FreeCADGui.Control.closeDialog() #close the dialog
         FreeCADGui.SendMsgToActiveView("ViewFit")
 
+#  _________________________________________________________________
+# |                                                                 |
+# |                           Belt Clamped                          |
+# |_________________________________________________________________|
 
-###############################################################################
-#********************************SENSOR**HOLDER********************************
+# This part dindt work properly. Need more test for the moment.
+#   IS DISABLED IN InitGui.py file.
+class _BeltClampedCmd:
+    def Activated(self):
+        Widget_BeltClamped = QtGui.QWidget()
+        Panel_BeltClamped = BeltClampedTaskPanel(Widget_BeltClamped)
+        FreeCADGui.Control.showDialog(Panel_BeltClamped)     
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            'Belt clamped')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            'Creates a belt clamped')
+        return {
+            'Pixmap': __dir__ + '/icons/Belt_Clamped_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class BeltClampedTaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: Diameters ----
+        #Label :
+        self.Label_Diameter = QtGui.QLabel("Diameter pulley")   
+        # 1:
+        self.Label_Diameter_1 = QtGui.QLabel("1:")   
+        self.Pulley_D1 = QtGui.QDoubleSpinBox()
+        self.Pulley_D1.setValue(5)
+        self.Pulley_D1.setSuffix('')
+        self.Pulley_D1.setMinimum(1)
+
+        # 2:
+        self.Label_Diameter_2 = QtGui.QLabel("2:")
+        self.Pulley_D2 = QtGui.QDoubleSpinBox()
+        self.Pulley_D2.setValue(6)
+        self.Pulley_D2.setSuffix('')
+        self.Pulley_D2.setMinimum(1)
+
+        # ---- row 3: Separation ----
+        # Label :
+        self.Label_Sep = QtGui.QLabel("Separation between ")
+
+        # Pulleys Axis d:
+        self.Label_Sep_d = QtGui.QLabel("pulleys in axis d:")
+        self.Sep_d = QtGui.QDoubleSpinBox()
+        self.Sep_d.setValue(80)
+        self.Sep_d.setSuffix(' mm')
+        self.Sep_d.setMinimum(1)
+
+        # Pulleys Axis w:
+        self.Label_Sep_w = QtGui.QLabel("pulleys in axis w:")
+        self.Sep_w = QtGui.QDoubleSpinBox()
+        self.Sep_w.setValue(0)
+        self.Sep_w.setSuffix(' mm')
+        self.Sep_w.setMinimum(1)
+
+        # Pulley 1 and Clamp 1 Axis d:
+        self.Label_Sep_Clamp_1d = QtGui.QLabel("pulley 1 and clamp 1 in axis d")
+        self.Sep_Clamp_1d = QtGui.QDoubleSpinBox()
+        self.Sep_Clamp_1d.setValue(15)
+        self.Sep_Clamp_1d.setSuffix(' mm')
+        self.Sep_Clamp_1d.setMinimum(1)
+
+        # Pulley 1 and Clamp 1 Axis w:
+        self.Label_Sep_Clamp_1w = QtGui.QLabel("pulley 1 and clamp 1 in axis w")
+        self.Sep_Clamp_1w = QtGui.QDoubleSpinBox()
+        self.Sep_Clamp_1w.setValue(5)
+        self.Sep_Clamp_1w.setSuffix(' mm')
+        self.Sep_Clamp_1w.setMinimum(1)
+        
+        # Pulley 2 and Clamp 2 Axis d:
+        self.Label_Sep_Clamp_2d = QtGui.QLabel("pulley 2 and clamp 2 in axis w")
+        self.Sep_Clamp_2d = QtGui.QDoubleSpinBox()
+        self.Sep_Clamp_2d.setValue(15)
+        self.Sep_Clamp_2d.setSuffix(' mm')
+        self.Sep_Clamp_2d.setMinimum(1)
+
+        # ---- row 9: Clamp ----
+        # Label :
+        self.Label_Clamp = QtGui.QLabel("Clamp ")
+
+        # Clamp d:
+        self.Label_Clamp_d = QtGui.QLabel("Lenght:")
+        self.Clamp_d = QtGui.QDoubleSpinBox()
+        self.Clamp_d.setValue(5)
+        self.Clamp_d.setSuffix('')
+        self.Clamp_d.setMinimum(1)
+
+        # Clamp w:
+        self.Label_Clamp_w = QtGui.QLabel("Widht:")
+        self.Clamp_w = QtGui.QDoubleSpinBox()
+        self.Clamp_w.setValue(4)
+        self.Clamp_w.setSuffix('')
+        self.Clamp_w.setMinimum(1)
+
+        # Separation bewteen clamps:
+        self.Label_Sep_Clamp = QtGui.QLabel("Sepatarion:")
+        self.Sep_Clamp = QtGui.QDoubleSpinBox()
+        self.Sep_Clamp.setValue(8)
+        self.Sep_Clamp.setSuffix('')
+        self.Sep_Clamp.setMinimum(0.5)
+
+        # ---- row 13: Belt ----
+        self.label_Belt = QtGui.QLabel("Belt ")
+
+        # Radius cyl:
+        self.Label_R_cyl = QtGui.QLabel("Radius of the cylinder for the belt:")
+        self.R_cyl = QtGui.QDoubleSpinBox()
+        self.R_cyl.setValue(3)
+        self.R_cyl.setSuffix(' mm')
+        self.R_cyl.setMinimum(1)
+
+        # Width:
+        self.Label_belt_w = QtGui.QLabel("Width:")
+        self.belt_w = QtGui.QDoubleSpinBox()
+        self.belt_w.setValue(6)
+        self.belt_w.setSuffix(' mm')
+        self.belt_w.setMinimum(1)
+
+        # Thick:
+        self.Label_belt_t = QtGui.QLabel("Thick:")
+        self.belt_t = QtGui.QDoubleSpinBox()
+        self.belt_t.setValue(1.38)
+        self.belt_t.setSuffix(' mm')
+        self.belt_t.setMinimum(1)
+
+        # ---- row 17: Position ----
+        self.label_position = QtGui.QLabel("Position ")
+
+        # d :
+        self.Label_pos_d = QtGui.QLabel("in d:")
+        self.pos_d = QtGui.QComboBox()
+        self.pos_d.addItems(['0','1','2','3','4','5','6','7','8','9','10','11'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtGui.QLabel("in w:")
+        self.pos_w = QtGui.QComboBox()
+        self.pos_w.addItems(['0','1','2','3','4','5','6','7','8'])
+        self.pos_w.setCurrentIndex(0)
+
+        # h :
+        self.Label_pos_h = QtGui.QLabel("in h:")
+        self.pos_h = QtGui.QComboBox()
+        self.pos_h.addItems(['0','1'])
+        self.pos_h.setCurrentIndex(0)
+
+        # pos:
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_Diameter,0,0,1,3)
+        layout.addWidget(self.Label_Diameter_1,1,1,1,3)
+        layout.addWidget(self.Pulley_D1,1,2,1,3)
+        layout.addWidget(self.Label_Diameter_2,2,1,1,3)
+        layout.addWidget(self.Pulley_D2,2,2,1,3)
+        layout.addWidget(self.Label_Diameter,3,0,1,3)
+        layout.addWidget(self.Label_Diameter_1,4,1,1,3)
+        layout.addWidget(self.Pulley_D1,4,2,1,3)
+        layout.addWidget(self.Label_Diameter_2,5,1,1,3)
+        layout.addWidget(self.Pulley_D2,5,2,1,3)
+        layout.addWidget(self.Label_Sep_Clamp_1d,6,1,1,3)
+        layout.addWidget(self.Sep_Clamp_1d,6,2,1,3)
+        layout.addWidget(self.Label_Sep_Clamp_1w,7,1,1,3)
+        layout.addWidget(self.Sep_Clamp_1w,7,2,1,3)
+        layout.addWidget(self.Label_Sep_Clamp_2d,8,1,1,3)
+        layout.addWidget(self.Sep_Clamp_2d,8,2,1,3)
+        layout.addWidget(self.Label_Clamp,9,0,1,3)
+        layout.addWidget(self.Label_Clamp_d,10,1,1,3)
+        layout.addWidget(self.Clamp_d,10,2,1,3)
+        layout.addWidget(self.Label_Clamp_w,11,1,1,3)
+        layout.addWidget(self.Clamp_w,11,2,1,3)
+        layout.addWidget(self.Label_Sep_Clamp,12,1,1,3)
+        layout.addWidget(self.Sep_Clamp,12,2,1,3)
+        layout.addWidget(self.label_Belt,13,0,1,3)
+        layout.addWidget(self.Label_belt_w,14,1,1,3)
+        layout.addWidget(self.belt_w,14,2,1,3)
+        layout.addWidget(self.Label_belt_t,15,1,1,3)
+        layout.addWidget(self.belt_t,15,2,1,3)
+        layout.addWidget(self.Label_R_cyl,16,1,1,3)
+        layout.addWidget(self.R_cyl,16,2,1,3)
+        layout.addWidget(self.label_position,17,0,1,3)
+        layout.addWidget(self.Label_pos_d,18,1,1,3)
+        layout.addWidget(self.pos_d,18,2,1,3)
+        layout.addWidget(self.Label_pos_w,19,1,1,3)
+        layout.addWidget(self.pos_w,19,2,1,3)
+        layout.addWidget(self.Label_pos_h,20,1,1,3)
+        layout.addWidget(self.pos_h,20,2,1,3)
+        layout.addWidget(self.Label_pos_x,21,1,1,3)
+        layout.addWidget(self.pos_x,21,2,1,3)
+        layout.addWidget(self.Label_pos_y,22,1,1,3)
+        layout.addWidget(self.pos_y,22,2,1,3)
+        layout.addWidget(self.Label_pos_z,23,1,1,3)
+        layout.addWidget(self.pos_z,23,2,1,3)
+
+    def accept(self):
+        pull1_dm = self.Pulley_D1.value()
+        pull2_dm = self.Pulley_D2.value()
+        pull_sep_d = self.Sep_d.value()
+        pull_sep_w = self.Sep_w.value()
+        clamp_pull1_d = self.Sep_Clamp_1d.value()
+        clamp_pull1_w = self.Sep_Clamp_1w.value()
+        clamp_pull2_d = self.Sep_Clamp_2d.value()
+        clamp_d = self.Clamp_d.value()
+        clamp_w = self.Clamp_w.value()
+        clamp_cyl_sep = self.Sep_Clamp.value()
+        cyl_r = self.R_cyl.value()
+        belt_width = self.belt_w.value()
+        belt_thick = self.belt_t.value()
+        pos_d = self.pos_d.currentIndex()
+        pos_w = self.pos_w.currentIndex()
+        pos_h = self.pos_h.currentIndex()
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+
+        beltcl.PartBeltClamped(pull1_dm,
+                               pull2_dm,
+                               pull_sep_w,
+                               pull_sep_d,
+                               clamp_pull1_d,
+                               clamp_pull1_w,
+                               clamp_pull2_d,
+                               clamp_d,
+                               clamp_w,
+                               clamp_cyl_sep,
+                               cyl_r,
+                               belt_width = belt_width,
+                               belt_thick = belt_thick,
+                               axis_d = VY,
+                               axis_w = VX,
+                               axis_h = VZ,
+                               pos_d = pos_d,
+                               pos_w = pos_w,
+                               pos_h = pos_h,
+                               pos=pos,
+                               name = 'belt')
+        
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                          Sensor Holder                          |
+# |_________________________________________________________________|
+
 class _SensorHolderCmd:
     def Activated(self):
         Widget_SensorHolder = QtGui.QWidget()
@@ -1751,99 +1949,59 @@ class SensorHolderTaskPanel:
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Sensor Pin Length ----
-        #Label:
         self.Sensor_Pin_Length_Label = QtGui.QLabel("Sensor Pin Length:")  
-        # Spin Box that takes doubles
         self.Sensor_Pin_Length_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Sensor_Pin_Length_Value.setValue(10)
-        # suffix to indicate the units
         self.Sensor_Pin_Length_Value.setSuffix(' mm')
         self.Sensor_Pin_Length_Value.setMinimum(10) #Not sure
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Sensor_Pin_Length_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Sensor_Pin_Length_Value,0,1,1,1)
-
         # ---- row 1: Sensor Pin Width ----
-        #Label:
         self.Sensor_Pin_Width_Label = QtGui.QLabel("Sensor Pin Width:")  
-        # Spin Box that takes doubles
         self.Sensor_Pin_Width_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Sensor_Pin_Width_Value.setValue(2)
-        # suffix to indicate the units
         self.Sensor_Pin_Width_Value.setSuffix(' mm')
         self.Sensor_Pin_Width_Value.setMinimum(2) #Not sure
 
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Sensor_Pin_Width_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Sensor_Pin_Width_Value,1,1,1,1)
-
         # ---- row 2: Sensor Pin High ----
-        #Label:
         self.Sensor_Pin_High_Label = QtGui.QLabel("Sensor Pin High:")  
-        # Spin Box that takes doubles
         self.Sensor_Pin_High_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Sensor_Pin_High_Value.setValue(3)
-        # suffix to indicate the units
         self.Sensor_Pin_High_Value.setSuffix(' mm')
         self.Sensor_Pin_High_Value.setMinimum(3) #Not sure
 
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Sensor_Pin_High_Label,2,0,1,1)
-        # row 2, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Sensor_Pin_High_Value,2,1,1,1)
-
         # ---- row 3: Depth ----
-        #Label:
         self.Depth_CD_Label = QtGui.QLabel("Depth:")  
-        # Spin Box that takes doubles
         self.Depth_CD_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Depth_CD_Value.setValue(8)
-        # suffix to indicate the units
         self.Depth_CD_Value.setSuffix(' mm')
         self.Depth_CD_Value.setMinimum(8) #Not sure
 
-        # row 3, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Depth_CD_Label,3,0,1,1)
-        # row 3, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Depth_CD_Value,3,1,1,1)
-
         # ---- row 4: Width CD case----
-        #Label:
         self.Width_CD_Label = QtGui.QLabel("Width CD case:")  
-        # Spin Box that takes doubles
         self.Width_CD_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.Width_CD_Value.setValue(20)
-        # suffix to indicate the units
         self.Width_CD_Value.setSuffix(' mm')
         self.Width_CD_Value.setMinimum(20) #Not sure
 
-        # row 4, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Width_CD_Label,4,0,1,1)
-        # row 4, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Width_CD_Value,4,1,1,1)
-
         # ---- row 5: High CD case----
-        #Label:
         self.High_CD_Label = QtGui.QLabel("High CD case:")  
-        # Spin Box that takes doubles
         self.High_CD_Value = QtGui.QDoubleSpinBox()
-        # Default value
         self.High_CD_Value.setValue(37)
-        # suffix to indicate the units
         self.High_CD_Value.setSuffix(' mm')
         self.High_CD_Value.setMinimum(37) #Not sure
 
-        # row 5, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Sensor_Pin_Length_Label,0,0,1,1)
+        layout.addWidget(self.Sensor_Pin_Length_Value,0,1,1,1)
+        layout.addWidget(self.Sensor_Pin_Width_Label,1,0,1,1)
+        layout.addWidget(self.Sensor_Pin_Width_Value,1,1,1,1)
+        layout.addWidget(self.Sensor_Pin_High_Label,2,0,1,1)
+        layout.addWidget(self.Sensor_Pin_High_Value,2,1,1,1)
+        layout.addWidget(self.Depth_CD_Label,3,0,1,1)
+        layout.addWidget(self.Depth_CD_Value,3,1,1,1)
+        layout.addWidget(self.Width_CD_Label,4,0,1,1)
+        layout.addWidget(self.Width_CD_Value,4,1,1,1)
         layout.addWidget(self.High_CD_Label,5,0,1,1)
-        # row 5, column 1, rowspan 1, colspan 1
         layout.addWidget(self.High_CD_Value,5,1,1,1)
 
     def accept(self):
@@ -1881,9 +2039,12 @@ class SensorHolderTaskPanel:
         FreeCADGui.Control.closeDialog() #close the dialog
         FreeCADGui.SendMsgToActiveView("ViewFit")
 
-###############################################################################
-#***********************************ALUPROF************************************
-class _Aluproft_Cmd:
+#  _________________________________________________________________
+# |                                                                 |
+# |                             Aluprof                             |
+# |_________________________________________________________________|
+
+class _AluproftCmd:
     """
     This class create an aluminium profile with diferents sizes and any length
     """
@@ -1912,36 +2073,25 @@ class Aluproft_TaskPanel:
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Size ----
-        #Label:
         self.Prof_Label = QtGui.QLabel("Size")  
-        # ComboBox:
         self.prof_size = ["5", "10", "15", "20", "30", "40"]
         self.profile = QtGui.QComboBox()
         self.profile.addItems(self.prof_size)
         self.profile.setCurrentIndex(3) #20
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Prof_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.profile,0,1,1,1)
 
         # ---- row 1: Length ----
-        # Label:
         self.length_Label = QtGui.QLabel("Length")  
-        # Dounble Spin Box:
         self.length_prof = QtGui.QDoubleSpinBox()
-        # Default value
         self.length_prof.setValue(20)
-        # suffix to indicate the units
         self.length_prof.setSuffix(' mm')
-        # Minimum value
         self.length_prof.setMinimum(10) 
         self.length_prof.setMaximum(999)
 
-
-        # row 1, column 0, rowspan 1, colspan 1
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Prof_Label,0,0,1,1)
+        layout.addWidget(self.profile,0,1,1,1)
         layout.addWidget(self.length_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
         layout.addWidget(self.length_prof,1,1,1,1)
 
     def accept(self):
@@ -1967,9 +2117,120 @@ class Aluproft_TaskPanel:
         FreeCADGui.SendMsgToActiveView("ViewFit")
 
 
-###############################################################################
-#*************************************BOLT*************************************
-class _Bolt_Cmd:
+#  _________________________________________________________________
+# |                                                                 |
+# |                          Lin Guide Block                        |
+# |_________________________________________________________________|
+class _LinGuideBlockCmd:
+    """
+    This class create Linear Guide Block
+    """
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_LinGuideBlock = LinGuideBlock_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_LinGuideBlock) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Linear Guide Block',
+            'Linear Guide Block')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/LinGuideBlock_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class LinGuideBlock_TaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: Size ----
+        self.Label_block = QtGui.QLabel("Type:")
+        self.block_dict = QtGui.QComboBox()
+        self.block_dict.addItems(["SEBW16","SEB15A","SEB8","SEB10"])
+        self.block_dict.setCurrentIndex(0)
+
+        # ---- row 1: Position ----
+        self.label_position = QtGui.QLabel("Position ")
+
+        # d :
+        self.Label_pos_d = QtGui.QLabel("in d:")
+        self.pos_d = QtGui.QComboBox()
+        self.pos_d.addItems(['0','1','2','3'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtGui.QLabel("in w:")
+        self.pos_w = QtGui.QComboBox()
+        self.pos_w.addItems(['0','1','2','3','4'])
+        self.pos_w.setCurrentIndex(0)
+
+        # h :
+        self.Label_pos_h = QtGui.QLabel("in h:")
+        self.pos_h = QtGui.QComboBox()
+        self.pos_h.addItems(['0','1','2','3','4'])
+        self.pos_h.setCurrentIndex(1)
+
+        # pos:
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_block,0,0,1,2)
+        layout.addWidget(self.block_dict,0,1,1,2)
+        layout.addWidget(self.label_position,1,0,1,2)
+        layout.addWidget(self.Label_pos_d,1,1,1,2)
+        layout.addWidget(self.pos_d,1,2,1,2)
+        layout.addWidget(self.Label_pos_w,2,1,1,2)
+        layout.addWidget(self.pos_w,2,2,1,2)
+        layout.addWidget(self.Label_pos_h,3,1,1,2)
+        layout.addWidget(self.pos_h,3,2,1,2)
+        layout.addWidget(self.Label_pos_x,4,1,1,2)
+        layout.addWidget(self.pos_x,4,2,1,2)
+        layout.addWidget(self.Label_pos_y,5,1,1,2)
+        layout.addWidget(self.pos_y,5,2,1,2)
+        layout.addWidget(self.Label_pos_z,6,1,1,2)
+        layout.addWidget(self.pos_z,6,2,1,2)
+
+    def accept(self):
+        dict_block = {0: kcomp.SEBWM16_B, 1: kcomp.SEB15A_B, 2: kcomp.SEB8_B, 3: kcomp.SEB10_B}
+        dict_rail = {0: kcomp.SEBWM16_R, 1: kcomp.SEB15A_R, 2: kcomp.SEB8_R, 3: kcomp.SEB10_R}
+        block_dict = dict_block[self.block_dict.currentIndex()]
+        rail_dict = dict_rail[self.block_dict.currentIndex()]
+        pos_d = self.pos_d.currentIndex()
+        pos_w = self.pos_w.currentIndex()
+        pos_h = self.pos_h.currentIndex()
+        pos = FreeCAD.Vector(self.pos_x.value(),self.pos_y.value(),self.pos_z.value())
+
+        comps.PartLinGuideBlock(block_dict, rail_dict,
+                                axis_d = VX, axis_w = V0, axis_h = VZ,
+                                pos_d = pos_d, pos_w = pos_w, pos_h = pos_h,
+                                pos = pos,
+                                model_type = 1, # dimensional model
+                                name = '')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                               Bolt                              |
+# |_________________________________________________________________|
+class _BoltCmd:
     """
     This class create Bolts, Nuts & Washers with diferents metrics
     """
@@ -1998,50 +2259,32 @@ class Bolt_TaskPanel:
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Type ----
-        #Label:
         self.Type_select_Label = QtGui.QLabel("Type")  
-        # ComboBox:
         self.Type_text = ["Bolt D912", "Nut D934", "Whasher DIN 125", "Whasher DIN 9021"]
         self.Type_select = QtGui.QComboBox()
         self.Type_select.addItems(self.Type_text)
         self.Type_select.setCurrentIndex(0)
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Type_select_Label,0,0,1,1)
-        # row 0, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.Type_select,0,1,1,1)
-
         # ---- row 1: Metric ----
-        # Label:
         self.Bolt_Metric_Label = QtGui.QLabel("Metric")  
-        # ComboBox:
         self.Bolt_metric = ["3","4","5","6"]
         self.metric = QtGui.QComboBox()
         self.metric.addItems(self.Bolt_metric)
         self.metric.setCurrentIndex(0)
 
-
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Bolt_Metric_Label,1,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
-        layout.addWidget(self.metric,1,1,1,1)
-
         # ---- row 2: Length ----
-        # Label:
         self.length_Label = QtGui.QLabel("Length for bolt")  
-        # Dounble Spin Box:
         self.length_bolt = QtGui.QDoubleSpinBox()
-        # Default value
         self.length_bolt.setValue(20)
-        # suffix to indicate the units
         self.length_bolt.setSuffix(' mm')
-        # Minimum value
         self.length_bolt.setMinimum(4) 
-
-
-        # row 1, column 0, rowspan 1, colspan 1
+        
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Type_select_Label,0,0,1,1)
+        layout.addWidget(self.Type_select,0,1,1,1)
+        layout.addWidget(self.Bolt_Metric_Label,1,0,1,1)
+        layout.addWidget(self.metric,1,1,1,1)
         layout.addWidget(self.length_Label,2,0,1,1)
-        # row 1, column 1, rowspan 1, colspan 1
         layout.addWidget(self.length_bolt,2,1,1,1)
 
     def accept(self):
@@ -2096,6 +2339,515 @@ class Bolt_TaskPanel:
         FreeCADGui.Control.closeDialog() #close the dialog
         FreeCADGui.SendMsgToActiveView("ViewFit")
 
+#  _________________________________________________________________
+# |                                                                 |
+# |                            Tube Lense                           |
+# |_________________________________________________________________|
+class _TubeLense_Cmd:
+    """
+    This class create Tube Lense
+    """
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_TubeLense = TubeLense_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_TubeLense) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Tube Lense',
+            'Tube Lense')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/TubeLense_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class TubeLense_TaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: Length ----
+        self.Label_Length = QtGui.QLabel("Length")
+        self.Length = QtGui.QComboBox()
+        self.Length.addItems(["3","5","10","15","20","30"])
+        self.Length.setCurrentIndex(2) #10
+
+        # ---- row 1: Placement ----
+        self.Label_position = QtGui.QLabel("Placement ")
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_Length,0,0,1,2)
+        layout.addWidget(self.Length,0,1,1,2)
+        layout.addWidget(self.Label_position,1,0,1,2)
+        layout.addWidget(self.Label_pos_x,1,1,1,2)
+        layout.addWidget(self.pos_x,1,2,1,2)
+        layout.addWidget(self.Label_pos_y,2,1,1,2)
+        layout.addWidget(self.pos_y,2,2,1,2)
+        layout.addWidget(self.Label_pos_z,3,1,1,2)
+        layout.addWidget(self.pos_z,3,2,1,2)
+
+    def accept(self):
+        size = {0: 3, 1: 5, 2: 10, 3: 15, 4: 20, 5: 30}
+        sm1l_size = size[self.Length.currentIndex()]
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+
+        comp_optic.SM1TubelensSm2(sm1l_size,
+                                   fc_axis = VX,
+                                   ref_sm1 = 1,
+                                   pos = pos,
+                                   ring = 1,
+                                   name = 'tubelens_sm1_sm2')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                           LCPB1M Base                           |
+# |_________________________________________________________________|
+
+class _Lcpb1mBase_Cmd:
+    """
+    This class create a Lcpb1mBase
+    """
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_Lcpb1mBase = Lcpb1mBase_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_Lcpb1mBase) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Thorlabs LCPB1_M',
+            'Thorlabs LCPB1_M')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/Lcpb1mBase_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class Lcpb1mBase_TaskPanel:
+    def __init__(self, widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: Placement ----
+        self.Label_position = QtGui.QLabel("Placement ")
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_position,0,0,1,2)
+        layout.addWidget(self.Label_pos_x,0,1,1,2)
+        layout.addWidget(self.pos_x,0,2,1,2)
+        layout.addWidget(self.Label_pos_y,1,1,1,2)
+        layout.addWidget(self.pos_y,1,2,1,2)
+        layout.addWidget(self.Label_pos_z,2,1,1,2)
+        layout.addWidget(self.pos_z,2,2,1,2)
+
+    def accept(self):
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+
+        comp_optic.lcpb1m_base(d_lcpb1m_base = kcomp_optic.LCPB1M_BASE,
+                                fc_axis_d = VX,
+                                fc_axis_w = V0,
+                                fc_axis_h = VZ,
+                                ref_d = 1, ref_w = 1, ref_h = 1,
+                                pos = pos, wfco = 1, toprint= 0, name = 'Lcpb1mBase')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                            Cage Cube                            |
+# |_________________________________________________________________|
+
+class _CageCube_Cmd:
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_CageCube = CageCube_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_CageCube) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'CageCube',
+            'CageCube')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/CageCube_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class CageCube_TaskPanel:
+    def __init__(self,widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: Type ----
+        self.Label_Type = QtGui.QLabel("Type ")
+        self.Type = QtGui.QComboBox()
+        self.Type.addItems(["CAGE_CUBE_60","CAGE_CUBE_HALF_60"])
+        self.Type.setCurrentIndex(0)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_Type,0,0,1,1)
+        layout.addWidget(self.Type,0,1,1,1)
+        
+    def accept(self):
+
+        if self.Type.currentIndex() == 0:
+            comp_optic.f_cagecube(kcomp_optic.CAGE_CUBE_60,
+                                   axis_thru_rods = 'x',
+                                   axis_thru_hole = 'y',
+                                   name = 'cagecube',
+                                   toprint_tol = 0)
+        if self.Type.currentIndex() == 1:
+            comp_optic.f_cagecubehalf(kcomp_optic.CAGE_CUBE_HALF_60,
+                                       axis_1 = 'x',
+                                       axis_2 = 'y',
+                                       name = 'cagecubehalf')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                              Plate                              |
+# |_________________________________________________________________|
+
+class _Plate_Cmd:
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_Plate = Plate_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_Plate) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'Plate',
+            'Plate')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/Plate_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class Plate_TaskPanel:
+    def __init__(self,widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: plate ----
+        self.Label_plate = QtGui.QLabel('Dictionary:')
+        self.Plate = QtGui.QComboBox()
+        self.Plate.addItems(["Lb1cm_Plate","Lb2c_Plate","Lcp01m_plate"])
+        self.Plate.setCurrentIndex(0)
+
+        # ---- row 1: placement ----
+        self.Label_position = QtGui.QLabel("Placement ")
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_plate,0,0,1,1)
+        layout.addWidget(self.Plate,0,1,1,1)
+        layout.addWidget(self.Label_position,1,0,1,2)
+        layout.addWidget(self.Label_pos_x,1,1,1,2)
+        layout.addWidget(self.pos_x,1,2,1,2)
+        layout.addWidget(self.Label_pos_y,2,1,1,2)
+        layout.addWidget(self.pos_y,2,2,1,2)
+        layout.addWidget(self.Label_pos_z,3,1,1,2)
+        layout.addWidget(self.pos_z,3,2,1,2)
+
+    def accept(self):
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        
+        if self.Plate.currentIndex() == 0:
+            comp_optic.Lb1cPlate(kcomp_optic.LB1CM_PLATE,
+                                  fc_axis_h = VZ,
+                                  fc_axis_l = VX,
+                                  ref_in = 1,
+                                  pos = pos,
+                                  name = 'lb1c_plate')
+
+        if self.Plate.currentIndex() == 1:
+            comp_optic.Lb2cPlate(fc_axis_h = VZ,
+                                  fc_axis_l = VX,
+                                  cl=1, cw=1, ch=0,
+                                  pos = pos,
+                                  name = 'lb2c_plate')
+
+        if self.Plate.currentIndex() == 2:
+            comp_optic.lcp01m_plate(d_lcp01m_plate = kcomp_optic.LCP01M_PLATE,
+                                     fc_axis_h = VZ,
+                                     fc_axis_m = VX,
+                                     fc_axis_p = V0,
+                                     cm=1, cp=1, ch=1,
+                                     pos = pos,
+                                     wfco= 1,
+                                     name = 'LCP01M_PLATE')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                             ThLed30                             |
+# |_________________________________________________________________|
+
+class _ThLed30_Cmd:
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_ThLed30 = ThLed30_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_ThLed30) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'ThLed30',
+            'ThLed30')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/ThLed30_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class ThLed30_TaskPanel:
+    def __init__(self,widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: placement ----
+        self.Label_position = QtGui.QLabel("Placement ")
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_position,0,0,1,2)
+        layout.addWidget(self.Label_pos_x,0,1,1,2)
+        layout.addWidget(self.pos_x,0,2,1,2)
+        layout.addWidget(self.Label_pos_y,1,1,1,2)
+        layout.addWidget(self.pos_y,1,2,1,2)
+        layout.addWidget(self.Label_pos_z,2,1,1,2)
+        layout.addWidget(self.pos_z,2,2,1,2)
+
+    def accept(self):
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        
+        comp_optic.ThLed30(fc_axis = VY,
+                            fc_axis_cable = VZN,
+                            pos = pos,
+                            name = 'thled30')
+
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                             PrizLed                             |
+# |_________________________________________________________________|
+
+class _PrizLed_Cmd:
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_PrizLed = PrizLed_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_PrizLed) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'PrizLed',
+            'PrizLed')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/PrizLed_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class PrizLed_TaskPanel:
+    def __init__(self,widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: placement ----
+        self.Label_position = QtGui.QLabel("Placement ")
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_position,0,0,1,2)
+        layout.addWidget(self.Label_pos_x,0,1,1,2)
+        layout.addWidget(self.pos_x,0,2,1,2)
+        layout.addWidget(self.Label_pos_y,1,1,1,2)
+        layout.addWidget(self.pos_y,1,2,1,2)
+        layout.addWidget(self.Label_pos_z,2,1,1,2)
+        layout.addWidget(self.pos_z,2,2,1,2)
+
+    def accept(self):
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        
+        comp_optic.PrizLed(fc_axis_led = VX, 
+                            fc_axis_clear = VZN,
+                            pos = pos, 
+                            name = 'prizmatix_led')
+        
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                            BreadBoard                           |
+# |_________________________________________________________________|
+
+class _BreadBoard_Cmd:
+    def Activated(self):
+        baseWidget = QtGui.QWidget()
+        panel_BreadBoard = BreadBoard_TaskPanel(baseWidget)
+        FreeCADGui.Control.showDialog(panel_BreadBoard) 
+
+    def GetResources(self):
+        MenuText = QtCore.QT_TRANSLATE_NOOP(
+            'BreadBoard',
+            'BreadBoard')
+        ToolTip = QtCore.QT_TRANSLATE_NOOP(
+            '',
+            '')
+        return {
+            'Pixmap': __dir__ + '/icons/BreadBoard_cmd.svg',
+            'MenuText': MenuText,
+            'ToolTip': ToolTip}
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None 
+
+class BreadBoard_TaskPanel:
+    def __init__(self,widget):
+        self.form = widget
+        layout = QtGui.QGridLayout(self.form)
+
+        # ---- row 0: lenght ----
+        self.Label_len = QtGui.QLabel("Lenght:")
+        self.len = QtGui.QDoubleSpinBox()
+        self.len.setMinimum(1)
+        self.len.setValue(200)
+        self.len.setMaximum(9999)
+
+        # ---- row 1: width ----
+        self.Label_wid = QtGui.QLabel("Width:")
+        self.wid = QtGui.QDoubleSpinBox()
+        self.wid.setMinimum(1)
+        self.wid.setValue(500)
+        self.wid.setMaximum(9999)
+
+        # ---- row 2: placement ----
+        self.Label_position = QtGui.QLabel("Placement ")
+        self.Label_pos_x = QtGui.QLabel("x:")
+        self.Label_pos_y = QtGui.QLabel("y:")
+        self.Label_pos_z = QtGui.QLabel("z:")
+        self.pos_x = QtGui.QDoubleSpinBox()
+        self.pos_y = QtGui.QDoubleSpinBox()
+        self.pos_z = QtGui.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Label_len,0,0,1,2)
+        layout.addWidget(self.len,0,1,1,2)
+        layout.addWidget(self.Label_wid,1,0,1,2)
+        layout.addWidget(self.wid,1,1,1,2)
+        layout.addWidget(self.Label_position,2,0,1,2)
+        layout.addWidget(self.Label_pos_x,2,1,1,2)
+        layout.addWidget(self.pos_x,2,2,1,2)
+        layout.addWidget(self.Label_pos_y,3,1,1,2)
+        layout.addWidget(self.pos_y,3,2,1,2)
+        layout.addWidget(self.Label_pos_z,4,1,1,2)
+        layout.addWidget(self.pos_z,4,2,1,2)
+
+    def accept(self):
+        length = self.len.value()
+        width = self.wid.value()
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        
+        comp_optic.f_breadboard(kcomp_optic.BREAD_BOARD_M,
+                                 length,
+                                 width,
+                                 cl = 1,
+                                 cw = 1,
+                                 ch = 1,
+                                 fc_dir_h = VZ,
+                                 fc_dir_w = VY,
+                                 pos = pos,
+                                 name = 'breadboard')
+        
+        FreeCADGui.activeDocument().activeView().viewAxonometric()
+        FreeCADGui.Control.closeDialog() #close the dialog
+        FreeCADGui.SendMsgToActiveView("ViewFit")
+
 ###############################################################################
 #*************************************TEST*************************************
 class _testCmD:
@@ -2128,7 +2880,6 @@ class test_TaskPanel:
     
     def accept(self):
 
-        #NuevaClase.placa(L_d = 10, L_w = 10, L_h = 3, axis_d = VX, axis_h = VZ, axis_w = VY, name = 'placa base')
 
         NuevaClase.placa_perforada( 10, 10, 5, 2, name = 'placa perforada')
 
@@ -2138,8 +2889,11 @@ class test_TaskPanel:
         FreeCADGui.Control.closeDialog() #close the dialog
         FreeCADGui.SendMsgToActiveView("ViewFit")
 
-###############################################################################
-#******************************PRINT**AND**EXPORT******************************
+#  _________________________________________________________________
+# |                                                                 |
+# |                        Print and export                         |
+# |_________________________________________________________________|
+
 class _ChangePosExportCmd:
     def Activated(self):
         objSelect = FreeCADGui.Selection.getSelection()[0]#.Name
@@ -2159,8 +2913,11 @@ class _ChangePosExportCmd:
     def IsActive(self):
         return not FreeCAD.ActiveDocument is None 
 
-###############################################################################
-#***********************************ASSEMBLY***********************************
+#  _________________________________________________________________
+# |                                                                 |
+# |                             Assembly                            |
+# |_________________________________________________________________|
+
 class _AssemlyCmd:
     """
     This utility change the position of the component that has been selected and set up in the second component you have selected.
@@ -2202,70 +2959,50 @@ class Assembly_TaskPanel:
         layout = QtGui.QGridLayout(self.form)
 
         # ---- row 0: Text ----
-        #Label:
         self.Text_1_Label = QtGui.QLabel("Select object to move")  
-        # Combo Box that have multiple choice
         self.ComboBox_ObjSelection1 = QtGui.QComboBox()
         self.TextObj = []
         for i in range (len (FreeCAD.ActiveDocument.Objects)):
             self.TextObj.append(FreeCAD.ActiveDocument.Objects[i].Name)
         self.ComboBox_ObjSelection1.addItems(self.TextObj)
-        # Indicate inicial value in ComboBox
         self.ComboBox_ObjSelection1.setCurrentIndex(0)
 
-        # row 0, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Text_1_Label,0,0,1,1)
-        layout.addWidget(self.ComboBox_ObjSelection1,0,1,1,1)
 
         # ---- row 1: Sel obj1 ----
-        #Label:
         self.Text_Selection1 = QtGui.QLabel("Select")
-        # Combo Box that have multiple choice
         self.ComboBox_Selection1 = QtGui.QComboBox()
         self.TextSelection1 = ["Vertexes","Edges","Faces"]
         self.ComboBox_Selection1.addItems(self.TextSelection1)
-        # Indicate inicial value in ComboBox
         self.ComboBox_Selection1.setCurrentIndex(0)
 
-
-        # row 1, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Text_Selection1,1,0,1,1)
-        layout.addWidget(self.ComboBox_Selection1,1,1,1,1)
-
         # ---- row 2: Text ----
-        #Label:
         self.Text_2_Label = QtGui.QLabel("After select the place")  
-        # Combo Box that have multiple choice
         self.ComboBox_ObjSelection2 = QtGui.QComboBox()
         self.TextObj = []
         for i in range (len (FreeCAD.ActiveDocument.Objects)):
             self.TextObj.append(FreeCAD.ActiveDocument.Objects[i].Name)
         self.ComboBox_ObjSelection2.addItems(self.TextObj)
-        # Indicate inicial value in ComboBox
         self.ComboBox_ObjSelection2.setCurrentIndex(0)
 
-        # row 2, column 0, rowspan 1, colspan 1
-        layout.addWidget(self.Text_2_Label,2,0,1,1)
-        layout.addWidget(self.ComboBox_ObjSelection2,2,1,1,1)
-
         # ---- row 3: Sel obj2 ----
-        #Label:
         self.Text_Selection2 = QtGui.QLabel("Select")
-        # Combo Box that have multiple choice
         self.ComboBox_Selection2 = QtGui.QComboBox()
         self.TextSelection1 = ["Vertexes","Edges","Faces"]
         self.ComboBox_Selection2.addItems(self.TextSelection1)
-        # Indicate inicial value in ComboBox
         self.ComboBox_Selection2.setCurrentIndex(0)
 
-        # row 3, column 0, rowspan 1, colspan 1
+        # ---- row 4: Note ----
+        self.Text_Note = QtGui.QLabel("With Vertexes don't work properly")
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Text_1_Label,0,0,1,1)
+        layout.addWidget(self.ComboBox_ObjSelection1,0,1,1,1)
+        layout.addWidget(self.Text_Selection1,1,0,1,1)
+        layout.addWidget(self.ComboBox_Selection1,1,1,1,1)
+        layout.addWidget(self.Text_2_Label,2,0,1,1)
+        layout.addWidget(self.ComboBox_ObjSelection2,2,1,1,1)
         layout.addWidget(self.Text_Selection2,3,0,1,1)
         layout.addWidget(self.ComboBox_Selection2,3,1,1,1)
-
-        # ---- row 4: Note ----
-        # Label:
-        self.Text_Note = QtGui.QLabel("With Vertexes don't work properly")
-        # row 4, column 0, rowspan 1, colspan 1
         layout.addWidget(self.Text_Note,4,0,1,1)
 
     def accept(self):
@@ -2316,19 +3053,35 @@ class Assembly_TaskPanel:
                 color = (0.8, 0.8, 0.8)
             doc.getObject(self.ObjSelection2.Name).ShapeColor = color
 
-###############################################################################
-#***********************************COMMANDS***********************************
-FreeCADGui.addCommand('Sk',_Sk_Dir_Cmd())
-FreeCADGui.addCommand('Idle_Pulley_Holder',_IdlePulleyHolder_Cmd())
-FreeCADGui.addCommand('Aluprof_Bracket',_AluprofBracket_Cmd())
+#  _________________________________________________________________
+# |                                                                 |
+# |                             Commands                            |
+# |_________________________________________________________________|
+
+FreeCADGui.addCommand('Sk',_SkDirCmd())
+FreeCADGui.addCommand('Idle_Pulley_Holder',_IdlePulleyHolderCmd())
+FreeCADGui.addCommand('Aluprof_Bracket',_AluprofBracketCmd())
 FreeCADGui.addCommand('Motor_Holder',_MotorHolderCmd())
-FreeCADGui.addCommand('Simple_End_Stop_Holder',_SimpleEndStopHolder_Cmd())
-FreeCADGui.addCommand('LinBearHouse',_LinBearHouse_Cmd())
+FreeCADGui.addCommand('Motor',_NemaMotorCmd())
+FreeCADGui.addCommand('Simple_End_Stop_Holder',_SimpleEndStopHolderCmd())
+FreeCADGui.addCommand('LinBearHouse',_LinBearHouseCmd())
 FreeCADGui.addCommand('Stop_Holder',_stop_holderCmd())
 FreeCADGui.addCommand('Sensor_Holder',_SensorHolderCmd())
 FreeCADGui.addCommand('Belt_Clamp',_BeltClampCmd())
-FreeCADGui.addCommand('Aluproft',_Aluproft_Cmd()) 
-FreeCADGui.addCommand('Bolts, Nuts & Washers',_Bolt_Cmd())  
+FreeCADGui.addCommand('Belt_Clamped',_BeltClampedCmd())
+FreeCADGui.addCommand('Aluproft',_AluproftCmd()) 
+FreeCADGui.addCommand('Bolts, Nuts & Washers',_BoltCmd())  
+FreeCADGui.addCommand('Linear_Guide_Block',_LinGuideBlockCmd())
+
+## Opctic
+FreeCADGui.addCommand('TubeLense',_TubeLense_Cmd())
+FreeCADGui.addCommand('LCB1M_Base',_Lcpb1mBase_Cmd())
+FreeCADGui.addCommand('CageCube',_CageCube_Cmd())
+FreeCADGui.addCommand('Plate',_Plate_Cmd())
+FreeCADGui.addCommand('BreadBoard',_BreadBoard_Cmd())
+FreeCADGui.addCommand('PrizLed',_PrizLed_Cmd())
+FreeCADGui.addCommand('ThLed30',_ThLed30_Cmd())
+
 
 ## Filter Stage
 FreeCADGui.addCommand('Filter_Stage', _FilterStageCmd())

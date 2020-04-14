@@ -59,33 +59,91 @@ class MechatronicWorkbench (Workbench):
     def Initialize(self):
         from PySide import QtCore, QtGui
         import MechatronicGui
-        #list of commands:
+        
+        # +-------------------------------+
+        # |                               |
+        # |   List of mechanical models   |
+        # |                               |
+        # +-------------------------------+
+
         partsList = ["Sk",
                      "Idle_Pulley_Holder",
                      "Aluprof_Bracket",
                      "Motor_Holder",
+                     "Motor",
                      "Simple_End_Stop_Holder",
                      "LinBearHouse",
                      "Stop_Holder",
                      "Filter_Holder",
                      "Tensioner",
                      "Belt_Clamp",
+                    #  "Belt_Clamped", # Not working properly
                      "Sensor_Holder",
                      "Aluproft",
+                     "Linear_Guide_Block",
                      "Bolts, Nuts & Washers"]
+
+        # +-------------------------------+
+        # |                               |
+        # |   List of optic models        |
+        # |                               |
+        # +-------------------------------+    
+
+        opticList = ["TubeLense",
+                     "LCB1M_Base",
+                     "Plate",
+                     "CageCube",
+                     "ThLed30",
+                     "PrizLed",
+                     "BreadBoard"]
+
+        # +-------------------------------+
+        # |                               |
+        # |   List of systems             |
+        # |                               |
+        # +-------------------------------+
+
         sysList = ["Filter_Stage"]
+
+        # +-------------------------------+
+        # |                               |
+        # |   List of functions           |
+        # |                               |
+        # +-------------------------------+
+
         modList = ["ChangePosExport",
                    "Assembly"]
+
+        # +-------------------------------+
+        # |                               |
+        # |   Add ToolBars                |
+        # |                               |
+        # +-------------------------------+
+
         self.appendToolbar(
             str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Parts")), partsList)
         self.appendToolbar(
-            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Mechatronic systems")), sysList)
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Systems")), sysList)
         self.appendToolbar(
-            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Modification")), modList)
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Functions")), modList)
+        self.appendToolbar(
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Optic")), opticList)
+
+        # +-------------------------------+
+        # |                               |
+        # |   Add Menus                   |
+        # |                               |
+        # +-------------------------------+
+
+
         self.appendMenu(
-            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Machatronic Parts")), partsList)
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Parts")), partsList)
         self.appendMenu(
-            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Machatronic Functions")), modList)
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Systems")), sysList)
+        self.appendMenu(
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Functions")), modList)
+        self.appendMenu(
+            str(QtCore.QT_TRANSLATE_NOOP("Mechatronic", "Optic")), opticList)
         
         Log ('Loalding Mechatronic Workbench... done! \n')
     

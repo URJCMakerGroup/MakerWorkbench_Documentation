@@ -4332,52 +4332,56 @@ class ShpLinGuideBlock (shp_clss.Obj3D):
 
 
 class PartLinGuideBlock (fc_clss.SinglePart, ShpLinGuideBlock):
-    """ Integration of a ShpLinGuideBlock object into a PartLinGuideBlock
-     object, so it is a FreeCAD object that can be visualized in FreeCAD
+    """ 
+    Integration of a ShpLinGuideBlock object into a PartLinGuideBlock
+    object, so it is a FreeCAD object that can be visualized in FreeCAD
     Instead of using all the arguments of ShpLinGuideBlock, it will use
     a dictionary
 
-    Parameters:
-    -----------
-    block_dict : dictionary
+    Parameters
+    ----------
+    block_dict: dictionary
         Dictionary with the information about the block
-    rail_dict : dictionary
+    rail_dict: dictionary
         Dictionary with the information about the rail,
         it is not necessary, but if not provided, the block will not have
         the rail hole
-    axis_d : FreeCAD.Vector
+    axis_d: FreeCAD.Vector
         The axis along the depth (lenght) of the block (and rail) 
-    axis_w : FreeCAD.Vector
+    axis_w: FreeCAD.Vector
         The axis along the width of the block
-    axis_h : FreeCAD.Vector
+    axis_h: FreeCAD.Vector
         The axis along the height of the block, pointing up
-    pos_d : int
+    pos_d: int
         Location of pos along axis_d (see drawing). Symmetric, negative indexes
         means the other side
-        0: at the center (symmetric)
-        1: at the bolt hole
-        2: at the end of the smaller part of the block
-        3: at the end of the end of the block
 
-    pos_w : int
+            * 0: at the center (symmetric)
+            * 1: at the bolt hole
+            * 2: at the end of the smaller part of the block
+            * 3: at the end of the end of the block
+
+    pos_w: int
         Location of pos along axis_w (see drawing). Symmetric, negative indexes
         means the other side
-        0: at the center of symmetry
-        1: at the inner hole of the rail
-        2: at the bolt holes (it can be after the smaller part of the block)
-        3: at the end of the smaller part of the block
-        4: at the end of the end of the block
+        
+            * 0: at the center of symmetry
+            * 1: at the inner hole of the rail
+            * 2: at the bolt holes (it can be after the smaller part of the block)
+            * 3: at the end of the smaller part of the block
+            * 4: at the end of the end of the block
 
-    pos_h : int
+    pos_h: int
         Location of pos along axis_h (see drawing)
-        0: at the bottom (could make more sense to have 0 at the top instead
-        1: at the top of the rail hole
-        2: at the bottom of the bolt holes, if thruholes, same as 0
-        3: at the top end
-        4: at the bottom of the rail (not the block), if the rail has been
-           defined
+        
+            * 0: at the bottom (could make more sense to have 0 at the top instead
+            * 1: at the top of the rail hole
+            * 2: at the bottom of the bolt holes, if thruholes, same as 0
+            * 3: at the top end
+            * 4: at the bottom of the rail (not the block), if the rail has been
+              defined
 
-    pos : FreeCAD.Vector
+    pos: FreeCAD.Vector
         Position at the point defined by pos_d, pos_w, pos_h
 
     """
@@ -4484,7 +4488,7 @@ class ShpGtPulley (shp_clss.Obj3D):
 
     Parameters:
     -----------
-    pitch : float/int
+    pitch: float/int
         Distance between teeth: Typically 2mm, or 3mm
     n_teeth: int
         Number of teeth of the pulley
@@ -4505,36 +4509,39 @@ class ShpGtPulley (shp_clss.Obj3D):
     tol: float
         Tolerance for radius (it will substracted to the radius)
         twice for the diameter. Or added if a shape to substract
-    axis_h : FreeCAD.Vector
+    axis_h: FreeCAD.Vector
         Height vector of coordinate system (this is required)
-    axis_d : FreeCAD.Vector
+    axis_d: FreeCAD.Vector
         Depth vector of coordinate system (perpendicular to the height)
         can be NULL
-    axis_w : FreeCAD.Vector
+    axis_w: FreeCAD.Vector
         Width vector of coordinate system
         if V0: it will be calculated using the cross product: axis_h x axis_d
-    pos_h : int
+    pos_h: int
         Location of pos along the axis_h (0,1,2,3,4,5)
-        * 0: at the base
-        * 1: at the base of the bottom flange
-        * 2: at the base of the toothed part
-        * 3: at the center of the toothed part
-        * 4: at the end (top) of the toothed part
-        * 5: at the end (top) of the pulley
-    pos_d : int
+
+            * 0: at the base
+            * 1: at the base of the bottom flange
+            * 2: at the base of the toothed part
+            * 3: at the center of the toothed part
+            * 4: at the end (top) of the toothed part
+            * 5: at the end (top) of the pulley
+
+    pos_d: int
         Location of pos along the axis_d (0,1,2,3,4,5,6)
-        * 0: at the center of symmetry
-        * 1: at the shaft radius
-        * 2: at the inner radius
-        * 3: at the external radius
-        * 4: at the pitch radius (outside the toothed part)
-        * 5: at the end of the base (not the toothed part)
-        * 6: at the end of the flange (V0 is no flange)
+
+            * 0: at the center of symmetry
+            * 1: at the shaft radius
+            * 2: at the inner radius
+            * 3: at the external radius
+            * 4: at the pitch radius (outside the toothed part)
+            * 5: at the end of the base (not the toothed part)
+            * 6: at the end of the flange (V0 is no flange)
         
-    pos_w : int
+    pos_w: int
         Location of pos along the axis_w (0,1,2,3,4,5,6)
         same as pos_d
-    pos : FreeCAD.Vector
+    pos: FreeCAD.Vector
         Position of the piece
 
 
