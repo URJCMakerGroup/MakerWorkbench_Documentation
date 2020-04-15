@@ -179,7 +179,7 @@ Motor
         :height: 148px
         :alt: Nema 17, 32mm hight
 
-    ..image:: ../parts/img/nema17_20.png
+    .. image:: ../parts/img/nema17_20.png
         :height: 148px
         :alt: Nema 17, 20mm hight
 
@@ -307,7 +307,7 @@ Linear Guide
 
     .. image:: ../parts/img/linear_guide_SEBWM16.png
         :height: 148px
-        :alt:Linear Guide SEBW16
+        :alt: Linear Guide SEBW16
 
 .. toggle-header::
     :header: Details
@@ -374,7 +374,7 @@ LCPB1M Base
 
     * Placement
 
-    .. image:: ../part/img/Lcpb1mBase.png
+    .. image:: ../parts/img/Lcpb1mBase.png
         :height: 148 px
         :alt: Lcpb1mBase
 
@@ -388,16 +388,16 @@ LCPB1M Base
 CageCube
 ^^^^^^^^
     
-    *Type:
+    * Type:
 
         * CageCube
         * CageCubeHalf
 
-    .. image:: ../part/img/CageBube.png
+    .. image:: ../parts/img/CageCube.png
         :height: 148 px
         :alt: CageCube
 
-    .. image:: ../part/img/CageBubeHalf.png
+    .. image:: ../parts/img/CageCubeHalf.png
         :height: 148 px
         :alt: CageCubeHalf
 
@@ -420,15 +420,15 @@ Plate
     
     * Placement
     
-    .. image:: ../part/img/Lb1cm_Plate.png
+    .. image:: ../parts/img/Lb1cm_Plate.png
         :height: 148 px
         :alt: Lb1cm_Plate
     
-    .. image:: ../part/img/Lb2c_Plate.png
+    .. image:: ../parts/img/Lb2c_Plate.png
         :height: 148 px
         :alt: Lb2c_Plate
 
-    .. image:: ../part/img/Lcp01m_plate.png
+    .. image:: ../parts/img/Lcp01m_plate.png
         :height: 148 px
         :alt: Lcp01m_plate
 
@@ -446,7 +446,7 @@ ThLed30
 
     * Placement
 
-    .. image:: ../part/img/ThLed30.png
+    .. image:: ../parts/img/ThLed30.png
         :height: 148 px
         :alt: ThLed30
 
@@ -462,7 +462,7 @@ PrizLed
 
     * Placement
 
-    .. image:: ../part/img/PrizMatrix_Led.png
+    .. image:: ../parts/img/PrizMatrix_Led.png
         :height: 148 px
         :alt: PrizLed
 
@@ -480,7 +480,7 @@ BreadBoard
     * Width
     * Placement
 
-    .. image:: ../part/img/BreadBoard.png
+    .. image:: ../parts/img/BreadBoard.png
         :height: 148 px
         :alt: BreadBoard 99x99mm
 
@@ -495,7 +495,7 @@ Systems library
 ===============
 
 Filter Stage
-^^^^^^^^^^^^
+------------
 
     * Move distance
     * Filter length
@@ -519,7 +519,7 @@ Functions Library
 =================
 
 fcfun
-^^^^^
+-----
 
 .. currentmodule:: fcfun
 .. autosummary::
@@ -727,7 +727,7 @@ Functions details
 =================
 
 fcfun
-^^^^^
+-----
 
 .. automodule:: fcfun
     :members:

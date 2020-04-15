@@ -925,7 +925,7 @@ def plate_thruhole_hole8 (side_l,
          |______________________|
 
 
-    Parametes:
+    Parameters
     ----------
     side_l: float
         Length of the plate (two sides)
@@ -1100,7 +1100,8 @@ def plate_lb2c (
  
 
 class Lb2cPlate (object):
-    """Same as plate_lb2c, but it creates an object.
+    """
+    Same as plate_lb2c, but it creates an object. 
 
     Parameters
     ----------
@@ -1123,6 +1124,7 @@ class Lb2cPlate (object):
         Position of the center. The center is on the 
         center of the plate, but on the axis_h can be in either side
         depending on ref_in
+
     name: str
         Name 
     

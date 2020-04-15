@@ -819,12 +819,12 @@ class NemaMotorPulleySet (fc_clss.PartsSet):
      pos_o (origin) is at pos_d=0, pos_w=0, pos_h=1
 
     Parameters
-    -----------
+    ----------
     nema_size: dict
         List of sizes defines in kcomps NEMA motor dimensions.
     base_l: float,
         Length (height) of the base
-    shaft_l = float,
+    shaft_l: float,
         Length (height) of the shaft, including the small cylinder (circle)
         at the base
     shaft_r: float,
@@ -877,6 +877,7 @@ class NemaMotorPulleySet (fc_clss.PartsSet):
 
     pos_d: int
         location of pos along the axis_d  see drawing
+
             * Locations coinciding with the motor
             
                 * 0: at the axis of the shaft
@@ -895,6 +896,7 @@ class NemaMotorPulleySet (fc_clss.PartsSet):
 
     pos_w: int
         location of pos along the axis_w see drawing
+
             * Same locations of pos_d
     
     pos_h: int

@@ -1130,8 +1130,8 @@ def shp_box_rot (box_w, box_d, box_h,
 
 def shp_box_dir (box_w, box_d, box_h,
                     fc_axis_w = V0,
-                    fc_axis_d = VY,
-                    fc_axis_h =VZ,
+                    fc_axis_h = VZ,
+                    fc_axis_d =VY,
                     cw=1, cd=1, ch=1,
                     pos=V0):
 
