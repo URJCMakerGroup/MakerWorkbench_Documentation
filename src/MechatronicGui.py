@@ -25,15 +25,15 @@
 #*                                                                         *
 #***************************************************************************/
 
-import PySide
-from PySide import QtCore, QtGui
+import PySide2
+from PySide2 import QtCore, QtGui, QtWidgets
 import os
 import FreeCAD
 import FreeCADGui
 import logging
 
 import comps, comp_optic
-from fcfun import V0, VX, VY, VZ, VZN
+from fcfun import V0, VX, VY, VZ, VZN, fc_isperp
 import parts
 import kcomp, kcomp_optic
 import partset
@@ -50,6 +50,8 @@ import grafic
 
 import NuevaClase
 
+import tensioner_clss_new
+
 __dir__ = os.path.dirname(__file__)
 
 logging.basicConfig(level=logging.DEBUG)
@@ -62,7 +64,7 @@ logger = logging.getLogger(__name__)
 
 class _SkDirCmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel = Sk_Dir_TaskPanel(baseWidget)
 
         FreeCADGui.Control.showDialog(panel)
@@ -85,29 +87,140 @@ class _SkDirCmd:
 class Sk_Dir_TaskPanel:
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Size ----
-        self.Size_Label = QtGui.QLabel("Size:")
-        self.Size_ComboBox = QtGui.QComboBox()
+        self.Size_Label = QtWidgets.QLabel("Size:")
+        self.Size_ComboBox = QtWidgets.QComboBox()
         self.Size_text = ["6","8","10","12"]
         self.Size_ComboBox.addItems(self.Size_text)
         self.Size_ComboBox.setCurrentIndex(0)
         
         # ---- row 1: Pillow ----
-        self.Pillow_Label = QtGui.QLabel("Pillow:")
-        self.Pillow_Label2 = QtGui.QLabel("(only for size 8)")
-        self.Pillow_ComboBox = QtGui.QComboBox()
+        self.Pillow_Label = QtWidgets.QLabel("Pillow:")
+        self.Pillow_Label2 = QtWidgets.QLabel("(only for size 8)")
+        self.Pillow_ComboBox = QtWidgets.QComboBox()
         self.V_Pillow = ["No","Yes"]
         self.Pillow_ComboBox.addItems(self.V_Pillow)
         self.Pillow_ComboBox.setCurrentIndex(self.V_Pillow.index('No'))
+
+        # ---- row 2: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # d :
+        self.Label_pos_d = QtWidgets.QLabel("in d:")
+        self.pos_d = QtWidgets.QComboBox()
+        self.pos_d.addItems(['0','1'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtWidgets.QLabel("in w:")
+        self.pos_w = QtWidgets.QComboBox()
+        self.pos_w.addItems(['-1','0','1'])
+        self.pos_w.setCurrentIndex(1)
+
+        # h :
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
+        self.pos_h.addItems(['0','1'])
+        self.pos_h.setCurrentIndex(0)
+
+        # ---- row 9: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(0)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(1)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(1)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(0)
+
+
+        # ---- row 12: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/SK_dir.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+        # url = QtCore.QUrl('https://github/davidmubernal/Mechatronic/blob/master/parts/img/Belt_clamp_double.png')
+        # image.setPixmap(PySide2.QtGui.QPixmap('img_gui/SK_dir.png'))
         
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Size_Label,0,0,1,1)
-        layout.addWidget(self.Size_ComboBox,0,1,1,1)
-        layout.addWidget(self.Pillow_Label,1,0,1,1)
-        layout.addWidget(self.Pillow_Label2,2,0,1,1)
-        layout.addWidget(self.Pillow_ComboBox,1,1,1,1)
+        layout.addWidget(self.Size_Label,0,0,1,2)
+        layout.addWidget(self.Size_ComboBox,0,1,1,2)
+
+        layout.addWidget(self.Pillow_Label,1,0,1,2)
+        layout.addWidget(self.Pillow_ComboBox,1,1,1,2)
+        layout.addWidget(self.Pillow_Label2,2,0,1,2)
+
+        layout.addWidget(self.Label_position,3,0,1,2)
+        layout.addWidget(self.Label_pos_x,3,1,1,2)
+        layout.addWidget(self.pos_x,3,2,1,2)
+        layout.addWidget(self.Label_pos_y,4,1,1,2)
+        layout.addWidget(self.pos_y,4,2,1,2)
+        layout.addWidget(self.Label_pos_z,5,1,1,2)
+        layout.addWidget(self.pos_z,5,2,1,2)
+
+        layout.addWidget(self.Label_pos_d,6,1,1,2)
+        layout.addWidget(self.pos_d,6,2,1,2)
+        layout.addWidget(self.Label_pos_w,7,1,1,2)
+        layout.addWidget(self.pos_w,7,2,1,2)
+        layout.addWidget(self.Label_pos_h,8,1,1,2)
+        layout.addWidget(self.pos_h,8,2,1,2)
+
+        layout.addWidget(self.Label_axis,9,0,1,4)
+        layout.addWidget(self.Label_axis_d,9,1,1,4)
+        layout.addWidget(self.axis_d_x,9,2,1,4)
+        layout.addWidget(self.axis_d_y,9,3,1,4)
+        layout.addWidget(self.axis_d_z,9,4,1,4)
+        layout.addWidget(self.Label_axis_w,10,1,1,4)
+        layout.addWidget(self.axis_w_x,10,2,1,4)
+        layout.addWidget(self.axis_w_y,10,3,1,4)
+        layout.addWidget(self.axis_w_z,10,4,1,4)
+        layout.addWidget(self.Label_axis_h,11,1,1,4)
+        layout.addWidget(self.axis_h_x,11,2,1,4)
+        layout.addWidget(self.axis_h_y,11,3,1,4)
+        layout.addWidget(self.axis_h_z,11,4,1,4)
+
+        layout.addWidget(image,12,0,1,0)
     
     def accept(self):
         Size_Value = {0:6, 1:8, 2:10, 3:12}
@@ -116,32 +229,45 @@ class Sk_Dir_TaskPanel:
         Size = Size_Value[self.Size_ComboBox.currentIndex()]
         Pillow = Values_Pillow[self.Pillow_ComboBox.currentIndex()]
         Tol = TOL_Value[self.Pillow_ComboBox.currentIndex()]
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        positions_d = [0,1]
+        positions_w = [-1,0,1]
+        positions_h = [0,1]
+        pos_d = positions_d[self.pos_d.currentIndex()]
+        pos_w = positions_w[self.pos_w.currentIndex()]
+        pos_h = positions_h[self.pos_h.currentIndex()]
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
         
-        if Pillow == 0 or (Pillow == 1 and Size == 8): # Pillow only exist for size 8.
-            comps.Sk_dir(size = Size,
-                    fc_axis_h = VX,
-                    fc_axis_d = VZ,
-                    fc_axis_w = V0,
-                    ref_hr = 0,
-                    ref_wc = 0,
-                    ref_dc = 0,
-                    pillow = Pillow,
-                    pos = V0,
-                    tol = Tol,#0.7, # for the pillow block
-                    wfco = 1,
-                    name= "shaft" + str(Size) + "_holder")
-            FreeCADGui.activeDocument().activeView().viewAxonometric() #Axonometric view
-            FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
-            FreeCADGui.Control.closeDialog() #close the dialog
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            if Pillow == 0 or (Pillow == 1 and Size == 8): # Pillow only exist for size 8.
+                comps.Sk_dir(size = Size,
+                            fc_axis_h = axis_h,
+                            fc_axis_d = axis_d,
+                            fc_axis_w = axis_w,
+                            ref_hr = pos_h,
+                            ref_wc = pos_w,
+                            ref_dc = pos_d,
+                            pillow = Pillow,
+                            pos = pos,
+                            tol = Tol,#0.7, # for the pillow block
+                            wfco = 1,
+                            name= "shaft" + str(Size) + "_holder")
+                FreeCADGui.activeDocument().activeView().viewAxonometric() #Axonometric view
+                FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
+                FreeCADGui.Control.closeDialog() #close the dialog
 
-        elif Pillow == 1 and Size != 8:
-            message = QtGui.QMessageBox()
-            message.setText("This Size don't have Pillow option")
-            message.setStandardButtons(QtGui.QMessageBox.Ok)
-            message.setDefaultButton(QtGui.QMessageBox.Ok)
-            message.exec_()
+            elif Pillow == 1 and Size != 8:
+                message = QtWidgets.QMessageBox()
+                message.setText("This Size don't have Pillow option")
+                message.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                message.setDefaultButton(QtWidgets.QMessageBox.Ok)
+                message.exec_()
+        # else: axis_message 
+        
 
-    #When you click on the cancel button have a default behaviur.
+    #When you click on the cancel button have a default behavior.
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
 
@@ -152,7 +278,7 @@ class Sk_Dir_TaskPanel:
 
 class _IdlePulleyHolderCmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel = IdlePulleyHolder_TaskPanel(baseWidget)
 
         FreeCADGui.Control.showDialog(panel)
@@ -175,52 +301,76 @@ class _IdlePulleyHolderCmd:
 class IdlePulleyHolder_TaskPanel:
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Aluprof ----
-        self.ALuprof_Label = QtGui.QLabel("Aluminium profile:")
-        self.Aluprof_ComboBox = QtGui.QComboBox()
+        self.ALuprof_Label = QtWidgets.QLabel("Aluminium profile:")
+        self.Aluprof_ComboBox = QtWidgets.QComboBox()
         self.Aluprof_Str = ["20mm","30mm"]
         self.Aluprof_ComboBox.addItems(self.Aluprof_Str)
         self.Aluprof_ComboBox.setCurrentIndex(0)
 
         # ---- row 1: Nut Bolt ----
-        self.NutBolt_Label = QtGui.QLabel("Nut bolt:")
+        self.NutBolt_Label = QtWidgets.QLabel("Nut bolt:")
         self.NutBolt_Str = ["2.5","3","4","5","6"]
-        self.NutBolt_ComboBox = QtGui.QComboBox()
+        self.NutBolt_ComboBox = QtWidgets.QComboBox()
         self.NutBolt_ComboBox.addItems(self.NutBolt_Str)
         self.NutBolt_ComboBox.setCurrentIndex(3)
 
         # ---- row 2: High to profile ----
-        self.HighToProfile_Label = QtGui.QLabel("High to profile:")
-        self.HighToProfile_Value = QtGui.QDoubleSpinBox()
+        self.HighToProfile_Label = QtWidgets.QLabel("High to profile:")
+        self.HighToProfile_Value = QtWidgets.QDoubleSpinBox()
         self.HighToProfile_Value.setValue(40)
         self.HighToProfile_Value.setSuffix(' mm')
 
         # ---- row 3: End Stop Side ----
-        self.EndSide_Label = QtGui.QLabel("End Stop Side:")
-        self.EndSide_ComboBox = QtGui.QComboBox()
+        self.EndSide_Label = QtWidgets.QLabel("End Stop Side:")
+        self.EndSide_ComboBox = QtWidgets.QComboBox()
         self.EndSide_Str = ["1","0","-1"]
         self.EndSide_ComboBox.addItems(self.EndSide_Str)
         self.EndSide_ComboBox.setCurrentIndex(1)
 
         # ---- row 4: End Stop High ----
-        self.EndStopHigh_Label = QtGui.QLabel("End Stop Pos:")
-        self.EndStopHigh_Value = QtGui.QDoubleSpinBox()
+        self.EndStopHigh_Label = QtWidgets.QLabel("End Stop Pos:")
+        self.EndStopHigh_Value = QtWidgets.QDoubleSpinBox()
         self.EndStopHigh_Value.setValue(0)
         self.EndStopHigh_Value.setSuffix(' mm')
 
+        # ---- row 5: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.ALuprof_Label,0,0,1,1)
-        layout.addWidget(self.Aluprof_ComboBox,0,1,1,1)
-        layout.addWidget(self.NutBolt_Label,1,0,1,1)
-        layout.addWidget(self.NutBolt_ComboBox,1,1,1,1)
-        layout.addWidget(self.HighToProfile_Label,2,0,1,1)
-        layout.addWidget(self.HighToProfile_Value,2,1,1,1)
-        layout.addWidget(self.EndSide_Label,3,0,1,1)
-        layout.addWidget(self.EndSide_ComboBox,3,1,1,1)
-        layout.addWidget(self.EndStopHigh_Label,4,0,1,1)
-        layout.addWidget(self.EndStopHigh_Value,4,1,1,1)
+        layout.addWidget(self.ALuprof_Label,0,0,1,2)
+        layout.addWidget(self.Aluprof_ComboBox,0,1,1,2)
+
+        layout.addWidget(self.NutBolt_Label,1,0,1,2)
+        layout.addWidget(self.NutBolt_ComboBox,1,1,1,2)
+
+        layout.addWidget(self.HighToProfile_Label,2,0,1,2)
+        layout.addWidget(self.HighToProfile_Value,2,1,1,2)
+
+        layout.addWidget(self.EndSide_Label,3,0,1,2)
+        layout.addWidget(self.EndSide_ComboBox,3,1,1,2)
+
+        layout.addWidget(self.EndStopHigh_Label,4,0,1,2)
+        layout.addWidget(self.EndStopHigh_Value,4,1,1,2)
+
+        layout.addWidget(self.Label_position,5,0,1,2)
+        layout.addWidget(self.Label_pos_x,5,1,1,2)
+        layout.addWidget(self.pos_x,5,2,1,2)
+        layout.addWidget(self.Label_pos_y,6,1,1,2)
+        layout.addWidget(self.pos_y,6,2,1,2)
+        layout.addWidget(self.Label_pos_z,7,1,1,2)
+        layout.addWidget(self.pos_z,7,2,1,2)
 
     def accept(self):
         self.Aluprof_values = {0: 20, 1:30}
@@ -231,6 +381,7 @@ class IdlePulleyHolder_TaskPanel:
         High = self.HighToProfile_Value.value()
         EndSide = self.EndSide_values[self.EndSide_ComboBox.currentIndex()]
         EndHigh = self.EndStopHigh_Value.value()
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
 
         parts.IdlePulleyHolder( profile_size= Aluprof, #20.,#
                                 pulleybolt_d=3.,
@@ -240,13 +391,14 @@ class IdlePulleyHolder_TaskPanel:
                                 attach_dir = '-y',
                                 endstop_side = EndSide, #0,
                                 endstop_posh = EndHigh, #0,  
+                                pos = pos,
                                 name = "idlepulleyhold")
         
         FreeCADGui.activeDocument().activeView().viewAxonometric() #Axonometric view
         FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
         FreeCADGui.Control.closeDialog() #close the dialog
 
-    #When you click on the cancel button have a default behaviur.
+    #When you click on the cancel button have a default behavior.
 
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
@@ -258,7 +410,7 @@ class IdlePulleyHolder_TaskPanel:
 
 class _SimpleEndStopHolderCmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel = SimpleEndStopHolder_TaskPanel(baseWidget)
 
         FreeCADGui.Control.showDialog(panel)
@@ -280,53 +432,173 @@ class _SimpleEndStopHolderCmd:
 class SimpleEndStopHolder_TaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: 
-        self.Type_Label = QtGui.QLabel("Type:")
-        self.Type_ComboBox = QtGui.QComboBox()
+        self.Type_Label = QtWidgets.QLabel("Type:")
+        self.Type_ComboBox = QtWidgets.QComboBox()
         Type_text = ["A","B","D3V"]
         self.Type_ComboBox.addItems(Type_text)
         self.Type_ComboBox.setCurrentIndex(0)
 
         # ---- row 1: 
-        self.Rail_Label = QtGui.QLabel("Rail Length:")
-        self.Rail_Value = QtGui.QDoubleSpinBox()
+        self.Rail_Label = QtWidgets.QLabel("Rail Length:")
+        self.Rail_Value = QtWidgets.QDoubleSpinBox()
         self.Rail_Value.setValue(15)
         self.Rail_Value.setSuffix(' mm')
 
+        # ---- row 2: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # d :
+        self.Label_pos_d = QtWidgets.QLabel("in d:")
+        self.pos_d = QtWidgets.QComboBox()
+        self.pos_d.addItems(['1','2','3','4','5'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtWidgets.QLabel("in w:")
+        self.pos_w = QtWidgets.QComboBox()
+        self.pos_w.addItems(['1','2','3','4'])
+        self.pos_w.setCurrentIndex(0)
+
+        # h :
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
+        self.pos_h.addItems(['1','2'])
+        self.pos_h.setCurrentIndex(0)
+
+        # ---- row 8: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 11: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/SimpleEndstopHolder.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Type_Label,0,0,1,1)
-        layout.addWidget(self.Type_ComboBox,0,1,1,1)
-        layout.addWidget(self.Rail_Label,1,0,1,1)
-        layout.addWidget(self.Rail_Value,1,1,1,1)
-        
+        layout.addWidget(self.Type_Label,0,0,1,2)
+        layout.addWidget(self.Type_ComboBox,0,1,1,2)
+
+        layout.addWidget(self.Rail_Label,1,0,1,2)
+        layout.addWidget(self.Rail_Value,1,1,1,2)
+
+        layout.addWidget(self.Label_position,2,0,1,2)
+        layout.addWidget(self.Label_pos_x,2,1,1,2)
+        layout.addWidget(self.pos_x,2,2,1,2)
+        layout.addWidget(self.Label_pos_y,3,1,1,2)
+        layout.addWidget(self.pos_y,3,2,1,2)
+        layout.addWidget(self.Label_pos_z,4,1,1,2)
+        layout.addWidget(self.pos_z,4,2,1,2)
+
+        layout.addWidget(self.Label_pos_d,5,1,1,2)
+        layout.addWidget(self.pos_d,5,2,1,2)
+        layout.addWidget(self.Label_pos_w,6,1,1,2)
+        layout.addWidget(self.pos_w,6,2,1,2)
+        layout.addWidget(self.Label_pos_h,7,1,1,2)
+        layout.addWidget(self.pos_h,7,2,1,2)
+
+        layout.addWidget(self.Label_axis,8,0,1,4)
+        layout.addWidget(self.Label_axis_d,8,1,1,4)
+        layout.addWidget(self.axis_d_x,8,2,1,4)
+        layout.addWidget(self.axis_d_y,8,3,1,4)
+        layout.addWidget(self.axis_d_z,8,4,1,4)
+        layout.addWidget(self.Label_axis_w,9,1,1,4)
+        layout.addWidget(self.axis_w_x,9,2,1,4)
+        layout.addWidget(self.axis_w_y,9,3,1,4)
+        layout.addWidget(self.axis_w_z,9,4,1,4)
+        layout.addWidget(self.Label_axis_h,10,1,1,4)
+        layout.addWidget(self.axis_h_x,10,2,1,4)
+        layout.addWidget(self.axis_h_y,10,3,1,4)
+        layout.addWidget(self.axis_h_z,10,4,1,4)
+
+        layout.addWidget(image,11,0,1,0)
+
     def accept(self):
         Type_values = {0:kcomp.ENDSTOP_A, 1:kcomp.ENDSTOP_B, 2:kcomp.ENDSTOP_D3V}
         Type = Type_values[self.Type_ComboBox.currentIndex()]
         Rail_L = self.Rail_Value.value()
-        parts.SimpleEndstopHolder(d_endstop = Type,
-                                  rail_l = Rail_L,
-                                  base_h = 5.,
-                                  h = 0,
-                                  holder_out = 2.,
-                                  #csunk = 1,
-                                  mbolt_d = 3.,
-                                  endstop_nut_dist = 0.,
-                                  min_d = 0,
-                                  fc_axis_d = VX,
-                                  fc_axis_w = V0,
-                                  fc_axis_h = VZ,
-                                  ref_d = 1,
-                                  ref_w = 1,
-                                  ref_h = 1,
-                                  pos = V0,
-                                  wfco = 1,
-                                  name = 'simple_endstop_holder')
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        positions_d = [1,2,3,4,5]
+        positions_w = [1,2,3,4]
+        positions_h = [1,2]
+        pos_d = positions_d[self.pos_d.currentIndex()]
+        pos_w = positions_w[self.pos_w.currentIndex()]
+        pos_h = positions_h[self.pos_h.currentIndex()]
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
         
-        FreeCADGui.activeDocument().activeView().viewAxonometric() #Axonometric view
-        FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
-        FreeCADGui.Control.closeDialog() #close the dialog
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            parts.SimpleEndstopHolder(d_endstop = Type,
+                                    rail_l = Rail_L,
+                                    base_h = 5.,
+                                    h = 0,
+                                    holder_out = 2.,
+                                    #csunk = 1,
+                                    mbolt_d = 3.,
+                                    endstop_nut_dist = 0.,
+                                    min_d = 0,
+                                    fc_axis_d = VX,
+                                    fc_axis_w = V0,
+                                    fc_axis_h = VZ,
+                                    ref_d = pos_d,
+                                    ref_w = pos_w,
+                                    ref_h = pos_h,
+                                    pos = pos,
+                                    wfco = 1,
+                                    name = 'simple_endstop_holder')
+            
+            FreeCADGui.activeDocument().activeView().viewAxonometric() #Axonometric view
+            FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
+            FreeCADGui.Control.closeDialog() #close the dialog
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -335,7 +607,7 @@ class SimpleEndStopHolder_TaskPanel:
 
 class _AluprofBracketCmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel = AluprofBracket_TaskPanel(baseWidget)
 
         FreeCADGui.Control.showDialog(panel)
@@ -358,67 +630,67 @@ class _AluprofBracketCmd:
 class AluprofBracket_TaskPanel:
     def __init__(self, widget):#,Type):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Type ----
-        self.Type_Label = QtGui.QLabel("Selected Type:")
+        self.Type_Label = QtWidgets.QLabel("Selected Type:")
         self.Type_Aluprof = ["2 profiles","2 profiles with flap","3 profiles"]
-        self.Type_ComboBox = QtGui.QComboBox()
+        self.Type_ComboBox = QtWidgets.QComboBox()
         self.Type_Aluprof = ["2 profiles","2 profiles with flap","3 profiles"]
         self.Type_ComboBox.addItems(self.Type_Aluprof)
         self.Type_ComboBox.setCurrentIndex(0)
     
         # ---- row 1: Size profile line 1 ----
-        self.Size_1_Label = QtGui.QLabel("Size first profile:")
-        self.Size_1_ComboBox = QtGui.QComboBox()
+        self.Size_1_Label = QtWidgets.QLabel("Size first profile:")
+        self.Size_1_ComboBox = QtWidgets.QComboBox()
         self.Size_text = ["10mm","15mm","20mm","30mm","40mm"]         ##Select profiles kcomp
         self.Size_1_ComboBox.addItems(self.Size_text)
         self.Size_1_ComboBox.setCurrentIndex(self.Size_text.index('20mm'))
         
         # ---- row 2: Size profile line 2 ----
-        self.Size_2_Label = QtGui.QLabel("Size second profile:")
-        self.Size_2_ComboBox = QtGui.QComboBox()
+        self.Size_2_Label = QtWidgets.QLabel("Size second profile:")
+        self.Size_2_ComboBox = QtWidgets.QComboBox()
         self.Size_2_ComboBox.addItems(self.Size_text)
         self.Size_2_ComboBox.setCurrentIndex(self.Size_text.index('20mm'))
         
         # ---- row 3: Thikness ----
-        self.Thikness_Label = QtGui.QLabel("Thikness:")
-        self.Thikness_Value = QtGui.QDoubleSpinBox()
+        self.Thikness_Label = QtWidgets.QLabel("Thikness:")
+        self.Thikness_Value = QtWidgets.QDoubleSpinBox()
         self.Thikness_Value.setValue(3)
         self.Thikness_Value.setMinimum(2)
         self.Thikness_Value.setSuffix(' mm')
         
         # ---- row 4: Nut profile line 1 ----
-        self.Nut_Profile_1_Label = QtGui.QLabel("Size of Nut first profile :")
-        self.Nut_Profile_1_ComboBox = QtGui.QComboBox()
+        self.Nut_Profile_1_Label = QtWidgets.QLabel("Size of Nut first profile :")
+        self.Nut_Profile_1_ComboBox = QtWidgets.QComboBox()
         self.NUT_text = ["M3","M4","M5","M6"]    #D912
         self.Nut_Profile_1_ComboBox.addItems(self.NUT_text)
         self.Nut_Profile_1_ComboBox.setCurrentIndex(0)        
         
         # ---- row 5: Nut profile line 2 ----
-        self.Nut_Profile_2_Label = QtGui.QLabel("Size of Nut second profile :")
-        self.Nut_Profile_2_ComboBox = QtGui.QComboBox()
+        self.Nut_Profile_2_Label = QtWidgets.QLabel("Size of Nut second profile :")
+        self.Nut_Profile_2_ComboBox = QtWidgets.QComboBox()
         self.Nut_Profile_2_ComboBox.addItems(self.NUT_text)
         self.Nut_Profile_2_ComboBox.setCurrentIndex(0)
 
         # ---- row 6: Nº Nut ----
-        self.N_Nut_Label = QtGui.QLabel("Number of Nuts:")
-        self.N_Nut_ComboBox = QtGui.QComboBox()
+        self.N_Nut_Label = QtWidgets.QLabel("Number of Nuts:")
+        self.N_Nut_ComboBox = QtWidgets.QComboBox()
         self.N_Nut_text = ["1","2"]
         self.N_Nut_ComboBox.addItems(self.N_Nut_text)
         self.N_Nut_ComboBox.setCurrentIndex(0)
 
         # ---- row 7: Dist Nut ----
-        self.Dist_Nut_Label = QtGui.QLabel("Distance between nuts:")
-        self.Dist_Nut_Label2 = QtGui.QLabel("(0 = min distance)")
-        self.Dist_Nut_Value = QtGui.QDoubleSpinBox()
+        self.Dist_Nut_Label = QtWidgets.QLabel("Distance between nuts:")
+        self.Dist_Nut_Label2 = QtWidgets.QLabel("(0 = min distance)")
+        self.Dist_Nut_Value = QtWidgets.QDoubleSpinBox()
         self.Dist_Nut_Value.setValue(0)
         self.Dist_Nut_Value.setMinimum(0)
         self.Dist_Nut_Value.setSuffix(' mm')
         
         # ---- row 9: Sunk ----
-        self.Sunk_Label = QtGui.QLabel("Sunk:")
-        self.Sunk_ComboBox = QtGui.QComboBox()
+        self.Sunk_Label = QtWidgets.QLabel("Sunk:")
+        self.Sunk_ComboBox = QtWidgets.QComboBox()
         Sunk_Text = ["Hole fot Nut","Without center","Withput reinforce"]
         self.Sunk_ComboBox.addItems(Sunk_Text)
         self.Sunk_ComboBox.setCurrentIndex(0)
@@ -426,9 +698,9 @@ class AluprofBracket_TaskPanel:
             #self.form.repaint()
 
         # ---- row 10: Reinforce ----
-        self.Reinforce_Label = QtGui.QLabel("Reinforce:")
-        self.Reinforce_Label2= QtGui.QLabel("(Only for 2 profile)")
-        self.Reinforce_ComboBox = QtGui.QComboBox()
+        self.Reinforce_Label = QtWidgets.QLabel("Reinforce:")
+        self.Reinforce_Label2= QtWidgets.QLabel("(Only for 2 profile)")
+        self.Reinforce_ComboBox = QtWidgets.QComboBox()
         self.Reinforce_text = ["No","Yes"]
         self.Reinforce_ComboBox.addItems(self.Reinforce_text)
         self.Reinforce_ComboBox.setCurrentIndex(0)
@@ -436,51 +708,141 @@ class AluprofBracket_TaskPanel:
             #self.form.repaint()
 
         # ---- row 11: Flap ----
-        self.Flap_Label = QtGui.QLabel("Flap:")
-        self.Flap_Label2 = QtGui.QLabel("(Only for 2 profiles with flap)")
-        self.Flap_ComboBox = QtGui.QComboBox()
+        self.Flap_Label = QtWidgets.QLabel("Flap:")
+        self.Flap_Label2 = QtWidgets.QLabel("(Only for 2 profiles with flap)")
+        self.Flap_ComboBox = QtWidgets.QComboBox()
         self.Flap_text = ["No","Yes"]
         self.Flap_ComboBox.addItems(self.Flap_text)
         self.Flap_ComboBox.setCurrentIndex(1)
 
         # ---- row 14: Dist Between Profiles ----
-        self.Dist_Prof_Label = QtGui.QLabel("Dist between profiles:")
-        self.Dist_Prof_Label2 = QtGui.QLabel("(Only fot 3 profiles)")
-        self.Dist_Prof_Value = QtGui.QDoubleSpinBox()
+        self.Dist_Prof_Label = QtWidgets.QLabel("Dist between profiles:")
+        self.Dist_Prof_Label2 = QtWidgets.QLabel("(Only fot 3 profiles)")
+        self.Dist_Prof_Value = QtWidgets.QDoubleSpinBox()
         self.Dist_Prof_Value.setValue(26)
         self.Dist_Prof_Value.setMinimum(26)
         self.Dist_Prof_Value.setSuffix(' mm')
 
-        # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Type_Label,0,0,1,1)
-        layout.addWidget(self.Type_ComboBox,0,1,1,1)
-        layout.addWidget(self.Size_1_Label,1,0,1,1)
-        layout.addWidget(self.Size_1_ComboBox,1,1,1,1)
-        layout.addWidget(self.Size_2_Label,2,0,1,1)
-        layout.addWidget(self.Size_2_ComboBox,2,1,1,1)
-        layout.addWidget(self.Thikness_Label,3,0,1,1)
-        layout.addWidget(self.Thikness_Value,3,1,1,1)
-        layout.addWidget(self.Nut_Profile_1_Label,4,0,1,1)
-        layout.addWidget(self.Nut_Profile_1_ComboBox,4,1,1,1)
-        layout.addWidget(self.Nut_Profile_2_Label,5,0,1,1)
-        layout.addWidget(self.Nut_Profile_2_ComboBox,5,1,1,1)
-        layout.addWidget(self.N_Nut_Label,6,0,1,1)
-        layout.addWidget(self.N_Nut_ComboBox,6,1,1,1)
-        layout.addWidget(self.Dist_Nut_Label,7,0,1,1)
-        layout.addWidget(self.Dist_Nut_Label2,8,0,1,1)
-        layout.addWidget(self.Dist_Nut_Value,7,1,1,1)
-        layout.addWidget(self.Sunk_Label,9,0,1,1)
-        layout.addWidget(self.Sunk_ComboBox,9,1,1,1)        
-        layout.addWidget(self.Reinforce_Label,10,0,1,1)
-        layout.addWidget(self.Reinforce_Label2,11,0,1,1)
-        layout.addWidget(self.Reinforce_ComboBox,10,1,1,1)
-        layout.addWidget(self.Flap_Label,12,0,1,1)
-        layout.addWidget(self.Flap_Label2,13,0,1,1)
-        layout.addWidget(self.Flap_ComboBox,12,1,1,1)
-        layout.addWidget(self.Dist_Prof_Label,14,0,1,1)
-        layout.addWidget(self.Dist_Prof_Label2,15,0,1,1)
-        layout.addWidget(self.Dist_Prof_Value,14,1,1,1)
+        # ---- row 15: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
 
+        # ---- row 9: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 22: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/AluprofBracket.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Type_Label,0,0,1,2)
+        layout.addWidget(self.Type_ComboBox,0,1,1,2)
+
+        layout.addWidget(self.Size_1_Label,1,0,1,2)
+        layout.addWidget(self.Size_1_ComboBox,1,1,1,2)
+        layout.addWidget(self.Size_2_Label,2,0,1,2)
+        layout.addWidget(self.Size_2_ComboBox,2,1,1,2)
+
+        layout.addWidget(self.Thikness_Label,3,0,1,2)
+        layout.addWidget(self.Thikness_Value,3,1,1,2)
+
+        layout.addWidget(self.Nut_Profile_1_Label,4,0,1,2)
+        layout.addWidget(self.Nut_Profile_1_ComboBox,4,1,1,2)
+        layout.addWidget(self.Nut_Profile_2_Label,5,0,1,2)
+        layout.addWidget(self.Nut_Profile_2_ComboBox,5,1,1,2)
+
+        layout.addWidget(self.N_Nut_Label,6,0,1,2)
+        layout.addWidget(self.N_Nut_ComboBox,6,1,1,2)
+
+        layout.addWidget(self.Dist_Nut_Label,7,0,1,2)
+        layout.addWidget(self.Dist_Nut_Value,7,1,1,2)
+        layout.addWidget(self.Dist_Nut_Label2,8,0,1,2)
+
+        layout.addWidget(self.Sunk_Label,9,0,1,2)
+        layout.addWidget(self.Sunk_ComboBox,9,1,1,2)     
+
+        layout.addWidget(self.Reinforce_Label,10,0,1,2)
+        layout.addWidget(self.Reinforce_ComboBox,10,1,1,2)
+        layout.addWidget(self.Reinforce_Label2,11,0,1,2)
+
+        layout.addWidget(self.Flap_Label,12,0,1,2)
+        layout.addWidget(self.Flap_ComboBox,12,1,1,2)
+        layout.addWidget(self.Flap_Label2,13,0,1,2)
+
+        layout.addWidget(self.Dist_Prof_Label,14,0,1,2)
+        layout.addWidget(self.Dist_Prof_Value,14,1,1,2)
+        layout.addWidget(self.Dist_Prof_Label2,15,0,1,2)
+
+        layout.addWidget(self.Label_position,16,0,1,2)
+        layout.addWidget(self.Label_pos_x,16,1,1,2)
+        layout.addWidget(self.pos_x,16,2,1,2)
+        layout.addWidget(self.Label_pos_y,17,1,1,2)
+        layout.addWidget(self.pos_y,17,2,1,2)
+        layout.addWidget(self.Label_pos_z,18,1,1,2)
+        layout.addWidget(self.pos_z,18,2,1,2)
+
+        layout.addWidget(self.Label_axis,19,0,1,4)
+        layout.addWidget(self.Label_axis_d,19,1,1,4)
+        layout.addWidget(self.axis_d_x,19,2,1,4)
+        layout.addWidget(self.axis_d_y,19,3,1,4)
+        layout.addWidget(self.axis_d_z,19,4,1,4)
+        layout.addWidget(self.Label_axis_w,20,1,1,4)
+        layout.addWidget(self.axis_w_x,20,2,1,4)
+        layout.addWidget(self.axis_w_y,20,3,1,4)
+        layout.addWidget(self.axis_w_z,20,4,1,4)
+        layout.addWidget(self.Label_axis_h,21,1,1,4)
+        layout.addWidget(self.axis_h_x,21,2,1,4)
+        layout.addWidget(self.axis_h_y,21,3,1,4)
+        layout.addWidget(self.axis_h_z,21,4,1,4)
+
+        layout.addWidget(image,22,0,1,0)
 
     def accept(self):
         NUT = {0:3, 1:4, 2:5, 3:6}
@@ -495,28 +857,15 @@ class AluprofBracket_TaskPanel:
         Dist_Nut = self.Dist_Nut_Value.value()
         Sunk = Sunk_values[self.Sunk_ComboBox.currentIndex()]
         self.Type = self.Type_ComboBox.currentIndex()
-
-        if self.Type == 0:
-            Reinforce = self.Reinforce_ComboBox.currentIndex()
-            parts.AluProfBracketPerp( alusize_lin = Size_1, alusize_perp = Size_2, #cambiar a combobox
-                                      br_perp_thick = Thikness,
-                                      br_lin_thick = Thikness,
-                                      bolt_lin_d = Nut_Prof_1,
-                                      bolt_perp_d = Nut_Prof_2,
-                                      nbolts_lin = NumberNut,
-                                      bolts_lin_dist = Dist_Nut,
-                                      bolts_lin_rail = Dist_Nut,
-                                      xtr_bolt_head = 0,
-                                      xtr_bolt_head_d = 0, # space for the nut
-                                      reinforce = Reinforce,
-                                      fc_perp_ax = VZ,
-                                      fc_lin_ax = VX,
-                                      pos = V0,
-                                      wfco=1,
-                                      name = 'bracket2_perp')
-        elif self.Type == 1:
-            Flap = self.Flap_ComboBox.currentIndex()
-            parts.AluProfBracketPerpFlap(alusize_lin = Size_1, alusize_perp = Size_2,
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
+        
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            if self.Type == 0:
+                Reinforce = self.Reinforce_ComboBox.currentIndex()
+                parts.AluProfBracketPerp( alusize_lin = Size_1, alusize_perp = Size_2, #cambiar a combobox
                                         br_perp_thick = Thikness,
                                         br_lin_thick = Thikness,
                                         bolt_lin_d = Nut_Prof_1,
@@ -524,38 +873,56 @@ class AluprofBracket_TaskPanel:
                                         nbolts_lin = NumberNut,
                                         bolts_lin_dist = Dist_Nut,
                                         bolts_lin_rail = Dist_Nut,
-                                        xtr_bolt_head = 1,
-                                        sunk = Sunk,
-                                        flap = Flap, 
-                                        fc_perp_ax = VZ,
-                                        fc_lin_ax = VX,
-                                        pos = V0,
+                                        xtr_bolt_head = 0,
+                                        xtr_bolt_head_d = 0, # space for the nut
+                                        reinforce = Reinforce,
+                                        fc_perp_ax = axis_h,
+                                        fc_lin_ax = axis_d,
+                                        pos = pos,
                                         wfco=1,
-                                        name = 'bracket3_flap')
-        elif self.Type ==2:
-            Dis_Prof = self.Dist_Prof_Value.value()
-            parts.AluProfBracketPerpTwin(alusize_lin = Size_1, alusize_perp = Size_2,
-                                        alu_sep = Dis_Prof,
-                                        br_perp_thick = Thikness,
-                                        br_lin_thick = Thikness,
-                                        bolt_lin_d = Nut_Prof_1,
-                                        bolt_perp_d = Nut_Prof_2,
-                                        nbolts_lin = NumberNut,
-                                        bolts_lin_dist = Dist_Nut,
-                                        bolts_lin_rail = Dist_Nut,
-                                        bolt_perp_line = 0,
-                                        xtr_bolt_head = 2, 
-                                        sunk = Sunk,
-                                        fc_perp_ax = VZ,
-                                        fc_lin_ax = VX,
-                                        fc_wide_ax = VY,
-                                        pos = V0,
-                                        wfco=1,
-                                        name = 'bracket_twin')
+                                        name = 'bracket2_perp')
+            elif self.Type == 1:
+                Flap = self.Flap_ComboBox.currentIndex()
+                parts.AluProfBracketPerpFlap(alusize_lin = Size_1, alusize_perp = Size_2,
+                                            br_perp_thick = Thikness,
+                                            br_lin_thick = Thikness,
+                                            bolt_lin_d = Nut_Prof_1,
+                                            bolt_perp_d = Nut_Prof_2,
+                                            nbolts_lin = NumberNut,
+                                            bolts_lin_dist = Dist_Nut,
+                                            bolts_lin_rail = Dist_Nut,
+                                            xtr_bolt_head = 1,
+                                            sunk = Sunk,
+                                            flap = Flap, 
+                                            fc_perp_ax = axis_h,
+                                            fc_lin_ax = axis_d,
+                                            pos = pos,
+                                            wfco=1,
+                                            name = 'bracket3_flap')
+            elif self.Type ==2:
+                Dis_Prof = self.Dist_Prof_Value.value()
+                parts.AluProfBracketPerpTwin(alusize_lin = Size_1, alusize_perp = Size_2,
+                                            alu_sep = Dis_Prof,
+                                            br_perp_thick = Thikness,
+                                            br_lin_thick = Thikness,
+                                            bolt_lin_d = Nut_Prof_1,
+                                            bolt_perp_d = Nut_Prof_2,
+                                            nbolts_lin = NumberNut,
+                                            bolts_lin_dist = Dist_Nut,
+                                            bolts_lin_rail = Dist_Nut,
+                                            bolt_perp_line = 0,
+                                            xtr_bolt_head = 2, 
+                                            sunk = Sunk,
+                                            fc_perp_ax = axis_h,
+                                            fc_lin_ax = axis_d,
+                                            fc_wide_ax = axis_w,
+                                            pos = pos,
+                                            wfco=1,
+                                            name = 'bracket_twin')
 
-        FreeCADGui.activeDocument().activeView().viewAxonometric() #Axonometric view
-        FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
-        FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.activeDocument().activeView().viewAxonometric() #Axonometric view
+            FreeCADGui.SendMsgToActiveView("ViewFit") #Fit the view to the object
+            FreeCADGui.Control.closeDialog() #close the dialog
 
 
 #  _________________________________________________________________
@@ -566,7 +933,7 @@ class AluprofBracket_TaskPanel:
 class _MotorHolderCmd:
     
     def Activated(self):
-        Widget_MotorHolder = QtGui.QWidget()
+        Widget_MotorHolder = QtWidgets.QWidget()
         Panel_MotorHolder = MotorHolderTaskPanel(Widget_MotorHolder)
         FreeCADGui.Control.showDialog(Panel_MotorHolder) 
         
@@ -588,35 +955,128 @@ class _MotorHolderCmd:
 class MotorHolderTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Size Holder ----
-        self.Size_Holder_Label = QtGui.QLabel("Size")
-        self.ComboBox_Size_Holder = QtGui.QComboBox()
+        self.Size_Holder_Label = QtWidgets.QLabel("Size")
+        self.ComboBox_Size_Holder = QtWidgets.QComboBox()
         self.TextSizeHolder = ["8","11","14","17","23","34","42"]
         self.ComboBox_Size_Holder.addItems(self.TextSizeHolder)
         self.ComboBox_Size_Holder.setCurrentIndex(self.TextSizeHolder.index('11'))
 
         # ---- row 1: Rail Max High  ----
-        self.motor_high_Label = QtGui.QLabel("Rail max High")
-        self.motor_high_Value = QtGui.QDoubleSpinBox()
+        self.motor_high_Label = QtWidgets.QLabel("Rail max High")
+        self.motor_high_Value = QtWidgets.QDoubleSpinBox()
         self.motor_high_Value.setValue(40)
         self.motor_high_Value.setSuffix(' mm')
 
         # ---- row 2: Thikness ----
-        self.Thikness_Label = QtGui.QLabel("Thikness:")
-        self.Thikness_Value = QtGui.QDoubleSpinBox()
+        self.Thikness_Label = QtWidgets.QLabel("Thikness:")
+        self.Thikness_Value = QtWidgets.QDoubleSpinBox()
         self.Thikness_Value.setValue(3)
         self.Thikness_Value.setMinimum(2)
         self.Thikness_Value.setSuffix(' mm')
 
+        # ---- row 3: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # h :
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
+        self.pos_h.addItems(['0','1'])
+        self.pos_h.setCurrentIndex(1)
+
+        # ---- row 7: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 10: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/MotorHolder.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
         # row X, column X, rowspan X, colspan X        
-        layout.addWidget(self.Size_Holder_Label,0,0,1,1)
-        layout.addWidget(self.ComboBox_Size_Holder,0,1,1,1)
-        layout.addWidget(self.motor_high_Label,1,0,1,1)
-        layout.addWidget(self.motor_high_Value,1,1,1,1)
-        layout.addWidget(self.Thikness_Label,2,0,1,1)
-        layout.addWidget(self.Thikness_Value,2,1,1,1)
+        layout.addWidget(self.Size_Holder_Label,0,0,1,2)
+        layout.addWidget(self.ComboBox_Size_Holder,0,1,1,2)
+
+        layout.addWidget(self.motor_high_Label,1,0,1,2)
+        layout.addWidget(self.motor_high_Value,1,1,1,2)
+
+        layout.addWidget(self.Thikness_Label,2,0,1,2)
+        layout.addWidget(self.Thikness_Value,2,1,1,2)
+
+        layout.addWidget(self.Label_position,3,0,1,2)
+        layout.addWidget(self.Label_pos_x,3,1,1,2)
+        layout.addWidget(self.pos_x,3,2,1,2)
+        layout.addWidget(self.Label_pos_y,4,1,1,2)
+        layout.addWidget(self.pos_y,4,2,1,2)
+        layout.addWidget(self.Label_pos_z,5,1,1,2)
+        layout.addWidget(self.pos_z,5,2,1,2)
+
+        layout.addWidget(self.Label_pos_h,6,1,1,2)
+        layout.addWidget(self.pos_h,6,2,1,2)
+
+        layout.addWidget(self.Label_axis,7,0,1,4)
+        layout.addWidget(self.Label_axis_d,7,1,1,4)
+        layout.addWidget(self.axis_d_x,7,2,1,4)
+        layout.addWidget(self.axis_d_y,7,3,1,4)
+        layout.addWidget(self.axis_d_z,7,4,1,4)
+        layout.addWidget(self.Label_axis_w,8,1,1,4)
+        layout.addWidget(self.axis_w_x,8,2,1,4)
+        layout.addWidget(self.axis_w_y,8,3,1,4)
+        layout.addWidget(self.axis_w_z,8,4,1,4)
+        layout.addWidget(self.Label_axis_h,9,1,1,4)
+        layout.addWidget(self.axis_h_x,9,2,1,4)
+        layout.addWidget(self.axis_h_y,9,3,1,4)
+        layout.addWidget(self.axis_h_z,9,4,1,4)
+
+        layout.addWidget(image,10,0,1,0)
 
     def accept(self):
         SizeHolder = {0:8, 1:11, 2:14, 3:17, 4:23, 5:34, 6:42}
@@ -624,31 +1084,38 @@ class MotorHolderTaskPanel:
         #Set_Select = self.ComboBox_Set.currentIndex()
         h_motor=self.motor_high_Value.value()
         Thikness = self.Thikness_Value.value()
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        positions_h = [0,1]
+        pos_h = positions_h[self.pos_h.currentIndex()]
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
 
-        parts.NemaMotorHolder(nema_size = self.size_motor,
-                             wall_thick = Thikness,
-                             motor_thick = Thikness,
-                             reinf_thick = Thikness,
-                             motor_min_h =10.,
-                             motor_max_h = h_motor,
-                             rail = 1, # if there is a rail or not at the profile side
-                             motor_xtr_space = 2., # counting on one side
-                             motor_xtr_space_d = -1, # same as motor_xtr_space
-                             bolt_wall_d = 4., # Metric of the wall bolts
-                             bolt_wall_sep = 0., # optional   30
-                             chmf_r = 1.,
-                             fc_axis_h = VZ,
-                             fc_axis_n = VX,
-                             #fc_axis_p = VY,
-                             ref_axis = 1, 
-                             #ref_bolt = 0,
-                             pos = V0,
-                             wfco = 1,
-                             name = 'nema_holder')
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            parts.NemaMotorHolder(nema_size = self.size_motor,
+                                wall_thick = Thikness,
+                                motor_thick = Thikness,
+                                reinf_thick = Thikness,
+                                motor_min_h =10.,
+                                motor_max_h = h_motor,
+                                rail = 1, # if there is a rail or not at the profile side
+                                motor_xtr_space = 2., # counting on one side
+                                motor_xtr_space_d = -1, # same as motor_xtr_space
+                                bolt_wall_d = 4., # Metric of the wall bolts
+                                bolt_wall_sep = 0., # optional   30
+                                chmf_r = 1.,
+                                fc_axis_h = axis_h,
+                                fc_axis_n = axis_d,
+                                #fc_axis_p = VY, #axis_w
+                                ref_axis = pos_h, 
+                                #ref_bolt = 0,
+                                pos = pos,
+                                wfco = 1,
+                                name = 'nema_holder')
 
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
     
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
@@ -660,7 +1127,7 @@ class MotorHolderTaskPanel:
 
 class _NemaMotorCmd:
     def Activated(self):
-        Widget_NemaMotor = QtGui.QWidget()
+        Widget_NemaMotor = QtWidgets.QWidget()
         Panel_NemaMotor = NemaMotorTaskPanel(Widget_NemaMotor)
         FreeCADGui.Control.showDialog(Panel_NemaMotor) 
         
@@ -682,31 +1149,31 @@ class NemaMotorTaskPanel:
     def __init__(self, widget):
         self.form = widget
         # The layout will be a grid
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
         
         # ---- row 0: Size ----
-        self.Label_size = QtGui.QLabel("Size:")
-        self.Size = QtGui.QComboBox()
+        self.Label_size = QtWidgets.QLabel("Size:")
+        self.Size = QtWidgets.QComboBox()
         self.Size.addItems(['8','11','14','17','23','34','42'])
         self.Size.setCurrentIndex(0)
 
         # --- row 1: Height ----
-        self.Label_Height = QtGui.QLabel("Height without shaft:")
-        self.Height = QtGui.QDoubleSpinBox()
+        self.Label_Height = QtWidgets.QLabel("Height without shaft:")
+        self.Height = QtWidgets.QDoubleSpinBox()
         self.Height.setValue(32)
         self.Height.setSuffix(' mm')
         self.Height.setMinimum(1)
 
         # ---- row 2: shaft ----
-        self.Label_shaft = QtGui.QLabel("Shaft")
-        self.Label_shaft_h = QtGui.QLabel("height:")
-        self.Label_shaft_r = QtGui.QLabel("radius:")
-        self.Label_shaft_br = QtGui.QLabel("radius base:")
-        self.Label_shaft_bh = QtGui.QLabel("height base:")
-        self.shaft_h = QtGui.QDoubleSpinBox()
-        self.shaft_r = QtGui.QDoubleSpinBox()
-        self.shaft_br = QtGui.QDoubleSpinBox()
-        self.shaft_bh = QtGui.QDoubleSpinBox()
+        self.Label_shaft = QtWidgets.QLabel("Shaft")
+        self.Label_shaft_h = QtWidgets.QLabel("height:")
+        self.Label_shaft_r = QtWidgets.QLabel("radius:")
+        self.Label_shaft_br = QtWidgets.QLabel("radius base:")
+        self.Label_shaft_bh = QtWidgets.QLabel("height base:")
+        self.shaft_h = QtWidgets.QDoubleSpinBox()
+        self.shaft_r = QtWidgets.QDoubleSpinBox()
+        self.shaft_br = QtWidgets.QDoubleSpinBox()
+        self.shaft_bh = QtWidgets.QDoubleSpinBox()
         self.shaft_h.setValue(24.)
         self.shaft_r.setValue(0)
         self.shaft_br.setValue(11)
@@ -721,35 +1188,31 @@ class NemaMotorTaskPanel:
         self.shaft_bh.setMinimum(1)
 
         # ---- row 6: chamfer ----
-        self.Label_chmf_r = QtGui.QLabel("Chamfer radius:") 
-        self.chmf_r = QtGui.QDoubleSpinBox()
+        self.Label_chmf_r = QtWidgets.QLabel("Chamfer radius:") 
+        self.chmf_r = QtWidgets.QDoubleSpinBox()
         self.chmf_r.setValue(1)
         self.chmf_r.setSuffix(' mm')
         self.chmf_r.setMinimum(0)
 
         # ---- row 7: bolt ----
-        self.Label_bolt = QtGui.QLabel("Bolt") 
-        self.Label_bolt_d = QtGui.QLabel("deep:") 
-        self.Label_bolt_o = QtGui.QLabel("outside:") 
-        self.bolt_d = QtGui.QDoubleSpinBox()
-        self.bolt_o = QtGui.QDoubleSpinBox()
+        self.Label_bolt = QtWidgets.QLabel("Bolt") 
+        self.Label_bolt_d = QtWidgets.QLabel("deep:") 
+        self.bolt_d = QtWidgets.QDoubleSpinBox()
+        self.bolt_o = QtWidgets.QDoubleSpinBox()
         self.bolt_d.setValue(3)
-        self.bolt_o.setValue(2)
         self.bolt_d.setSuffix(' mm')
-        self.bolt_o.setSuffix(' mm')
         self.bolt_d.setMinimum(0)
-        self.bolt_o.setMinimum(0)
 
         # ---- row 9: Pulley ----
-        self.Label_pulley = QtGui.QLabel("Pulley")
-        self.Label_pulley_pitch = QtGui.QLabel("pitch:")
-        self.Label_pulley_teeth = QtGui.QLabel("teeth:")
-        self.Label_pulley_top_flan = QtGui.QLabel("top flange:")
-        self.Label_pulley_bot_flan = QtGui.QLabel("bot flange:")
-        self.pulley_pitch = QtGui.QDoubleSpinBox()
-        self.pulley_teeth = QtGui.QDoubleSpinBox()
-        self.pulley_top_flan = QtGui.QDoubleSpinBox()
-        self.pulley_bot_flan = QtGui.QDoubleSpinBox()
+        self.Label_pulley = QtWidgets.QLabel("Pulley")
+        self.Label_pulley_pitch = QtWidgets.QLabel("pitch:")
+        self.Label_pulley_teeth = QtWidgets.QLabel("teeth:")
+        self.Label_pulley_top_flan = QtWidgets.QLabel("top flange:")
+        self.Label_pulley_bot_flan = QtWidgets.QLabel("bot flange:")
+        self.pulley_pitch = QtWidgets.QDoubleSpinBox()
+        self.pulley_teeth = QtWidgets.QDoubleSpinBox()
+        self.pulley_top_flan = QtWidgets.QDoubleSpinBox()
+        self.pulley_bot_flan = QtWidgets.QDoubleSpinBox()
         self.pulley_pitch.setValue(2.)
         self.pulley_teeth.setValue(20)
         self.pulley_top_flan.setValue(1)
@@ -763,46 +1226,91 @@ class NemaMotorTaskPanel:
         self.pulley_top_flan.setMinimum(0)
         self.pulley_bot_flan.setMinimum(0)
 
-
         # ---- row 13: Position ----
-        self.label_position = QtGui.QLabel("Position ")
+        self.label_position = QtWidgets.QLabel("Position ")
 
         # d :
-        self.Label_pos_d = QtGui.QLabel("in d:")
-        self.pos_d = QtGui.QComboBox()
+        self.Label_pos_d = QtWidgets.QLabel("in d:")
+        self.pos_d = QtWidgets.QComboBox()
         self.pos_d.addItems(['0','1','2','3','4'])
         self.pos_d.setCurrentIndex(0)
 
         # w :
-        self.Label_pos_w = QtGui.QLabel("in w:")
-        self.pos_w = QtGui.QComboBox()
+        self.Label_pos_w = QtWidgets.QLabel("in w:")
+        self.pos_w = QtWidgets.QComboBox()
         self.pos_w.addItems(['0','1','2','3','4'])
         self.pos_w.setCurrentIndex(0)
 
         # h :
-        self.Label_pos_h = QtGui.QLabel("in h:")
-        self.pos_h = QtGui.QComboBox()
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
         self.pos_h.addItems(['0','1','2','3','4','5'])
         self.pos_h.setCurrentIndex(1)
 
-        # pos:
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        # placement:
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
 
+        # ---- row 9: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
 
+        # ---- row 22: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/NemaMotor.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_size,0,0,1,2)
         layout.addWidget(self.Size,0,1,1,2)
+
         layout.addWidget(self.Label_Height,1,0,1,2)
         layout.addWidget(self.Height,1,1,1,2)
+
         layout.addWidget(self.Label_shaft,2,0,1,2)
         layout.addWidget(self.Label_shaft_h,2,1,1,2)
         layout.addWidget(self.shaft_h,2,2,1,2)
@@ -814,34 +1322,51 @@ class NemaMotorTaskPanel:
         layout.addWidget(self.shaft_bh,5,2,1,2)
         layout.addWidget(self.Label_chmf_r,6,0,1,2)
         layout.addWidget(self.chmf_r,6,1,1,2)
+
         layout.addWidget(self.Label_bolt,7,0,1,2)
         layout.addWidget(self.Label_bolt_d,7,1,1,2)
         layout.addWidget(self.bolt_d,7,2,1,2)
-        layout.addWidget(self.Label_bolt_o,8,1,1,2)
-        layout.addWidget(self.bolt_o,8,2,1,2)
-        layout.addWidget(self.Label_pulley,9,0,1,2)
-        layout.addWidget(self.Label_pulley_pitch,9,1,1,2)
-        layout.addWidget(self.pulley_pitch,9,2,1,2)
-        layout.addWidget(self.Label_pulley_teeth,10,1,1,2)
-        layout.addWidget(self.pulley_teeth,10,2,1,2)
-        layout.addWidget(self.Label_pulley_top_flan,11,1,1,2)
-        layout.addWidget(self.pulley_top_flan,11,2,1,2)
-        layout.addWidget(self.Label_pulley_bot_flan,12,1,1,2)
-        layout.addWidget(self.pulley_bot_flan,12,2,1,2)
-        layout.addWidget(self.label_position,13,0,1,2)
-        layout.addWidget(self.Label_pos_d,13,1,1,2)
-        layout.addWidget(self.pos_d,13,2,1,2)
-        layout.addWidget(self.Label_pos_w,14,1,1,2)
-        layout.addWidget(self.pos_w,14,2,1,2)
-        layout.addWidget(self.Label_pos_h,15,1,1,2)
-        layout.addWidget(self.pos_h,15,2,1,2)
-        layout.addWidget(self.Label_pos_x,16,1,1,2)
-        layout.addWidget(self.pos_x,16,2,1,2)
-        layout.addWidget(self.Label_pos_y,17,1,1,2)
-        layout.addWidget(self.pos_y,17,2,1,2)
-        layout.addWidget(self.Label_pos_z,18,1,1,2)
-        layout.addWidget(self.pos_z,18,2,1,2)
 
+        layout.addWidget(self.Label_pulley,8,0,1,2)
+        layout.addWidget(self.Label_pulley_pitch,8,1,1,2)
+        layout.addWidget(self.pulley_pitch,8,2,1,2)
+        layout.addWidget(self.Label_pulley_teeth,9,1,1,2)
+        layout.addWidget(self.pulley_teeth,9,2,1,2)
+        layout.addWidget(self.Label_pulley_top_flan,10,1,1,2)
+        layout.addWidget(self.pulley_top_flan,10,2,1,2)
+        layout.addWidget(self.Label_pulley_bot_flan,11,1,1,2)
+        layout.addWidget(self.pulley_bot_flan,11,2,1,2)
+
+        layout.addWidget(self.label_position,12,0,1,2)
+        layout.addWidget(self.Label_pos_x,12,1,1,2)
+        layout.addWidget(self.pos_x,12,2,1,2)
+        layout.addWidget(self.Label_pos_y,13,1,1,2)
+        layout.addWidget(self.pos_y,13,2,1,2)
+        layout.addWidget(self.Label_pos_z,14,1,1,2)
+        layout.addWidget(self.pos_z,14,2,1,2)
+
+        layout.addWidget(self.Label_pos_d,15,1,1,2)
+        layout.addWidget(self.pos_d,15,2,1,2)
+        layout.addWidget(self.Label_pos_w,16,1,1,2)
+        layout.addWidget(self.pos_w,16,2,1,2)
+        layout.addWidget(self.Label_pos_h,17,1,1,2)
+        layout.addWidget(self.pos_h,17,2,1,2)
+
+        layout.addWidget(self.Label_axis,18,0,1,4)
+        layout.addWidget(self.Label_axis_d,18,1,1,4)
+        layout.addWidget(self.axis_d_x,18,2,1,4)
+        layout.addWidget(self.axis_d_y,18,3,1,4)
+        layout.addWidget(self.axis_d_z,18,4,1,4)
+        layout.addWidget(self.Label_axis_w,19,1,1,4)
+        layout.addWidget(self.axis_w_x,19,2,1,4)
+        layout.addWidget(self.axis_w_y,19,3,1,4)
+        layout.addWidget(self.axis_w_z,19,4,1,4)
+        layout.addWidget(self.Label_axis_h,20,1,1,4)
+        layout.addWidget(self.axis_h_x,20,2,1,4)
+        layout.addWidget(self.axis_h_y,20,3,1,4)
+        layout.addWidget(self.axis_h_z,20,4,1,4)
+
+        layout.addWidget(image,21,0,1,0)
 
     def accept(self):
         dict_size = {0: 8, 1: 11, 2: 14, 3: 17, 5: 23, 6: 34, 7: 42}
@@ -858,45 +1383,52 @@ class NemaMotorTaskPanel:
         teeth = self.pulley_teeth.value()
         top_flan = self.pulley_top_flan.value()
         bot_flan = self.pulley_bot_flan.value()
-        pos_d = self.pos_d.currentIndex()
-        pos_w = self.pos_w.currentIndex()
-        pos_h = self.pos_h.currentIndex()
+        positions_d = [0,1,2,3,4]
+        positions_w = [0,1,2,3,4]
+        positions_h = [0,1,2,3,4,5]
+        pos_d = positions_d[self.pos_d.currentIndex()]
+        pos_w = positions_w[self.pos_w.currentIndex()]
+        pos_h = positions_h[self.pos_h.currentIndex()]
         pos = FreeCAD.Vector(self.pos_x.value(),self.pos_y.value(),self.pos_z.value())
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
+        
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            partset.NemaMotorPulleySet(nema_size = size,
+                                    base_l = base_h,
+                                    shaft_l = shaft_l,
+                                    shaft_r = shaft_r,
+                                    circle_r = shaft_br,
+                                    circle_h = shaft_hr,
+                                    chmf_r = chmf_r, 
+                                    rear_shaft_l=0,
+                                    bolt_depth = bolt_d,
+                                    # pulley parameters
+                                    pulley_pitch = pitch,
+                                    pulley_n_teeth = teeth,
+                                    pulley_toothed_h = 7.5,
+                                    pulley_top_flange_h = top_flan,
+                                    pulley_bot_flange_h = bot_flan,
+                                    pulley_tot_h = 16.,
+                                    pulley_flange_d = 15.,
+                                    pulley_base_d = 15.,
+                                    pulley_tol = 0,
+                                    pulley_pos_h = -1,
+                                    # general parameters
+                                    axis_d = axis_d,
+                                    axis_w = axis_w, #None
+                                    axis_h = axis_h,
+                                    pos_d = pos_d,
+                                    pos_w = pos_w,
+                                    pos_h = pos_h,
+                                    pos = pos,
+                                    group = 1,
+                                    name = '')
 
-        partset.NemaMotorPulleySet(nema_size = size,
-                                   base_l = base_h,
-                                   shaft_l = shaft_l,
-                                   shaft_r = shaft_r,
-                                   circle_r = shaft_br,
-                                   circle_h = shaft_hr,
-                                   chmf_r = chmf_r, 
-                                   rear_shaft_l=0,
-                                   bolt_depth = bolt_d,
-                                   # pulley parameters
-                                   pulley_pitch = pitch,
-                                   pulley_n_teeth = teeth,
-                                   pulley_toothed_h = 7.5,
-                                   pulley_top_flange_h = top_flan,
-                                   pulley_bot_flange_h = bot_flan,
-                                   pulley_tot_h = 16.,
-                                   pulley_flange_d = 15.,
-                                   pulley_base_d = 15.,
-                                   pulley_tol = 0,
-                                   pulley_pos_h = -1,
-                                   # general parameters
-                                   axis_d = VX,
-                                   axis_w = None,
-                                   axis_h = VZ,
-                                   pos_d = pos_d,
-                                   pos_w = pos_w,
-                                   pos_h = pos_h,
-                                   pos = pos,
-                                   group = 1,
-                                   name = '')
-
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -905,7 +1437,7 @@ class NemaMotorTaskPanel:
 
 class _LinBearHouseCmd:
     def Activated(self):
-        Widget_LinBearHouse = QtGui.QWidget()
+        Widget_LinBearHouse = QtWidgets.QWidget()
         Panel_LinBearHouse = LinBearHouseTaskPanel(Widget_LinBearHouse)
         FreeCADGui.Control.showDialog(Panel_LinBearHouse) 
         
@@ -926,95 +1458,184 @@ class _LinBearHouseCmd:
 class LinBearHouseTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
         
         # ---- row 0: Version ----
-        self.LinBearHouse_Label = QtGui.QLabel("Select Bear House:")
-        self.LinBearHouse_ComboBox = QtGui.QComboBox()
+        self.LinBearHouse_Label = QtWidgets.QLabel("Select Bear House:")
+        self.LinBearHouse_ComboBox = QtWidgets.QComboBox()
         self.LinBearHouse_text = ["Thin 1 rail", "Thin","Normal (only SC type)","Asimetric"]
         self.LinBearHouse_ComboBox.addItems(self.LinBearHouse_text)
         self.LinBearHouse_ComboBox.setCurrentIndex(0)
 
         # ---- row 1: Type ----
-        self.Type_Label = QtGui.QLabel("Type:")
-        self.Type_ComboBox = QtGui.QComboBox()
+        self.Type_Label = QtWidgets.QLabel("Type:")
+        self.Type_ComboBox = QtWidgets.QComboBox()
         self.Type_text = ["LMUU 6","LMUU 8","LMUU 10","LMUU 12","LMUU 20","LMEUU 8","LMEUU 10","LMEUU12","LMELUU 12","LMEUU 20","SC8UU_Pr","SC10UU_Pr","SC12UU_Pr","SCE20UU_Pr30","SCE20UU_Pr30b"]
         self.Type_ComboBox.addItems(self.Type_text)
         self.Type_ComboBox.setCurrentIndex(1)
 
+        # ---- row 2: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # ---- row 5: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0.00)
+        self.axis_h_y.setValue(0.00)
+        self.axis_h_z.setValue(-1.00)
+
+        # ---- row 8: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/LinearBearHouse.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.LinBearHouse_Label,0,0,1,1)
-        layout.addWidget(self.LinBearHouse_ComboBox,0,1,1,1)
-        layout.addWidget(self.Type_Label,1,0,1,1)
-        layout.addWidget(self.Type_ComboBox,1,1,1,1)
+        layout.addWidget(self.LinBearHouse_Label,0,0,1,2)
+        layout.addWidget(self.LinBearHouse_ComboBox,0,1,1,2)
+
+        layout.addWidget(self.Type_Label,1,0,1,2)
+        layout.addWidget(self.Type_ComboBox,1,1,1,2)
+
+        layout.addWidget(self.Label_position,2,0,1,2)
+        layout.addWidget(self.Label_pos_x,2,1,1,2)
+        layout.addWidget(self.pos_x,2,2,1,2)
+        layout.addWidget(self.Label_pos_y,3,1,1,2)
+        layout.addWidget(self.pos_y,3,2,1,2)
+        layout.addWidget(self.Label_pos_z,4,1,1,2)
+        layout.addWidget(self.pos_z,4,2,1,2)
+
+        layout.addWidget(self.Label_axis,5,0,1,4)
+        layout.addWidget(self.Label_axis_d,5,1,1,4)
+        layout.addWidget(self.axis_d_x,5,2,1,4)
+        layout.addWidget(self.axis_d_y,5,3,1,4)
+        layout.addWidget(self.axis_d_z,5,4,1,4)
+        layout.addWidget(self.Label_axis_w,6,1,1,4)
+        layout.addWidget(self.axis_w_x,6,2,1,4)
+        layout.addWidget(self.axis_w_y,6,3,1,4)
+        layout.addWidget(self.axis_w_z,6,4,1,4)
+        layout.addWidget(self.Label_axis_h,7,1,1,4)
+        layout.addWidget(self.axis_h_x,7,2,1,4)
+        layout.addWidget(self.axis_h_y,7,3,1,4)
+        layout.addWidget(self.axis_h_z,7,4,1,4)
+
+        layout.addWidget(image,8,0,1,0)
 
     def accept(self):
         Type_values = {0:kcomp.LM6UU,
-                         1:kcomp.LM8UU,
-                         2:kcomp.LM10UU,
-                         3:kcomp.LM12UU,
-                         4:kcomp.LM20UU,
-                         5:kcomp.LME8UU,
-                         6:kcomp.LME10UU,
-                         7:kcomp.LME12UU,
-                         8:kcomp.LME12LUU,
-                         9:kcomp.LME20UU,
-                         10:kcomp.SC8UU_Pr,
-                         11:kcomp.SC10UU_Pr,
-                         12:kcomp.SC12UU_Pr,
-                         13:kcomp.SCE20UU_Pr30,
-                         14:kcomp.SCE20UU_Pr30b }
+                       1:kcomp.LM8UU,
+                       2:kcomp.LM10UU,
+                       3:kcomp.LM12UU,
+                       4:kcomp.LM20UU,
+                       5:kcomp.LME8UU,
+                       6:kcomp.LME10UU,
+                       7:kcomp.LME12UU,
+                       8:kcomp.LME12LUU,
+                       9:kcomp.LME20UU,
+                       10:kcomp.SC8UU_Pr,
+                       11:kcomp.SC10UU_Pr,
+                       12:kcomp.SC12UU_Pr,
+                       13:kcomp.SCE20UU_Pr30,
+                       14:kcomp.SCE20UU_Pr30b }
 
         LinBearHouse = self.LinBearHouse_ComboBox.currentIndex()
         Type = Type_values[self.Type_ComboBox.currentIndex()]
-        if LinBearHouse == 0:
-            parts.ThinLinBearHouse1rail(d_lbear = Type,
-                                        fc_slide_axis = VX,
-                                        fc_bot_axis =VZN,
-                                        axis_center = 1,
-                                        mid_center  = 1,
-                                        pos = V0,
-                                        name = 'thinlinbearhouse1rail')
-        elif LinBearHouse == 1:
-            parts.ThinLinBearHouse(d_lbear = Type,
-                                fc_slide_axis = VX,
-                                fc_bot_axis =VZN,
-                                fc_perp_axis = V0,
-                                axis_h = 0,
-                                bolts_side = 1,
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
+        
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            if LinBearHouse == 0:
+                parts.ThinLinBearHouse1rail(d_lbear = Type,
+                                            fc_slide_axis = axis_d, #VX
+                                            fc_bot_axis =axis_h, #VZN
+                                            axis_center = 1,
+                                            mid_center  = 1,
+                                            pos = pos,
+                                            name = 'thinlinbearhouse1rail')
+            elif LinBearHouse == 1:
+                parts.ThinLinBearHouse(d_lbear = Type,
+                                    fc_slide_axis = axis_d, #VX
+                                    fc_bot_axis =axis_h, #VZN
+                                    fc_perp_axis = V0,
+                                    axis_h = 0,
+                                    bolts_side = 1,
+                                    axis_center = 1,
+                                    mid_center  = 1,
+                                    bolt_center  = 0,
+                                    pos = pos,
+                                    name = 'thinlinbearhouse')
+            elif LinBearHouse == 2:
+                parts.LinBearHouse(d_lbearhousing = Type, #SC only
+                                fc_slide_axis = axis_d, #VX
+                                fc_bot_axis =axis_h, #VZN
                                 axis_center = 1,
                                 mid_center  = 1,
-                                bolt_center  = 0,
-                                pos = V0,
-                                name = 'thinlinbearhouse')
-        elif LinBearHouse == 2:
-            parts.LinBearHouse(d_lbearhousing = Type, #SC only
-                               fc_slide_axis = VX,
-                               fc_bot_axis =VZN,
-                               axis_center = 1,
-                               mid_center  = 1,
-                               pos = V0,
-                               name = 'linbearhouse')
+                                pos = pos,
+                                name = 'linbearhouse')
 
-        else:
-            parts.ThinLinBearHouseAsim(d_lbear = Type,
-                                       fc_fro_ax = VX,
-                                       fc_bot_ax =VZN,
-                                       fc_sid_ax = V0,
-                                       axis_h = 0,
-                                       bolts_side = 1,
-                                       refcen_hei = 1,
-                                       refcen_dep  = 1,
-                                       refcen_wid  = 1,
-                                       bolt2cen_wid_n = 0,
-                                       bolt2cen_wid_p = 0,
-                                       pos = V0,
-                                       name = 'thinlinbearhouse_asim')
+            else:
+                parts.ThinLinBearHouseAsim(d_lbear = Type,
+                                        fc_fro_ax = VX,
+                                        fc_bot_ax =VZN,
+                                        fc_sid_ax = V0,
+                                        axis_h = 0,
+                                        bolts_side = 1,
+                                        refcen_hei = 1,
+                                        refcen_dep  = 1,
+                                        refcen_wid  = 1,
+                                        bolt2cen_wid_n = 0,
+                                        bolt2cen_wid_p = 0,
+                                        pos = pos,
+                                        name = 'thinlinbearhouse_asim')
 
 
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -1023,7 +1644,7 @@ class LinBearHouseTaskPanel:
 
 class _stop_holderCmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel = stop_holderTaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel)
 
@@ -1045,58 +1666,144 @@ class _stop_holderCmd:
 class stop_holderTaskPanel:
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: width ----
-        self.Width_Label = QtGui.QLabel("Width:")
-        self.Width_Value = QtGui.QDoubleSpinBox()
+        self.Width_Label = QtWidgets.QLabel("Width:")
+        self.Width_Value = QtWidgets.QDoubleSpinBox()
         self.Width_Value.setValue(21)
         self.Width_Value.setSuffix("mm")
 
         # ---- row 1: height ----
-        self.Heigth_Label = QtGui.QLabel("Heigth:")
-        self.Heigth_Value = QtGui.QDoubleSpinBox()
+        self.Heigth_Label = QtWidgets.QLabel("Heigth:")
+        self.Heigth_Value = QtWidgets.QDoubleSpinBox()
         self.Heigth_Value.setValue(31)
         self.Heigth_Value.setSuffix("mm")
 
         # ---- row 2: Thikness ----
-        self.Thickness_Label = QtGui.QLabel("Thickness:")
-        self.Thickness_Value = QtGui.QDoubleSpinBox()
+        self.Thickness_Label = QtWidgets.QLabel("Thickness:")
+        self.Thickness_Value = QtWidgets.QDoubleSpinBox()
         self.Thickness_Value.setValue(4)
         self.Thickness_Value.setSuffix("mm")
 
         # ---- row 3: Metric Bolt ----
-        self.Bolt_Label = QtGui.QLabel("Metric Bolt")
-        self.Bolt_ComboBox = QtGui.QComboBox()
+        self.Bolt_Label = QtWidgets.QLabel("Metric Bolt")
+        self.Bolt_ComboBox = QtWidgets.QComboBox()
         self.TextNutType = ["M3","M4","M5","M6"]
         self.Bolt_ComboBox.addItems(self.TextNutType)
         self.Bolt_ComboBox.setCurrentIndex(self.TextNutType.index('M3'))
 
         # ---- row 4: Rail ----
-        self.Rail_Label = QtGui.QLabel("Rail Size:")
-        self.Rail_ComboBox = QtGui.QComboBox()
+        self.Rail_Label = QtWidgets.QLabel("Rail Size:")
+        self.Rail_ComboBox = QtWidgets.QComboBox()
         self.Rail_ComboBox.addItems(["10mm","20mm","30mm"])
         self.Rail_ComboBox.setCurrentIndex(0)
 
         # ---- row 5: Reinforce ----
-        self.Reinforce_Label = QtGui.QLabel("Reinforce:")
-        self.Reinforce_ComboBox = QtGui.QComboBox()
+        self.Reinforce_Label = QtWidgets.QLabel("Reinforce:")
+        self.Reinforce_ComboBox = QtWidgets.QComboBox()
         self.Reinforce_ComboBox.addItems(["No","Yes"])
         self.Reinforce_ComboBox.setCurrentIndex(1)
 
+        # ---- row 6: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # ---- row 9: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 12: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/StopHolder.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Width_Label,0,0,1,1)
-        layout.addWidget(self.Width_Value,0,1,1,1)
-        layout.addWidget(self.Width_Label,1,0,1,1)
-        layout.addWidget(self.Width_Value,1,1,1,1)
-        layout.addWidget(self.Thickness_Label,2,0,1,1)
-        layout.addWidget(self.Thickness_Value,2,1,1,1)
-        layout.addWidget(self.Bolt_Label,3,0,1,1)
-        layout.addWidget(self.Bolt_ComboBox,3,1,1,1)
-        layout.addWidget(self.Rail_Label,4,0,1,1)
-        layout.addWidget(self.Rail_ComboBox,4,1,1,1)        
-        layout.addWidget(self.Reinforce_Label,5,0,1,1)
-        layout.addWidget(self.Reinforce_ComboBox,5,1,1,1)
+        layout.addWidget(self.Width_Label,0,0,1,2)
+        layout.addWidget(self.Width_Value,0,1,1,2)
+        layout.addWidget(self.Heigth_Label,1,0,1,2)
+        layout.addWidget(self.Heigth_Value,1,1,1,2)
+
+        layout.addWidget(self.Thickness_Label,2,0,1,2)
+        layout.addWidget(self.Thickness_Value,2,1,1,2)
+
+        layout.addWidget(self.Bolt_Label,3,0,1,2)
+        layout.addWidget(self.Bolt_ComboBox,3,1,1,2)
+
+        layout.addWidget(self.Rail_Label,4,0,1,2)
+        layout.addWidget(self.Rail_ComboBox,4,1,1,2)   
+
+        layout.addWidget(self.Reinforce_Label,5,0,1,2)
+        layout.addWidget(self.Reinforce_ComboBox,5,1,1,2)
+
+        layout.addWidget(self.Label_position,6,0,1,2)
+        layout.addWidget(self.Label_pos_x,6,1,1,2)
+        layout.addWidget(self.pos_x,6,2,1,2)
+        layout.addWidget(self.Label_pos_y,7,1,1,2)
+        layout.addWidget(self.pos_y,7,2,1,2)
+        layout.addWidget(self.Label_pos_z,8,1,1,2)
+        layout.addWidget(self.pos_z,8,2,1,2)
+
+        layout.addWidget(self.Label_axis,9,0,1,4)
+        layout.addWidget(self.Label_axis_d,9,1,1,4)
+        layout.addWidget(self.axis_d_x,9,2,1,4)
+        layout.addWidget(self.axis_d_y,9,3,1,4)
+        layout.addWidget(self.axis_d_z,9,4,1,4)
+        layout.addWidget(self.Label_axis_w,10,1,1,4)
+        layout.addWidget(self.axis_w_x,10,2,1,4)
+        layout.addWidget(self.axis_w_y,10,3,1,4)
+        layout.addWidget(self.axis_w_z,10,4,1,4)
+        layout.addWidget(self.Label_axis_h,11,1,1,4)
+        layout.addWidget(self.axis_h_x,11,2,1,4)
+        layout.addWidget(self.axis_h_y,11,3,1,4)
+        layout.addWidget(self.axis_h_z,11,4,1,4)
+
+        layout.addWidget(image,12,0,1,0)
 
     def accept(self):
         Width = self.Width_Value.value()
@@ -1114,29 +1821,34 @@ class stop_holderTaskPanel:
         Reinforce_values = {0: 0, #No
                             1: 1}#Yes
         Reinforce = Reinforce_values[self.Reinforce_ComboBox.currentIndex()]
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
+        
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            parts.hallestop_holder(stp_w = Width,
+                                stp_h = Heigth,
+                                base_thick = Thick,
+                                sup_thick = Thick,
+                                bolt_base_d = Bolt, #metric of the bolt 
+                                bolt_sup_d = Bolt, #metric of the bolt
+                                bolt_sup_sep = 17.,  # fixed value
+                                alu_rail_l = Rail,
+                                stp_rail_l = Rail,
+                                xtr_bolt_head = 3,
+                                xtr_bolt_head_d = 0,
+                                reinforce = Reinforce,
+                                base_min_dist = 1,
+                                fc_perp_ax = axis_h,#VZ,
+                                fc_lin_ax = axis_d, #VX,
+                                pos = pos,
+                                wfco=1,
+                                name = 'stop_holder')
 
-        parts.hallestop_holder(stp_w = Width,
-                              stp_h = Heigth,
-                              base_thick = Thick,
-                              sup_thick = Thick,
-                              bolt_base_d = Bolt, #metric of the bolt 
-                              bolt_sup_d = Bolt, #metric of the bolt
-                              bolt_sup_sep = 17.,  # fixed value
-                              alu_rail_l = Rail,
-                              stp_rail_l = Rail,
-                              xtr_bolt_head = 3,
-                              xtr_bolt_head_d = 0,
-                              reinforce = Reinforce,
-                              base_min_dist = 1,
-                              fc_perp_ax = VZ,
-                              fc_lin_ax = VX,
-                              pos = V0,
-                              wfco=1,
-                              name = 'stop_holder')
-
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.SendMsgToActiveView("ViewFit")
-        FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.Control.closeDialog() #close the dialog
         
 #  _________________________________________________________________
 # |                                                                 |
@@ -1145,7 +1857,7 @@ class stop_holderTaskPanel:
 
 class _FilterStageCmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel = FilterStageTaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel)
 
@@ -1167,94 +1879,121 @@ class _FilterStageCmd:
 class FilterStageTaskPanel:                                    
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Move distance
-        self.move_l_Label = QtGui.QLabel("Move distance:")
-        self.move_l_Value = QtGui.QDoubleSpinBox()
+        self.move_l_Label = QtWidgets.QLabel("Move distance:")
+        self.move_l_Value = QtWidgets.QDoubleSpinBox()
         self.move_l_Value.setValue(60)
         self.move_l_Value.setSuffix(' mm')
 
         # ---- row 1: Filter Length ----
-        self.Filter_Length_Label = QtGui.QLabel("Filter Length")
-        self.Filter_Length_Value = QtGui.QDoubleSpinBox()
+        self.Filter_Length_Label = QtWidgets.QLabel("Filter Length")
+        self.Filter_Length_Value = QtWidgets.QDoubleSpinBox()
         self.Filter_Length_Value.setValue(60)
         self.Filter_Length_Value.setSuffix(' mm')
 
         # ---- row 2: Filter Width ----
-        self.Filter_Width_Label = QtGui.QLabel("Filter Width")
-        self.Filter_Width_Value = QtGui.QDoubleSpinBox()
+        self.Filter_Width_Label = QtWidgets.QLabel("Filter Width")
+        self.Filter_Width_Value = QtWidgets.QDoubleSpinBox()
         self.Filter_Width_Value.setValue(25)
         self.Filter_Width_Value.setSuffix(' mm')
 
         # ---- row 3: Base width ----
-        self.base_w_Label = QtGui.QLabel("Base width:")  #10/15/20/30/40
-        self.ComboBox_base_w = QtGui.QComboBox()
+        self.base_w_Label = QtWidgets.QLabel("Base width:")  #10/15/20/30/40
+        self.ComboBox_base_w = QtWidgets.QComboBox()
         self.TextBase_W = ["10mm","15mm","20mm","30mm","40mm"] 
         self.ComboBox_base_w.addItems(self.TextBase_W)
         self.ComboBox_base_w.setCurrentIndex(self.TextBase_W.index('20mm'))
                 
         # ---- row 4: Tensioner Stroke ----
-        self.tens_stroke_Label = QtGui.QLabel("Tensioner stroke:")
-        self.tens_stroke_Value = QtGui.QDoubleSpinBox()
+        self.tens_stroke_Label = QtWidgets.QLabel("Tensioner stroke:")
+        self.tens_stroke_Value = QtWidgets.QDoubleSpinBox()
         self.tens_stroke_Value.setValue(20)
         self.tens_stroke_Value.setSuffix(' mm')
 
         # ---- row 5: Wall thick ----
-        self.wall_th_Label = QtGui.QLabel("Wall thick:")
-        self.wall_th_Value = QtGui.QDoubleSpinBox()
+        self.wall_th_Label = QtWidgets.QLabel("Wall thick:")
+        self.wall_th_Value = QtWidgets.QDoubleSpinBox()
         self.wall_th_Value.setValue(3)
         self.wall_th_Value.setSuffix(' mm')
 
         # ---- row 6: Nut Type ----
-        self.nut_hole_Label = QtGui.QLabel("Nut Type:")   
-        self.ComboBox_Nut_Hole = QtGui.QComboBox()
+        self.nut_hole_Label = QtWidgets.QLabel("Nut Type:")   
+        self.ComboBox_Nut_Hole = QtWidgets.QComboBox()
         self.TextNutType = ["M3","M4","M5","M6"]
         self.ComboBox_Nut_Hole.addItems(self.TextNutType)
         self.ComboBox_Nut_Hole.setCurrentIndex(self.TextNutType.index('M3'))
 
         # ---- row 7: Size Holder ----
-        self.Size_Holder_Label = QtGui.QLabel("Motor size")
-        self.ComboBox_Size_Holder = QtGui.QComboBox()
+        self.Size_Holder_Label = QtWidgets.QLabel("Motor size")
+        self.ComboBox_Size_Holder = QtWidgets.QComboBox()
         self.TextSizeHolder = ["8","11","14","17","23","34","42"]
         self.ComboBox_Size_Holder.addItems(self.TextSizeHolder)
         self.ComboBox_Size_Holder.setCurrentIndex(self.TextSizeHolder.index('14'))
 
         # ---- row 8: Rail Max High  ----
-        self.motor_high_Label = QtGui.QLabel("Rail high Motor holder")
-        self.motor_high_Value = QtGui.QDoubleSpinBox()
+        self.motor_high_Label = QtWidgets.QLabel("Rail high Motor holder")
+        self.motor_high_Value = QtWidgets.QDoubleSpinBox()
         self.motor_high_Value.setValue(25) #Value printed
         self.motor_high_Value.setSuffix(' mm')
 
         # ---- row 9: Thikness ----
-        self.Thikness_Label = QtGui.QLabel("Motor holder thikness:")
-        self.Thikness_Value = QtGui.QDoubleSpinBox()
+        self.Thikness_Label = QtWidgets.QLabel("Motor holder thikness:")
+        self.Thikness_Value = QtWidgets.QDoubleSpinBox()
         self.Thikness_Value.setValue(3)
         self.Thikness_Value.setMinimum(2)
         self.Thikness_Value.setSuffix(' mm')
 
-        # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.move_l_Label,0,0,1,1)
-        layout.addWidget(self.move_l_Value,0,1,1,1)
-        layout.addWidget(self.Filter_Length_Label,1,0,1,1)
-        layout.addWidget(self.Filter_Length_Value,1,1,1,1)
-        layout.addWidget(self.Filter_Width_Label,2,0,1,1)
-        layout.addWidget(self.Filter_Width_Value,2,1,1,1)
-        layout.addWidget(self.base_w_Label,3,0,1,1)
-        layout.addWidget(self.ComboBox_base_w,3,1,1,1)
-        layout.addWidget(self.tens_stroke_Label,4,0,1,1)
-        layout.addWidget(self.tens_stroke_Value,4,1,1,1)
-        layout.addWidget(self.wall_th_Label,5,0,1,1)
-        layout.addWidget(self.wall_th_Value,5,1,1,1)
-        layout.addWidget(self.nut_hole_Label,6,0,1,1)
-        layout.addWidget(self.ComboBox_Nut_Hole,6,1,1,1)
-        layout.addWidget(self.Size_Holder_Label,7,0,1,1)
-        layout.addWidget(self.ComboBox_Size_Holder,7,1,1,1)
-        layout.addWidget(self.motor_high_Label,8,0,1,1)
-        layout.addWidget(self.motor_high_Value,8,1,1,1)
-        layout.addWidget(self.Thikness_Label,9,0,1,1)
-        layout.addWidget(self.Thikness_Value,9,1,1,1)
+        # ---- row 10: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
 
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.move_l_Label,0,0,1,2)
+        layout.addWidget(self.move_l_Value,0,1,1,2)
+
+        layout.addWidget(self.Filter_Length_Label,1,0,1,2)
+        layout.addWidget(self.Filter_Length_Value,1,1,1,2)
+        layout.addWidget(self.Filter_Width_Label,2,0,1,2)
+        layout.addWidget(self.Filter_Width_Value,2,1,1,2)
+
+        layout.addWidget(self.base_w_Label,3,0,1,2)
+        layout.addWidget(self.ComboBox_base_w,3,1,1,2)
+
+        layout.addWidget(self.tens_stroke_Label,4,0,1,2)
+        layout.addWidget(self.tens_stroke_Value,4,1,1,2)
+
+        layout.addWidget(self.wall_th_Label,5,0,1,2)
+        layout.addWidget(self.wall_th_Value,5,1,1,2)
+
+        layout.addWidget(self.nut_hole_Label,6,0,1,2)
+        layout.addWidget(self.ComboBox_Nut_Hole,6,1,1,2)
+
+        layout.addWidget(self.Size_Holder_Label,7,0,1,2)
+        layout.addWidget(self.ComboBox_Size_Holder,7,1,1,2)
+
+        layout.addWidget(self.motor_high_Label,8,0,1,2)
+        layout.addWidget(self.motor_high_Value,8,1,1,2)
+
+        layout.addWidget(self.Thikness_Label,9,0,1,2)
+        layout.addWidget(self.Thikness_Value,9,1,1,2)
+
+        layout.addWidget(self.Label_position,10,0,1,2)
+        layout.addWidget(self.Label_pos_x,10,1,1,2)
+        layout.addWidget(self.pos_x,10,2,1,2)
+        layout.addWidget(self.Label_pos_y,11,1,1,2)
+        layout.addWidget(self.pos_y,11,2,1,2)
+        layout.addWidget(self.Label_pos_z,12,1,1,2)
+        layout.addWidget(self.pos_z,12,2,1,2)
 
     # Ok and Cancel buttons are created by default in FreeCAD Task Panels
     # What is done when we click on the ok button.
@@ -1276,7 +2015,9 @@ class FilterStageTaskPanel:
         h_motor=self.motor_high_Value.value()
         thik_motor = self.Thikness_Value.value()
 
-        filter_stage_fun(move_l,Filter_Length,Filter_Width, nut_hole, tens_stroke, base_w, wall_thick, size_motor, h_motor, thik_motor)
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+
+        filter_stage_fun(move_l,Filter_Length,Filter_Width, nut_hole, tens_stroke, base_w, wall_thick, size_motor, h_motor, thik_motor, pos)
             #pulley_h => belt_pos_h
             #nut_hole => bolttens_mtr
             #tens_stroke => tens_stroke_Var
@@ -1293,7 +2034,7 @@ class FilterStageTaskPanel:
 
 class _FilterHolderCmd:
     def Activated(self):
-        Widget_FilterHolder = QtGui.QWidget()
+        Widget_FilterHolder = QtWidgets.QWidget()
         Panel_FilterHolder = FilterHolderTaskPanel(Widget_FilterHolder)
         FreeCADGui.Control.showDialog(Panel_FilterHolder) 
 
@@ -1314,74 +2055,192 @@ class _FilterHolderCmd:
 class FilterHolderTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Filter Lenth ----
-        self.Filter_Length_Label = QtGui.QLabel("Filter Length")
-        self.Filter_Length_Value = QtGui.QDoubleSpinBox()
+        self.Filter_Length_Label = QtWidgets.QLabel("Filter Length")
+        self.Filter_Length_Value = QtWidgets.QDoubleSpinBox()
         self.Filter_Length_Value.setValue(60)
         self.Filter_Length_Value.setSuffix(' mm')
 
         # ---- row 1: Filter Width ----
-        self.Filter_Width_Label = QtGui.QLabel("Filter Width")
-        self.Filter_Width_Value = QtGui.QDoubleSpinBox()
+        self.Filter_Width_Label = QtWidgets.QLabel("Filter Width")
+        self.Filter_Width_Value = QtWidgets.QDoubleSpinBox()
         self.Filter_Width_Value.setValue(25)
         self.Filter_Width_Value.setSuffix(' mm')
 
-        # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Filter_Length_Label,0,0,1,1)
-        layout.addWidget(self.Filter_Length_Value,0,1,1,1)
-        layout.addWidget(self.Filter_Width_Label,1,0,1,1)
-        layout.addWidget(self.Filter_Width_Value,1,1,1,1)
+        # ---- row 2: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
 
+        # d :
+        self.Label_pos_d = QtWidgets.QLabel("in d:")
+        self.pos_d = QtWidgets.QComboBox()
+        self.pos_d.addItems(['0','1','2','3','4','5','6','7','8','9','10','11','12'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtWidgets.QLabel("in w:")
+        self.pos_w = QtWidgets.QComboBox()
+        self.pos_w.addItems(['0','1','2','3','4','5','6','7'])
+        self.pos_w.setCurrentIndex(0)
+
+        # h :
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
+        self.pos_h.addItems(['0','1','2','3','4','5','6','7','8','9'])
+        self.pos_h.setCurrentIndex(0)
+
+        # ---- row 8: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 11: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/FilterHolder.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
+        # row X, column X, rowspan X, colspan X
+        layout.addWidget(self.Filter_Length_Label,0,0,1,2)
+        layout.addWidget(self.Filter_Length_Value,0,1,1,2)
+
+        layout.addWidget(self.Filter_Width_Label,1,0,1,2)
+        layout.addWidget(self.Filter_Width_Value,1,1,1,2)
+
+        layout.addWidget(self.Label_position,2,0,1,2)
+        layout.addWidget(self.Label_pos_x,2,1,1,2)
+        layout.addWidget(self.pos_x,2,2,1,2)
+        layout.addWidget(self.Label_pos_y,3,1,1,2)
+        layout.addWidget(self.pos_y,3,2,1,2)
+        layout.addWidget(self.Label_pos_z,4,1,1,2)
+        layout.addWidget(self.pos_z,4,2,1,2)
+
+        layout.addWidget(self.Label_pos_d,5,1,1,2)
+        layout.addWidget(self.pos_d,5,2,1,2)
+        layout.addWidget(self.Label_pos_w,6,1,1,2)
+        layout.addWidget(self.pos_w,6,2,1,2)
+        layout.addWidget(self.Label_pos_h,7,1,1,2)
+        layout.addWidget(self.pos_h,7,2,1,2)
+
+        layout.addWidget(self.Label_axis,8,0,1,4)
+        layout.addWidget(self.Label_axis_d,8,1,1,4)
+        layout.addWidget(self.axis_d_x,8,2,1,4)
+        layout.addWidget(self.axis_d_y,8,3,1,4)
+        layout.addWidget(self.axis_d_z,8,4,1,4)
+        layout.addWidget(self.Label_axis_w,9,1,1,4)
+        layout.addWidget(self.axis_w_x,9,2,1,4)
+        layout.addWidget(self.axis_w_y,9,3,1,4)
+        layout.addWidget(self.axis_w_z,9,4,1,4)
+        layout.addWidget(self.Label_axis_h,10,1,1,4)
+        layout.addWidget(self.axis_h_x,10,2,1,4)
+        layout.addWidget(self.axis_h_y,10,3,1,4)
+        layout.addWidget(self.axis_h_z,10,4,1,4)
+
+        layout.addWidget(image,11,0,1,0)
 
     def accept(self):
         Filter_Length = self.Filter_Length_Value.value()
         Filter_Width = self.Filter_Width_Value.value()
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        positions_d = [0,1,2,3,4,5,6,7,8,9,10,11,12]
+        positions_w = [0,1,2,3,4,5,6,7]
+        positions_h = [0,1,2,3,4,5,6,7,8,9]
+        pos_d = positions_d[self.pos_d.currentIndex()]
+        pos_w = positions_w[self.pos_w.currentIndex()]
+        pos_h = positions_h[self.pos_h.currentIndex()]
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
 
-        filter_holder_clss.PartFilterHolder(filter_l = Filter_Length, #60     
-                                            filter_w = Filter_Width, #25
-                                            filter_t = 2.5,
-                                            base_h = 6.,
-                                            hold_d = 10.,
-                                            filt_supp_in = 2.,
-                                            filt_rim = 3.,
-                                            filt_cen_d = 30,
-                                            fillet_r = 1.,
-                                            # linear guides SEBLV16 y SEBS15, y MGN12H:
-                                            boltcol1_dist = 20/2.,
-                                            boltcol2_dist = 12.5, #thorlabs breadboard distance
-                                            boltcol3_dist = 25,
-                                            boltrow1_h = 0,
-                                            boltrow1_2_dist = 12.5,
-                                            # linear guide MGN12H
-                                            boltrow1_3_dist = 20.,
-                                            # linear guide SEBLV16 and SEBS15
-                                            boltrow1_4_dist = 25.,
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            filter_holder_clss.PartFilterHolder(filter_l = Filter_Length, #60     
+                                                filter_w = Filter_Width, #25
+                                                filter_t = 2.5,
+                                                base_h = 6.,
+                                                hold_d = 10.,
+                                                filt_supp_in = 2.,
+                                                filt_rim = 3.,
+                                                filt_cen_d = 30,
+                                                fillet_r = 1.,
+                                                # linear guides SEBLV16 y SEBS15, y MGN12H:
+                                                boltcol1_dist = 20/2.,
+                                                boltcol2_dist = 12.5, #thorlabs breadboard distance
+                                                boltcol3_dist = 25,
+                                                boltrow1_h = 0,
+                                                boltrow1_2_dist = 12.5,
+                                                # linear guide MGN12H
+                                                boltrow1_3_dist = 20.,
+                                                # linear guide SEBLV16 and SEBS15
+                                                boltrow1_4_dist = 25.,
 
-                                            bolt_cen_mtr = 4, 
-                                            bolt_linguide_mtr = 3, # linear guide bolts 
+                                                bolt_cen_mtr = 4, 
+                                                bolt_linguide_mtr = 3, # linear guide bolts 
 
-                                            beltclamp_t = 3.,
-                                            beltclamp_l = 12.,
-                                            beltclamp_h = 8.,
-                                            clamp_post_dist = 4.,
-                                            sm_beltpost_r = 1.,
+                                                beltclamp_t = 3.,
+                                                beltclamp_l = 12.,
+                                                beltclamp_h = 8.,
+                                                clamp_post_dist = 4.,
+                                                sm_beltpost_r = 1.,
 
-                                            tol = kcomp.TOL,
-                                            axis_d = VX,
-                                            axis_w = VY,
-                                            axis_h = VZ,
-                                            pos_d = 0,
-                                            pos_w = 0,
-                                            pos_h = 0,
-                                            pos = V0,
-                                            model_type = 0, # exact
-                                            name = 'filter_holder')
-        
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.SendMsgToActiveView("ViewFit")
-        FreeCADGui.Control.closeDialog() #close the dialog
+                                                tol = kcomp.TOL,
+                                                axis_d = axis_d,#VX,
+                                                axis_w = axis_w,#VY,
+                                                axis_h = axis_h,#VZ,
+                                                pos_d = pos_d,
+                                                pos_w = pos_w,
+                                                pos_h = pos_h,
+                                                pos = pos,
+                                                model_type = 0, # exact
+                                                name = 'filter_holder')
+            
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.Control.closeDialog() #close the dialog
     
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
@@ -1396,7 +2255,7 @@ class _TensionerCmd:
     def Activated(self):
         # what is done when the command is clicked
         # creates a panel with a dialog
-        Widget_Tensioner = QtGui.QWidget()
+        Widget_Tensioner = QtWidgets.QWidget()
         Panel_Tensioner = TensionerTaskPanel(Widget_Tensioner)
         FreeCADGui.Control.showDialog(Panel_Tensioner) 
         
@@ -1418,60 +2277,172 @@ class _TensionerCmd:
 class TensionerTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Belt High ----
-        self.belt_h_Label = QtGui.QLabel("Belt hight:")
-        self.belt_h_Value = QtGui.QDoubleSpinBox()
+        self.belt_h_Label = QtWidgets.QLabel("Belt hight:")
+        self.belt_h_Value = QtWidgets.QDoubleSpinBox()
         self.belt_h_Value.setValue(20)
         self.belt_h_Value.setSuffix(' mm')
 
         # ---- row 1: Base width ----
-        self.base_w_Label = QtGui.QLabel("Base width:")  #10/15/20/30/40
-        self.ComboBox_base_w = QtGui.QComboBox()
+        self.base_w_Label = QtWidgets.QLabel("Base width:")  #10/15/20/30/40
+        self.ComboBox_base_w = QtWidgets.QComboBox()
         self.TextBase_W = ["10mm","15mm","20mm","30mm","40mm"] 
         self.ComboBox_base_w.addItems(self.TextBase_W)
         self.ComboBox_base_w.setCurrentIndex(self.TextBase_W.index('20mm'))
                 
         # ---- row 2: Tensioner Stroke ----
-        self.tens_stroke_Label = QtGui.QLabel("Tensioner stroke:")
-        self.tens_stroke_Value = QtGui.QDoubleSpinBox()
+        self.tens_stroke_Label = QtWidgets.QLabel("Tensioner stroke:")
+        self.tens_stroke_Value = QtWidgets.QDoubleSpinBox()
         self.tens_stroke_Value.setValue(20)
         self.tens_stroke_Value.setSuffix(' mm')
 
         # ---- row 3: Wall thick ----
-        self.wall_th_Label = QtGui.QLabel("Wall thick:")
-        self.wall_th_Value = QtGui.QDoubleSpinBox()
+        self.wall_th_Label = QtWidgets.QLabel("Wall thick:")
+        self.wall_th_Value = QtWidgets.QDoubleSpinBox()
         self.wall_th_Value.setValue(3)
         self.wall_th_Value.setSuffix(' mm')
 
         # ---- row 4: Nut Type ----
-        self.nut_hole_Label = QtGui.QLabel("Nut Type:")   
-        self.ComboBox_Nut_Hole = QtGui.QComboBox()
+        self.nut_hole_Label = QtWidgets.QLabel("Nut Type:")   
+        self.ComboBox_Nut_Hole = QtWidgets.QComboBox()
         self.TextNutType = ["M3","M4","M5","M6"]
         self.ComboBox_Nut_Hole.addItems(self.TextNutType)
         self.ComboBox_Nut_Hole.setCurrentIndex(self.TextNutType.index('M3'))
 
         # ---- row 5: Set Holder ----
-        self.Set_Label = QtGui.QLabel("See Set")
-        self.ComboBox_Set = QtGui.QComboBox()
+        self.Set_Label = QtWidgets.QLabel("See Set")
+        self.ComboBox_Set = QtWidgets.QComboBox()
         self.TextSet = ["No","Yes"]
         self.ComboBox_Set.addItems(self.TextSet)
         self.ComboBox_Set.setCurrentIndex(self.TextSet.index('No'))
 
+        # ---- row 6: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # d :
+        self.Label_pos_d = QtWidgets.QLabel("in d:")
+        self.pos_d = QtWidgets.QComboBox()
+        self.pos_d.addItems(['0','1','2','3','4','5','6'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtWidgets.QLabel("in w:")
+        self.pos_w = QtWidgets.QComboBox()
+        self.pos_w.addItems(['0','1','2'])
+        self.pos_w.setCurrentIndex(0)
+
+        # h :
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
+        self.pos_h.addItems(['0','1','2'])
+        self.pos_h.setCurrentIndex(0)
+
+        # ---- row 12: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(0)
+        self.axis_d_y.setValue(-1)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(-1)
+        self.axis_w_y.setValue(0)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 15: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/Tensioner.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.belt_h_Label,0,0,1,1)
-        layout.addWidget(self.belt_h_Value,0,1,1,1)
-        layout.addWidget(self.base_w_Label,1,0,1,1)
-        layout.addWidget(self.ComboBox_base_w,1,1,1,1)
-        layout.addWidget(self.tens_stroke_Label,2,0,1,1)
-        layout.addWidget(self.tens_stroke_Value,2,1,1,1)
-        layout.addWidget(self.wall_th_Label,3,0,1,1)
-        layout.addWidget(self.wall_th_Value,3,1,1,1)
-        layout.addWidget(self.nut_hole_Label,4,0,1,1)
-        layout.addWidget(self.ComboBox_Nut_Hole,4,1,1,1)
-        layout.addWidget(self.Set_Label,5,0,1,1)
-        layout.addWidget(self.ComboBox_Set,5,1,1,1)
+        layout.addWidget(self.belt_h_Label,0,0,1,2)
+        layout.addWidget(self.belt_h_Value,0,1,1,2)
+
+        layout.addWidget(self.base_w_Label,1,0,1,2)
+        layout.addWidget(self.ComboBox_base_w,1,1,1,2)
+
+        layout.addWidget(self.tens_stroke_Label,2,0,1,2)
+        layout.addWidget(self.tens_stroke_Value,2,1,1,2)
+
+        layout.addWidget(self.wall_th_Label,3,0,1,2)
+        layout.addWidget(self.wall_th_Value,3,1,1,2)
+
+        layout.addWidget(self.nut_hole_Label,4,0,1,2)
+        layout.addWidget(self.ComboBox_Nut_Hole,4,1,1,2)
+
+        layout.addWidget(self.Set_Label,5,0,1,2)
+        layout.addWidget(self.ComboBox_Set,5,1,1,2)
+
+        layout.addWidget(self.Label_position,6,0,1,2)
+        layout.addWidget(self.Label_pos_x,6,1,1,2)
+        layout.addWidget(self.pos_x,6,2,1,2)
+        layout.addWidget(self.Label_pos_y,7,1,1,2)
+        layout.addWidget(self.pos_y,7,2,1,2)
+        layout.addWidget(self.Label_pos_z,8,1,1,2)
+        layout.addWidget(self.pos_z,8,2,1,2)
+
+        layout.addWidget(self.Label_pos_d,9,1,1,2)
+        layout.addWidget(self.pos_d,9,2,1,2)
+        layout.addWidget(self.Label_pos_w,10,1,1,2)
+        layout.addWidget(self.pos_w,10,2,1,2)
+        layout.addWidget(self.Label_pos_h,11,1,1,2)
+        layout.addWidget(self.pos_h,11,2,1,2)
+
+        layout.addWidget(self.Label_axis,12,0,1,4)
+        layout.addWidget(self.Label_axis_d,12,1,1,4)
+        layout.addWidget(self.axis_d_x,12,2,1,4)
+        layout.addWidget(self.axis_d_y,12,3,1,4)
+        layout.addWidget(self.axis_d_z,12,4,1,4)
+        layout.addWidget(self.Label_axis_w,13,1,1,4)
+        layout.addWidget(self.axis_w_x,13,2,1,4)
+        layout.addWidget(self.axis_w_y,13,3,1,4)
+        layout.addWidget(self.axis_w_z,13,4,1,4)
+        layout.addWidget(self.Label_axis_h,14,1,1,4)
+        layout.addWidget(self.axis_h_x,14,2,1,4)
+        layout.addWidget(self.axis_h_y,14,3,1,4)
+        layout.addWidget(self.axis_h_z,14,4,1,4)
+
+        layout.addWidget(image,15,0,1,0)
 
     def accept(self):
         IndexNut = {0:3,1:4,2:5,3:6}
@@ -1482,68 +2453,78 @@ class TensionerTaskPanel:
         base_w = IndexBase[self.ComboBox_base_w.currentIndex()]
         wall_thick = self.wall_th_Value.value()
         Set_Select = self.ComboBox_Set.currentIndex()
-
-        tensioner_clss.TensionerSet(aluprof_w = base_w,#20.,
-                                    belt_pos_h = tensioner_belt_h, 
-                                    hold_bas_h = 0,
-                                    hold_hole_2sides = 1,
-                                    boltidler_mtr = 3,
-                                    bolttens_mtr = nut_hole,   #métrica del tensor
-                                    boltaluprof_mtr = nut_hole,
-                                    tens_stroke = tens_stroke ,
-                                    wall_thick = wall_thick,
-                                    in_fillet = 2.,
-                                    pulley_stroke_dist = 0,
-                                    nut_holder_thick = nut_hole ,   
-                                    opt_tens_chmf = 0,
-                                    min_width = 0,
-                                    tol = kcomp.TOL,
-                                    axis_d = VY.negative(),
-                                    axis_w = VX.negative(),
-                                    axis_h = VZ,
-                                    pos_d = 0.,
-                                    pos_w = 0.,
-                                    pos_h = 0.,
-                                    pos = V0,
-                                    name = 'tensioner_set')
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        positions_d = [0,1,2,3,4,5,6]
+        positions_w = [0,1,2]
+        positions_h = [0,1,2]
+        pos_d = positions_d[self.pos_d.currentIndex()]
+        pos_w = positions_w[self.pos_w.currentIndex()]
+        pos_h = positions_h[self.pos_h.currentIndex()]
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
         
-        if Set_Select == 0: #work only for tens_stroke = 20
-            FreeCAD.ActiveDocument.removeObject("bearing_idlpulley_m3")
-            FreeCAD.ActiveDocument.removeObject("idlpull_bearing")
-            FreeCAD.ActiveDocument.removeObject("idlpull_rwash_bt")
-            FreeCAD.ActiveDocument.removeObject("idlpull_lwash_bt")
-            FreeCAD.ActiveDocument.removeObject("idlpull_rwash_tp")
-            FreeCAD.ActiveDocument.removeObject("idlpull_lwash_tp")
-            FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m3")
-            FreeCAD.ActiveDocument.removeObject("din125_washer_m3")  
-            FreeCAD.ActiveDocument.removeObject("leadscrew_nut")
-            FreeCAD.ActiveDocument.removeObject("d9343")
-            FreeCAD.ActiveDocument.removeObject("d934nut_m3")
-            FreeCAD.ActiveDocument.removeObject("d912bolt_m3_l20")
-            if nut_hole == 3:
-                FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
-                FreeCAD.ActiveDocument.removeObject("d912bolt_m3_l30")
-                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m"  + str(int(nut_hole)) + "001")
-                FreeCAD.ActiveDocument.removeObject("din125_washer_m" + str(int(nut_hole)) + "002")  
-            elif nut_hole == 4:
-                FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
-                FreeCAD.ActiveDocument.removeObject("d912bolt_m4_l35")
-                FreeCAD.ActiveDocument.removeObject("din125_washer_m4")
-                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m4")
-            elif nut_hole == 5:  
-                FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
-                FreeCAD.ActiveDocument.removeObject("d912bolt_m5_l40")
-                FreeCAD.ActiveDocument.removeObject("din125_washer_m5")
-                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m5")
-            else: 
-                FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
-                FreeCAD.ActiveDocument.removeObject("d912bolt_m6_l40")
-                FreeCAD.ActiveDocument.removeObject("din125_washer_m6")
-                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m6")
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            tensioner_clss.TensionerSet(aluprof_w = base_w,#20.,
+                                        belt_pos_h = tensioner_belt_h, 
+                                        hold_bas_h = 0,
+                                        hold_hole_2sides = 1,
+                                        boltidler_mtr = 3,
+                                        bolttens_mtr = nut_hole,   #métrica del tensor
+                                        boltaluprof_mtr = nut_hole,
+                                        tens_stroke = tens_stroke ,
+                                        wall_thick = wall_thick,
+                                        in_fillet = 2.,
+                                        pulley_stroke_dist = 0,
+                                        nut_holder_thick = nut_hole ,   
+                                        opt_tens_chmf = 0,
+                                        min_width = 0,
+                                        tol = kcomp.TOL,
+                                        axis_d = axis_d,#VY.negative(),
+                                        axis_w = axis_w,#VX.negative(),
+                                        axis_h = axis_h,#VZ,
+                                        pos_d = pos_d,
+                                        pos_w = pos_w,
+                                        pos_h = pos_h,
+                                        pos = pos,
+                                        name = 'tensioner_set')
+            if Set_Select == 0: #work only for tens_stroke = 20
+                FreeCAD.ActiveDocument.removeObject("bearing_idlpulley_m3")
+                FreeCAD.ActiveDocument.removeObject("idlpull_bearing")
+                FreeCAD.ActiveDocument.removeObject("idlpull_rwash_bt")
+                FreeCAD.ActiveDocument.removeObject("idlpull_lwash_bt")
+                FreeCAD.ActiveDocument.removeObject("idlpull_rwash_tp")
+                FreeCAD.ActiveDocument.removeObject("idlpull_lwash_tp")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m3")
+                FreeCAD.ActiveDocument.removeObject("din125_washer_m3")  
+                FreeCAD.ActiveDocument.removeObject("leadscrew_nut")
+                FreeCAD.ActiveDocument.removeObject("d9343")
+                FreeCAD.ActiveDocument.removeObject("d934nut_m3")
+                FreeCAD.ActiveDocument.removeObject("d912bolt_m3_l20")
+                if nut_hole == 3:
+                    FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
+                    FreeCAD.ActiveDocument.removeObject("d912bolt_m3_l30")
+                    FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m"  + str(int(nut_hole)) + "001")
+                    FreeCAD.ActiveDocument.removeObject("din125_washer_m" + str(int(nut_hole)) + "002")  
+                elif nut_hole == 4:
+                    FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
+                    FreeCAD.ActiveDocument.removeObject("d912bolt_m4_l35")
+                    FreeCAD.ActiveDocument.removeObject("din125_washer_m4")
+                    FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m4")
+                elif nut_hole == 5:  
+                    FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
+                    FreeCAD.ActiveDocument.removeObject("d912bolt_m5_l40")
+                    FreeCAD.ActiveDocument.removeObject("din125_washer_m5")
+                    FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m5")
+                else: 
+                    FreeCAD.ActiveDocument.removeObject("din125_washer_m3001")
+                    FreeCAD.ActiveDocument.removeObject("d912bolt_m6_l40")
+                    FreeCAD.ActiveDocument.removeObject("din125_washer_m6")
+                    FreeCAD.ActiveDocument.removeObject("d912bolt_washer_m6")
 
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.SendMsgToActiveView("ViewFit")
-        FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.Control.closeDialog() #close the dialog
     
     #def reject(self):
     #   FreeCADGui.Control.closeDialog()
@@ -1556,7 +2537,7 @@ class TensionerTaskPanel:
 
 class _BeltClampCmd:
     def Activated(self):
-        Widget_BeltClamp = QtGui.QWidget()
+        Widget_BeltClamp = QtWidgets.QWidget()
         Panel_BeltClamp = BeltClampTaskPanel(Widget_BeltClamp)
         FreeCADGui.Control.showDialog(Panel_BeltClamp)     
     def GetResources(self):
@@ -1576,46 +2557,131 @@ class _BeltClampCmd:
 class BeltClampTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Type ----
-        self.Type_Label = QtGui.QLabel("Type:")   
+        self.Type_Label = QtWidgets.QLabel("Type:")   
 
-        self.Type_ComboBox = QtGui.QComboBox()
+        self.Type_ComboBox = QtWidgets.QComboBox()
         self.TextType = ["Simple","Double"]
         self.Type_ComboBox.addItems(self.TextType)
         self.Type_ComboBox.setCurrentIndex(0)
 
         # ---- row 1: Length ----
-        self.Length_Label = QtGui.QLabel("Length:")
-        self.Length_Value = QtGui.QDoubleSpinBox()
+        self.Length_Label = QtWidgets.QLabel("Length:")
+        self.Length_Value = QtWidgets.QDoubleSpinBox()
         self.Length_Value.setValue(42)
         self.Length_Value.setSuffix(' mm')
         self.Length_Value.setMinimum(42)
 
         # ---- row 2: Width ----
-        self.Width_Label = QtGui.QLabel("Width:")
-        self.Width_Value = QtGui.QDoubleSpinBox()
+        self.Width_Label = QtWidgets.QLabel("Width:")
+        self.Width_Value = QtWidgets.QDoubleSpinBox()
         self.Width_Value.setValue(10.8)
         self.Width_Value.setSuffix(' mm')
         self.Width_Value.setMinimum(10.8)
 
         # ---- row 3: Nut Type ----
-        self.nut_hole_Label = QtGui.QLabel("Nut Type:")   
-        self.ComboBox_Nut_Hole = QtGui.QComboBox()
+        self.nut_hole_Label = QtWidgets.QLabel("Nut Type:")   
+        self.ComboBox_Nut_Hole = QtWidgets.QComboBox()
         self.TextNutType = ["M3","M4","M5","M6"]
         self.ComboBox_Nut_Hole.addItems(self.TextNutType)
         self.ComboBox_Nut_Hole.setCurrentIndex(self.TextNutType.index('M3'))
 
+        # ---- row 4: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # ---- row 7: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 10: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/BeltClamp.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Type_Label,0,0,1,1)
-        layout.addWidget(self.Type_ComboBox,0,1,1,1)
-        layout.addWidget(self.Length_Label,1,0,1,1)
-        layout.addWidget(self.Length_Value,1,1,1,1)
-        layout.addWidget(self.Width_Label,2,0,1,1)
-        layout.addWidget(self.Width_Value,2,1,1,1)
-        layout.addWidget(self.nut_hole_Label,3,0,1,1)
-        layout.addWidget(self.ComboBox_Nut_Hole,3,1,1,1)
+        layout.addWidget(self.Type_Label,0,0,1,2)
+        layout.addWidget(self.Type_ComboBox,0,1,1,2)
+
+        layout.addWidget(self.Length_Label,1,0,1,2)
+        layout.addWidget(self.Length_Value,1,1,1,2)
+
+        layout.addWidget(self.Width_Label,2,0,1,2)
+        layout.addWidget(self.Width_Value,2,1,1,2)
+
+        layout.addWidget(self.nut_hole_Label,3,0,1,2)
+        layout.addWidget(self.ComboBox_Nut_Hole,3,1,1,2)
+
+        layout.addWidget(self.Label_position,4,0,1,2)
+        layout.addWidget(self.Label_pos_x,4,1,1,2)
+        layout.addWidget(self.pos_x,4,2,1,2)
+        layout.addWidget(self.Label_pos_y,5,1,1,2)
+        layout.addWidget(self.pos_y,5,2,1,2)
+        layout.addWidget(self.Label_pos_z,6,1,1,2)
+        layout.addWidget(self.pos_z,6,2,1,2)
+
+        layout.addWidget(self.Label_axis,7,0,1,4)
+        layout.addWidget(self.Label_axis_d,7,1,1,4)
+        layout.addWidget(self.axis_d_x,7,2,1,4)
+        layout.addWidget(self.axis_d_y,7,3,1,4)
+        layout.addWidget(self.axis_d_z,7,4,1,4)
+        layout.addWidget(self.Label_axis_w,8,1,1,4)
+        layout.addWidget(self.axis_w_x,8,2,1,4)
+        layout.addWidget(self.axis_w_y,8,3,1,4)
+        layout.addWidget(self.axis_w_z,8,4,1,4)
+        layout.addWidget(self.Label_axis_h,9,1,1,4)
+        layout.addWidget(self.axis_h_x,9,2,1,4)
+        layout.addWidget(self.axis_h_y,9,3,1,4)
+        layout.addWidget(self.axis_h_z,9,4,1,4)
+
+        layout.addWidget(image,10,0,1,0)
 
     def accept(self):
         Type = self.Type_ComboBox.currentIndex()
@@ -1626,39 +2692,44 @@ class BeltClampTaskPanel:
                     2 : 5,
                     3 : 6}
         nut_hole = IndexNut[self.ComboBox_Nut_Hole.currentIndex()]
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
 
-        if Type == 0:
-            beltcl.BeltClamp(fc_fro_ax = VX,
-                             fc_top_ax = VZ,
-                             base_h = 2,
-                             base_l = Length,
-                             base_w = Width,
-                             bolt_d = nut_hole,
-                             bolt_csunk = 0,
-                             ref = 1,
-                             pos = V0,
-                             extra=1,
-                             wfco = 1,
-                             intol = 0,
-                             name = 'belt_clamp' )
-        elif Type == 1:
-            beltcl.DoubleBeltClamp(axis_h = VZ,
-                                axis_d = VX,
-                                axis_w = VY,
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            if Type == 0:
+                beltcl.BeltClamp(fc_fro_ax = axis_d,#VX,
+                                fc_top_ax = axis_h,#VZ,
                                 base_h = 2,
                                 base_l = Length,
                                 base_w = Width,
                                 bolt_d = nut_hole,
                                 bolt_csunk = 0,
                                 ref = 1,
-                                pos = V0,
+                                pos = pos,
                                 extra=1,
                                 wfco = 1,
                                 intol = 0,
-                                name = 'double_belt_clamp' )
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+                                name = 'belt_clamp' )
+            elif Type == 1:
+                beltcl.DoubleBeltClamp(axis_h = axis_h,#VZ,
+                                    axis_d = axis_d,#VX,
+                                    axis_w = axis_w,#VY,
+                                    base_h = 2,
+                                    base_l = Length,
+                                    base_w = Width,
+                                    bolt_d = nut_hole,
+                                    bolt_csunk = 0,
+                                    ref = 1,
+                                    pos = pos,
+                                    extra=1,
+                                    wfco = 1,
+                                    intol = 0,
+                                    name = 'double_belt_clamp' )
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -1669,7 +2740,7 @@ class BeltClampTaskPanel:
 #   IS DISABLED IN InitGui.py file.
 class _BeltClampedCmd:
     def Activated(self):
-        Widget_BeltClamped = QtGui.QWidget()
+        Widget_BeltClamped = QtWidgets.QWidget()
         Panel_BeltClamped = BeltClampedTaskPanel(Widget_BeltClamped)
         FreeCADGui.Control.showDialog(Panel_BeltClamped)     
     def GetResources(self):
@@ -1689,145 +2760,188 @@ class _BeltClampedCmd:
 class BeltClampedTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Diameters ----
         #Label :
-        self.Label_Diameter = QtGui.QLabel("Diameter pulley")   
+        self.Label_Diameter = QtWidgets.QLabel("Diameter pulley")   
         # 1:
-        self.Label_Diameter_1 = QtGui.QLabel("1:")   
-        self.Pulley_D1 = QtGui.QDoubleSpinBox()
+        self.Label_Diameter_1 = QtWidgets.QLabel("1:")   
+        self.Pulley_D1 = QtWidgets.QDoubleSpinBox()
         self.Pulley_D1.setValue(5)
         self.Pulley_D1.setSuffix('')
         self.Pulley_D1.setMinimum(1)
 
         # 2:
-        self.Label_Diameter_2 = QtGui.QLabel("2:")
-        self.Pulley_D2 = QtGui.QDoubleSpinBox()
+        self.Label_Diameter_2 = QtWidgets.QLabel("2:")
+        self.Pulley_D2 = QtWidgets.QDoubleSpinBox()
         self.Pulley_D2.setValue(6)
         self.Pulley_D2.setSuffix('')
         self.Pulley_D2.setMinimum(1)
 
         # ---- row 3: Separation ----
         # Label :
-        self.Label_Sep = QtGui.QLabel("Separation between ")
+        self.Label_Sep = QtWidgets.QLabel("Separation between ")
 
         # Pulleys Axis d:
-        self.Label_Sep_d = QtGui.QLabel("pulleys in axis d:")
-        self.Sep_d = QtGui.QDoubleSpinBox()
+        self.Label_Sep_d = QtWidgets.QLabel("pulleys in axis d:")
+        self.Sep_d = QtWidgets.QDoubleSpinBox()
         self.Sep_d.setValue(80)
         self.Sep_d.setSuffix(' mm')
         self.Sep_d.setMinimum(1)
 
         # Pulleys Axis w:
-        self.Label_Sep_w = QtGui.QLabel("pulleys in axis w:")
-        self.Sep_w = QtGui.QDoubleSpinBox()
+        self.Label_Sep_w = QtWidgets.QLabel("pulleys in axis w:")
+        self.Sep_w = QtWidgets.QDoubleSpinBox()
         self.Sep_w.setValue(0)
         self.Sep_w.setSuffix(' mm')
         self.Sep_w.setMinimum(1)
 
         # Pulley 1 and Clamp 1 Axis d:
-        self.Label_Sep_Clamp_1d = QtGui.QLabel("pulley 1 and clamp 1 in axis d")
-        self.Sep_Clamp_1d = QtGui.QDoubleSpinBox()
+        self.Label_Sep_Clamp_1d = QtWidgets.QLabel("pulley 1 and clamp 1 in axis d")
+        self.Sep_Clamp_1d = QtWidgets.QDoubleSpinBox()
         self.Sep_Clamp_1d.setValue(15)
         self.Sep_Clamp_1d.setSuffix(' mm')
         self.Sep_Clamp_1d.setMinimum(1)
 
         # Pulley 1 and Clamp 1 Axis w:
-        self.Label_Sep_Clamp_1w = QtGui.QLabel("pulley 1 and clamp 1 in axis w")
-        self.Sep_Clamp_1w = QtGui.QDoubleSpinBox()
+        self.Label_Sep_Clamp_1w = QtWidgets.QLabel("pulley 1 and clamp 1 in axis w")
+        self.Sep_Clamp_1w = QtWidgets.QDoubleSpinBox()
         self.Sep_Clamp_1w.setValue(5)
         self.Sep_Clamp_1w.setSuffix(' mm')
         self.Sep_Clamp_1w.setMinimum(1)
         
         # Pulley 2 and Clamp 2 Axis d:
-        self.Label_Sep_Clamp_2d = QtGui.QLabel("pulley 2 and clamp 2 in axis w")
-        self.Sep_Clamp_2d = QtGui.QDoubleSpinBox()
+        self.Label_Sep_Clamp_2d = QtWidgets.QLabel("pulley 2 and clamp 2 in axis w")
+        self.Sep_Clamp_2d = QtWidgets.QDoubleSpinBox()
         self.Sep_Clamp_2d.setValue(15)
         self.Sep_Clamp_2d.setSuffix(' mm')
         self.Sep_Clamp_2d.setMinimum(1)
 
         # ---- row 9: Clamp ----
         # Label :
-        self.Label_Clamp = QtGui.QLabel("Clamp ")
+        self.Label_Clamp = QtWidgets.QLabel("Clamp ")
 
         # Clamp d:
-        self.Label_Clamp_d = QtGui.QLabel("Lenght:")
-        self.Clamp_d = QtGui.QDoubleSpinBox()
+        self.Label_Clamp_d = QtWidgets.QLabel("Lenght:")
+        self.Clamp_d = QtWidgets.QDoubleSpinBox()
         self.Clamp_d.setValue(5)
         self.Clamp_d.setSuffix('')
         self.Clamp_d.setMinimum(1)
 
         # Clamp w:
-        self.Label_Clamp_w = QtGui.QLabel("Widht:")
-        self.Clamp_w = QtGui.QDoubleSpinBox()
+        self.Label_Clamp_w = QtWidgets.QLabel("Widht:")
+        self.Clamp_w = QtWidgets.QDoubleSpinBox()
         self.Clamp_w.setValue(4)
         self.Clamp_w.setSuffix('')
         self.Clamp_w.setMinimum(1)
 
         # Separation bewteen clamps:
-        self.Label_Sep_Clamp = QtGui.QLabel("Sepatarion:")
-        self.Sep_Clamp = QtGui.QDoubleSpinBox()
+        self.Label_Sep_Clamp = QtWidgets.QLabel("Sepatarion:")
+        self.Sep_Clamp = QtWidgets.QDoubleSpinBox()
         self.Sep_Clamp.setValue(8)
         self.Sep_Clamp.setSuffix('')
         self.Sep_Clamp.setMinimum(0.5)
 
         # ---- row 13: Belt ----
-        self.label_Belt = QtGui.QLabel("Belt ")
-
-        # Radius cyl:
-        self.Label_R_cyl = QtGui.QLabel("Radius of the cylinder for the belt:")
-        self.R_cyl = QtGui.QDoubleSpinBox()
-        self.R_cyl.setValue(3)
-        self.R_cyl.setSuffix(' mm')
-        self.R_cyl.setMinimum(1)
+        self.label_Belt = QtWidgets.QLabel("Belt ")
 
         # Width:
-        self.Label_belt_w = QtGui.QLabel("Width:")
-        self.belt_w = QtGui.QDoubleSpinBox()
+        self.Label_belt_w = QtWidgets.QLabel("Width:")
+        self.belt_w = QtWidgets.QDoubleSpinBox()
         self.belt_w.setValue(6)
         self.belt_w.setSuffix(' mm')
         self.belt_w.setMinimum(1)
 
         # Thick:
-        self.Label_belt_t = QtGui.QLabel("Thick:")
-        self.belt_t = QtGui.QDoubleSpinBox()
+        self.Label_belt_t = QtWidgets.QLabel("Thick:")
+        self.belt_t = QtWidgets.QDoubleSpinBox()
         self.belt_t.setValue(1.38)
         self.belt_t.setSuffix(' mm')
         self.belt_t.setMinimum(1)
 
+        # Radius cyl:
+        self.Label_R_cyl = QtWidgets.QLabel("Radius of the cylinder for the belt:")
+        self.R_cyl = QtWidgets.QDoubleSpinBox()
+        self.R_cyl.setValue(3)
+        self.R_cyl.setSuffix(' mm')
+        self.R_cyl.setMinimum(1)
+
         # ---- row 17: Position ----
-        self.label_position = QtGui.QLabel("Position ")
-
-        # d :
-        self.Label_pos_d = QtGui.QLabel("in d:")
-        self.pos_d = QtGui.QComboBox()
-        self.pos_d.addItems(['0','1','2','3','4','5','6','7','8','9','10','11'])
-        self.pos_d.setCurrentIndex(0)
-
-        # w :
-        self.Label_pos_w = QtGui.QLabel("in w:")
-        self.pos_w = QtGui.QComboBox()
-        self.pos_w.addItems(['0','1','2','3','4','5','6','7','8'])
-        self.pos_w.setCurrentIndex(0)
-
-        # h :
-        self.Label_pos_h = QtGui.QLabel("in h:")
-        self.pos_h = QtGui.QComboBox()
-        self.pos_h.addItems(['0','1'])
-        self.pos_h.setCurrentIndex(0)
-
-        # pos:
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        self.label_position = QtWidgets.QLabel("Position ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
 
+        # d :
+        self.Label_pos_d = QtWidgets.QLabel("in d:")
+        self.pos_d = QtWidgets.QComboBox()
+        self.pos_d.addItems(['0','1','2','3','4','5','6','7','8','9','10','11'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtWidgets.QLabel("in w:")
+        self.pos_w = QtWidgets.QComboBox()
+        self.pos_w.addItems(['0','1','2','3','4','5','6','7','8'])
+        self.pos_w.setCurrentIndex(0)
+
+        # h :
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
+        self.pos_h.addItems(['0','1'])
+        self.pos_h.setCurrentIndex(0)
+
+        # ---- row 23: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(0)
+        self.axis_d_y.setValue(1)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(1)
+        self.axis_w_y.setValue(0)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 26: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/BeltClamped.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_Diameter,0,0,1,3)
@@ -1835,17 +2949,20 @@ class BeltClampedTaskPanel:
         layout.addWidget(self.Pulley_D1,1,2,1,3)
         layout.addWidget(self.Label_Diameter_2,2,1,1,3)
         layout.addWidget(self.Pulley_D2,2,2,1,3)
-        layout.addWidget(self.Label_Diameter,3,0,1,3)
-        layout.addWidget(self.Label_Diameter_1,4,1,1,3)
-        layout.addWidget(self.Pulley_D1,4,2,1,3)
-        layout.addWidget(self.Label_Diameter_2,5,1,1,3)
-        layout.addWidget(self.Pulley_D2,5,2,1,3)
+
+        layout.addWidget(self.Label_Sep,3,0,1,3)
+        layout.addWidget(self.Label_Sep_d,4,1,1,3)
+        layout.addWidget(self.Sep_d,4,2,1,3)
+        layout.addWidget(self.Label_Sep_w,5,1,1,3)
+        layout.addWidget(self.Sep_w,5,2,1,3)
+
         layout.addWidget(self.Label_Sep_Clamp_1d,6,1,1,3)
         layout.addWidget(self.Sep_Clamp_1d,6,2,1,3)
         layout.addWidget(self.Label_Sep_Clamp_1w,7,1,1,3)
         layout.addWidget(self.Sep_Clamp_1w,7,2,1,3)
         layout.addWidget(self.Label_Sep_Clamp_2d,8,1,1,3)
         layout.addWidget(self.Sep_Clamp_2d,8,2,1,3)
+
         layout.addWidget(self.Label_Clamp,9,0,1,3)
         layout.addWidget(self.Label_Clamp_d,10,1,1,3)
         layout.addWidget(self.Clamp_d,10,2,1,3)
@@ -1853,6 +2970,7 @@ class BeltClampedTaskPanel:
         layout.addWidget(self.Clamp_w,11,2,1,3)
         layout.addWidget(self.Label_Sep_Clamp,12,1,1,3)
         layout.addWidget(self.Sep_Clamp,12,2,1,3)
+
         layout.addWidget(self.label_Belt,13,0,1,3)
         layout.addWidget(self.Label_belt_w,14,1,1,3)
         layout.addWidget(self.belt_w,14,2,1,3)
@@ -1860,19 +2978,37 @@ class BeltClampedTaskPanel:
         layout.addWidget(self.belt_t,15,2,1,3)
         layout.addWidget(self.Label_R_cyl,16,1,1,3)
         layout.addWidget(self.R_cyl,16,2,1,3)
+
         layout.addWidget(self.label_position,17,0,1,3)
-        layout.addWidget(self.Label_pos_d,18,1,1,3)
-        layout.addWidget(self.pos_d,18,2,1,3)
-        layout.addWidget(self.Label_pos_w,19,1,1,3)
-        layout.addWidget(self.pos_w,19,2,1,3)
-        layout.addWidget(self.Label_pos_h,20,1,1,3)
-        layout.addWidget(self.pos_h,20,2,1,3)
-        layout.addWidget(self.Label_pos_x,21,1,1,3)
-        layout.addWidget(self.pos_x,21,2,1,3)
-        layout.addWidget(self.Label_pos_y,22,1,1,3)
-        layout.addWidget(self.pos_y,22,2,1,3)
-        layout.addWidget(self.Label_pos_z,23,1,1,3)
-        layout.addWidget(self.pos_z,23,2,1,3)
+        layout.addWidget(self.Label_pos_x,17,1,1,3)
+        layout.addWidget(self.pos_x,187,2,1,3)
+        layout.addWidget(self.Label_pos_y,18,1,1,3)
+        layout.addWidget(self.pos_y,18,2,1,3)
+        layout.addWidget(self.Label_pos_z,19,1,1,3)
+        layout.addWidget(self.pos_z,19,2,1,3)
+
+        layout.addWidget(self.Label_pos_d,20,1,1,3)
+        layout.addWidget(self.pos_d,20,2,1,3)
+        layout.addWidget(self.Label_pos_w,21,1,1,3)
+        layout.addWidget(self.pos_w,21,2,1,3)
+        layout.addWidget(self.Label_pos_h,22,1,1,3)
+        layout.addWidget(self.pos_h,22,2,1,3)
+
+        layout.addWidget(self.Label_axis,23,0,1,4)
+        layout.addWidget(self.Label_axis_d,23,1,1,4)
+        layout.addWidget(self.axis_d_x,23,2,1,4)
+        layout.addWidget(self.axis_d_y,23,3,1,4)
+        layout.addWidget(self.axis_d_z,23,4,1,4)
+        layout.addWidget(self.Label_axis_w,24,1,1,4)
+        layout.addWidget(self.axis_w_x,24,2,1,4)
+        layout.addWidget(self.axis_w_y,24,3,1,4)
+        layout.addWidget(self.axis_w_z,24,4,1,4)
+        layout.addWidget(self.Label_axis_h,25,1,1,4)
+        layout.addWidget(self.axis_h_x,25,2,1,4)
+        layout.addWidget(self.axis_h_y,25,3,1,4)
+        layout.addWidget(self.axis_h_z,25,4,1,4)
+
+        layout.addWidget(image,26,0,1,0)
 
     def accept(self):
         pull1_dm = self.Pulley_D1.value()
@@ -1888,36 +3024,43 @@ class BeltClampedTaskPanel:
         cyl_r = self.R_cyl.value()
         belt_width = self.belt_w.value()
         belt_thick = self.belt_t.value()
-        pos_d = self.pos_d.currentIndex()
-        pos_w = self.pos_w.currentIndex()
-        pos_h = self.pos_h.currentIndex()
+        positions_d = [0,1,2,3,4,5,6,7,8,9,10,11]
+        positions_w = [0,1,2,3,4,5,6,7,8]
+        positions_h = [0,1]
+        pos_d = positions_d[self.pos_d.currentIndex()]
+        pos_w = positions_w[self.pos_w.currentIndex()]
+        pos_h = positions_h[self.pos_h.currentIndex()]
         pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
-
-        beltcl.PartBeltClamped(pull1_dm,
-                               pull2_dm,
-                               pull_sep_w,
-                               pull_sep_d,
-                               clamp_pull1_d,
-                               clamp_pull1_w,
-                               clamp_pull2_d,
-                               clamp_d,
-                               clamp_w,
-                               clamp_cyl_sep,
-                               cyl_r,
-                               belt_width = belt_width,
-                               belt_thick = belt_thick,
-                               axis_d = VY,
-                               axis_w = VX,
-                               axis_h = VZ,
-                               pos_d = pos_d,
-                               pos_w = pos_w,
-                               pos_h = pos_h,
-                               pos=pos,
-                               name = 'belt')
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
         
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            beltcl.PartBeltClamped(pull1_dm,
+                                pull2_dm,
+                                pull_sep_w,
+                                pull_sep_d,
+                                clamp_pull1_d,
+                                clamp_pull1_w,
+                                clamp_pull2_d,
+                                clamp_d,
+                                clamp_w,
+                                clamp_cyl_sep,
+                                cyl_r,
+                                belt_width = belt_width,
+                                belt_thick = belt_thick,
+                                axis_d = axis_d ,#VY,
+                                axis_w = axis_w ,#VX,
+                                axis_h = axis_h ,#VZ,
+                                pos_d = pos_d,
+                                pos_w = pos_w,
+                                pos_h = pos_h,
+                                pos=pos,
+                                name = 'belt')
+            
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -1926,7 +3069,7 @@ class BeltClampedTaskPanel:
 
 class _SensorHolderCmd:
     def Activated(self):
-        Widget_SensorHolder = QtGui.QWidget()
+        Widget_SensorHolder = QtWidgets.QWidget()
         Panel_SensorHolder = SensorHolderTaskPanel(Widget_SensorHolder)
         FreeCADGui.Control.showDialog(Panel_SensorHolder)     
     def GetResources(self):
@@ -1946,63 +3089,148 @@ class _SensorHolderCmd:
 class SensorHolderTaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Sensor Pin Length ----
-        self.Sensor_Pin_Length_Label = QtGui.QLabel("Sensor Pin Length:")  
-        self.Sensor_Pin_Length_Value = QtGui.QDoubleSpinBox()
+        self.Sensor_Pin_Length_Label = QtWidgets.QLabel("Sensor Pin Length:")  
+        self.Sensor_Pin_Length_Value = QtWidgets.QDoubleSpinBox()
         self.Sensor_Pin_Length_Value.setValue(10)
         self.Sensor_Pin_Length_Value.setSuffix(' mm')
         self.Sensor_Pin_Length_Value.setMinimum(10) #Not sure
 
         # ---- row 1: Sensor Pin Width ----
-        self.Sensor_Pin_Width_Label = QtGui.QLabel("Sensor Pin Width:")  
-        self.Sensor_Pin_Width_Value = QtGui.QDoubleSpinBox()
+        self.Sensor_Pin_Width_Label = QtWidgets.QLabel("Sensor Pin Width:")  
+        self.Sensor_Pin_Width_Value = QtWidgets.QDoubleSpinBox()
         self.Sensor_Pin_Width_Value.setValue(2)
         self.Sensor_Pin_Width_Value.setSuffix(' mm')
         self.Sensor_Pin_Width_Value.setMinimum(2) #Not sure
 
         # ---- row 2: Sensor Pin High ----
-        self.Sensor_Pin_High_Label = QtGui.QLabel("Sensor Pin High:")  
-        self.Sensor_Pin_High_Value = QtGui.QDoubleSpinBox()
+        self.Sensor_Pin_High_Label = QtWidgets.QLabel("Sensor Pin High:")  
+        self.Sensor_Pin_High_Value = QtWidgets.QDoubleSpinBox()
         self.Sensor_Pin_High_Value.setValue(3)
         self.Sensor_Pin_High_Value.setSuffix(' mm')
         self.Sensor_Pin_High_Value.setMinimum(3) #Not sure
 
         # ---- row 3: Depth ----
-        self.Depth_CD_Label = QtGui.QLabel("Depth:")  
-        self.Depth_CD_Value = QtGui.QDoubleSpinBox()
+        self.Depth_CD_Label = QtWidgets.QLabel("Depth:")  
+        self.Depth_CD_Value = QtWidgets.QDoubleSpinBox()
         self.Depth_CD_Value.setValue(8)
         self.Depth_CD_Value.setSuffix(' mm')
         self.Depth_CD_Value.setMinimum(8) #Not sure
 
         # ---- row 4: Width CD case----
-        self.Width_CD_Label = QtGui.QLabel("Width CD case:")  
-        self.Width_CD_Value = QtGui.QDoubleSpinBox()
+        self.Width_CD_Label = QtWidgets.QLabel("Width CD case:")  
+        self.Width_CD_Value = QtWidgets.QDoubleSpinBox()
         self.Width_CD_Value.setValue(20)
         self.Width_CD_Value.setSuffix(' mm')
         self.Width_CD_Value.setMinimum(20) #Not sure
 
         # ---- row 5: High CD case----
-        self.High_CD_Label = QtGui.QLabel("High CD case:")  
-        self.High_CD_Value = QtGui.QDoubleSpinBox()
+        self.High_CD_Label = QtWidgets.QLabel("High CD case:")  
+        self.High_CD_Value = QtWidgets.QDoubleSpinBox()
         self.High_CD_Value.setValue(37)
         self.High_CD_Value.setSuffix(' mm')
         self.High_CD_Value.setMinimum(37) #Not sure
 
+        # ---- row 6: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # ---- row 9: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 12: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/SensorHolder.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Sensor_Pin_Length_Label,0,0,1,1)
-        layout.addWidget(self.Sensor_Pin_Length_Value,0,1,1,1)
-        layout.addWidget(self.Sensor_Pin_Width_Label,1,0,1,1)
-        layout.addWidget(self.Sensor_Pin_Width_Value,1,1,1,1)
-        layout.addWidget(self.Sensor_Pin_High_Label,2,0,1,1)
-        layout.addWidget(self.Sensor_Pin_High_Value,2,1,1,1)
-        layout.addWidget(self.Depth_CD_Label,3,0,1,1)
-        layout.addWidget(self.Depth_CD_Value,3,1,1,1)
-        layout.addWidget(self.Width_CD_Label,4,0,1,1)
-        layout.addWidget(self.Width_CD_Value,4,1,1,1)
-        layout.addWidget(self.High_CD_Label,5,0,1,1)
-        layout.addWidget(self.High_CD_Value,5,1,1,1)
+        layout.addWidget(self.Sensor_Pin_Length_Label,0,0,1,2)
+        layout.addWidget(self.Sensor_Pin_Length_Value,0,1,1,2)
+        layout.addWidget(self.Sensor_Pin_Width_Label,1,0,1,2)
+        layout.addWidget(self.Sensor_Pin_Width_Value,1,1,1,2)
+        layout.addWidget(self.Sensor_Pin_High_Label,2,0,1,2)
+        layout.addWidget(self.Sensor_Pin_High_Value,2,1,1,2)
+
+        layout.addWidget(self.Depth_CD_Label,3,0,1,2)
+        layout.addWidget(self.Depth_CD_Value,3,1,1,2)
+
+        layout.addWidget(self.Width_CD_Label,4,0,1,2)
+        layout.addWidget(self.Width_CD_Value,4,1,1,2)
+
+        layout.addWidget(self.High_CD_Label,5,0,1,2)
+        layout.addWidget(self.High_CD_Value,5,1,1,2)
+
+        layout.addWidget(self.Label_position,6,0,1,2)
+        layout.addWidget(self.Label_pos_x,6,1,1,2)
+        layout.addWidget(self.pos_x,6,2,1,2)
+        layout.addWidget(self.Label_pos_y,7,1,1,2)
+        layout.addWidget(self.pos_y,7,2,1,2)
+        layout.addWidget(self.Label_pos_z,8,1,1,2)
+        layout.addWidget(self.pos_z,8,2,1,2)
+
+        layout.addWidget(self.Label_axis,9,0,1,4)
+        layout.addWidget(self.Label_axis_d,9,1,1,4)
+        layout.addWidget(self.axis_d_x,9,2,1,4)
+        layout.addWidget(self.axis_d_y,9,3,1,4)
+        layout.addWidget(self.axis_d_z,9,4,1,4)
+        layout.addWidget(self.Label_axis_w,10,1,1,4)
+        layout.addWidget(self.axis_w_x,10,2,1,4)
+        layout.addWidget(self.axis_w_y,10,3,1,4)
+        layout.addWidget(self.axis_w_z,10,4,1,4)
+        layout.addWidget(self.Label_axis_h,11,1,1,4)
+        layout.addWidget(self.axis_h_x,11,2,1,4)
+        layout.addWidget(self.axis_h_y,11,3,1,4)
+        layout.addWidget(self.axis_h_z,11,4,1,4)
+
+        layout.addWidget(image,12,0,1,0)
 
     def accept(self):
         Sensor_Pin_Length = self.Sensor_Pin_Length_Value.value()
@@ -2011,33 +3239,38 @@ class SensorHolderTaskPanel:
         Depth_CD = self.Depth_CD_Value.value()
         Width_CD = self.Width_CD_Value.value()
         High_CD = self.High_CD_Value.value()
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
+        
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            parts.sensor_holder(sensor_support_length = Sensor_Pin_Length,
+                                sensor_pin_sep = 2.54,
+                                sensor_pin_pos_h = Sensor_Pin_High,
+                                sensor_pin_pos_w = Sensor_Pin_Width,
+                                sensor_pin_r_tol = 1.05,
+                                sensor_pin_rows = 6,
+                                sensor_pin_cols = 6,
+                                #sensor_clip_pos_h = 2.45, #position from center
+                                #sensor_clip_h_tol = 1.28,
+                                #sensor_clip_w_tol = 1.,
+                                base_height = High_CD, # height of the cd case
+                                base_width = Width_CD, # width of the cd case
+                                flap_depth = Depth_CD,
+                                flap_thick = 2.,
+                                base_thick = 2., #la altura
+                                basesensor_thick = 9., #la altura de la parte de los sensores
+                                pos =pos,
+                                axis_h = axis_h,#VZ,
+                                axis_d = axis_d,#VX,
+                                axis_w = axis_w,#VY,
+                                wfco=1,
+                                name = 'sensorholder')
 
-        parts.sensor_holder(sensor_support_length = Sensor_Pin_Length,
-                            sensor_pin_sep = 2.54,
-                            sensor_pin_pos_h = Sensor_Pin_High,
-                            sensor_pin_pos_w = Sensor_Pin_Width,
-                            sensor_pin_r_tol = 1.05,
-                            sensor_pin_rows = 6,
-                            sensor_pin_cols = 6,
-                            #sensor_clip_pos_h = 2.45, #position from center
-                            #sensor_clip_h_tol = 1.28,
-                            #sensor_clip_w_tol = 1.,
-                            base_height = High_CD, # height of the cd case
-                            base_width = Width_CD, # width of the cd case
-                            flap_depth = Depth_CD,
-                            flap_thick = 2.,
-                            base_thick = 2., #la altura
-                            basesensor_thick = 9., #la altura de la parte de los sensores
-                            pos =V0,
-                            axis_h = VZ,
-                            axis_d = VX,
-                            axis_w = VY,
-                            wfco=1,
-                            name = 'sensorholder')
-
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -2049,7 +3282,7 @@ class _AluproftCmd:
     This class create an aluminium profile with diferents sizes and any length
     """
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_Aluproft = Aluproft_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_Aluproft) 
 
@@ -2070,29 +3303,137 @@ class _AluproftCmd:
 class Aluproft_TaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Size ----
-        self.Prof_Label = QtGui.QLabel("Size")  
+        self.Prof_Label = QtWidgets.QLabel("Size")  
         self.prof_size = ["5", "10", "15", "20", "30", "40"]
-        self.profile = QtGui.QComboBox()
+        self.profile = QtWidgets.QComboBox()
         self.profile.addItems(self.prof_size)
         self.profile.setCurrentIndex(3) #20
 
 
         # ---- row 1: Length ----
-        self.length_Label = QtGui.QLabel("Length")  
-        self.length_prof = QtGui.QDoubleSpinBox()
+        self.length_Label = QtWidgets.QLabel("Length")  
+        self.length_prof = QtWidgets.QDoubleSpinBox()
         self.length_prof.setValue(20)
         self.length_prof.setSuffix(' mm')
         self.length_prof.setMinimum(10) 
         self.length_prof.setMaximum(999)
 
+        # ---- row 2: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # d :
+        self.Label_pos_d = QtWidgets.QLabel("in d:")
+        self.pos_d = QtWidgets.QComboBox()
+        self.pos_d.addItems(['0','1','2'])
+        self.pos_d.setCurrentIndex(0)
+
+        # w :
+        self.Label_pos_w = QtWidgets.QLabel("in w:")
+        self.pos_w = QtWidgets.QComboBox()
+        self.pos_w.addItems(['0','1','2'])
+        self.pos_w.setCurrentIndex(0)
+
+        # h :
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
+        self.pos_h.addItems(['0','1','2'])
+        self.pos_h.setCurrentIndex(0)
+
+        # ---- row 8: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 11: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/Aluprof.png">hear</a>.')
+        image.setOpenExternalLinks(True)
+        # image.setPixmap(QtGui.QPixmap('/img_gui/Aluprof.png'))
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Prof_Label,0,0,1,1)
-        layout.addWidget(self.profile,0,1,1,1)
-        layout.addWidget(self.length_Label,1,0,1,1)
-        layout.addWidget(self.length_prof,1,1,1,1)
+        layout.addWidget(self.Prof_Label,0,0,1,2)
+        layout.addWidget(self.profile,0,1,1,2)
+        layout.addWidget(self.length_Label,1,0,1,2)
+        layout.addWidget(self.length_prof,1,1,1,2)
+
+        layout.addWidget(self.Label_position,2,0,1,2)
+        layout.addWidget(self.Label_pos_x,2,1,1,2)
+        layout.addWidget(self.pos_x,2,2,1,2)
+        layout.addWidget(self.Label_pos_y,3,1,1,2)
+        layout.addWidget(self.pos_y,3,2,1,2)
+        layout.addWidget(self.Label_pos_z,4,1,1,2)
+        layout.addWidget(self.pos_z,4,2,1,2)
+
+        layout.addWidget(self.Label_pos_d,5,1,1,2)
+        layout.addWidget(self.pos_d,5,2,1,2)
+        layout.addWidget(self.Label_pos_w,6,1,1,2)
+        layout.addWidget(self.pos_w,6,2,1,2)
+        layout.addWidget(self.Label_pos_h,7,1,1,2)
+        layout.addWidget(self.pos_h,7,2,1,2)
+
+        layout.addWidget(self.Label_axis,8,0,1,4)
+        layout.addWidget(self.Label_axis_d,8,1,1,4)
+        layout.addWidget(self.axis_d_x,8,2,1,4)
+        layout.addWidget(self.axis_d_y,8,3,1,4)
+        layout.addWidget(self.axis_d_z,8,4,1,4)
+        layout.addWidget(self.Label_axis_w,9,1,1,4)
+        layout.addWidget(self.axis_w_x,9,2,1,4)
+        layout.addWidget(self.axis_w_y,9,3,1,4)
+        layout.addWidget(self.axis_w_z,9,4,1,4)
+        layout.addWidget(self.Label_axis_h,10,1,1,4)
+        layout.addWidget(self.axis_h_x,10,2,1,4)
+        layout.addWidget(self.axis_h_y,10,3,1,4)
+        layout.addWidget(self.axis_h_z,10,4,1,4)
+
+        layout.addWidget(image,11,0,1,0)
 
     def accept(self):
         prof_type = {0:  5,
@@ -2103,18 +3444,32 @@ class Aluproft_TaskPanel:
                      5: 40}
         prof = prof_type[self.profile.currentIndex()]
         length = self.length_prof.value()
-        comps.PartAluProf(depth = length,
-                        aluprof_dict = kcomp.ALU_PROF[prof],
-                        xtr_d=0, xtr_nd=0,
-                        axis_d = VX, axis_w = VY, axis_h = V0,
-                        pos_d = 0, pos_w = 0, pos_h = 0,
-                        pos = V0,
-                        model_type = 1, # dimensional model
-                        name = 'aluprof_'+str(prof))
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        positions_d = [0,1,2]
+        positions_w = [0,1,2]
+        positions_h = [0,1,2]
+        pos_d = positions_d[self.pos_d.currentIndex()]
+        pos_w = positions_w[self.pos_w.currentIndex()]
+        pos_h = positions_h[self.pos_h.currentIndex()]
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
+        
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            comps.PartAluProf(depth = length,
+                            aluprof_dict = kcomp.ALU_PROF[prof],
+                            xtr_d=0, xtr_nd=0,
+                            axis_d = axis_d ,#VX, 
+                            axis_w = axis_w ,#VY, 
+                            axis_h = axis_h ,#V0,
+                            pos_d = pos_d, pos_w = pos_w, pos_h = pos_h,
+                            pos = pos,
+                            model_type = 1, # dimensional model
+                            name = 'aluprof_'+str(prof))
 
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 
 #  _________________________________________________________________
@@ -2126,7 +3481,7 @@ class _LinGuideBlockCmd:
     This class create Linear Guide Block
     """
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_LinGuideBlock = LinGuideBlock_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_LinGuideBlock) 
 
@@ -2147,50 +3502,97 @@ class _LinGuideBlockCmd:
 class LinGuideBlock_TaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Size ----
-        self.Label_block = QtGui.QLabel("Type:")
-        self.block_dict = QtGui.QComboBox()
+        self.Label_block = QtWidgets.QLabel("Type:")
+        self.block_dict = QtWidgets.QComboBox()
         self.block_dict.addItems(["SEBW16","SEB15A","SEB8","SEB10"])
         self.block_dict.setCurrentIndex(0)
 
         # ---- row 1: Position ----
-        self.label_position = QtGui.QLabel("Position ")
+        self.label_position = QtWidgets.QLabel("Position ")
 
         # d :
-        self.Label_pos_d = QtGui.QLabel("in d:")
-        self.pos_d = QtGui.QComboBox()
+        self.Label_pos_d = QtWidgets.QLabel("in d:")
+        self.pos_d = QtWidgets.QComboBox()
         self.pos_d.addItems(['0','1','2','3'])
         self.pos_d.setCurrentIndex(0)
 
         # w :
-        self.Label_pos_w = QtGui.QLabel("in w:")
-        self.pos_w = QtGui.QComboBox()
+        self.Label_pos_w = QtWidgets.QLabel("in w:")
+        self.pos_w = QtWidgets.QComboBox()
         self.pos_w.addItems(['0','1','2','3','4'])
         self.pos_w.setCurrentIndex(0)
 
         # h :
-        self.Label_pos_h = QtGui.QLabel("in h:")
-        self.pos_h = QtGui.QComboBox()
+        self.Label_pos_h = QtWidgets.QLabel("in h:")
+        self.pos_h = QtWidgets.QComboBox()
         self.pos_h.addItems(['0','1','2','3','4'])
         self.pos_h.setCurrentIndex(1)
 
         # pos:
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
+
+        # ---- row 7: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 10: image ----
+        image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/LinearGuideBlock.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_block,0,0,1,2)
         layout.addWidget(self.block_dict,0,1,1,2)
+
         layout.addWidget(self.label_position,1,0,1,2)
         layout.addWidget(self.Label_pos_d,1,1,1,2)
         layout.addWidget(self.pos_d,1,2,1,2)
@@ -2205,26 +3607,52 @@ class LinGuideBlock_TaskPanel:
         layout.addWidget(self.Label_pos_z,6,1,1,2)
         layout.addWidget(self.pos_z,6,2,1,2)
 
+        layout.addWidget(self.Label_axis,7,0,1,4)
+        layout.addWidget(self.Label_axis_d,7,1,1,4)
+        layout.addWidget(self.axis_d_x,7,2,1,4)
+        layout.addWidget(self.axis_d_y,7,3,1,4)
+        layout.addWidget(self.axis_d_z,7,4,1,4)
+        layout.addWidget(self.Label_axis_w,8,1,1,4)
+        layout.addWidget(self.axis_w_x,8,2,1,4)
+        layout.addWidget(self.axis_w_y,8,3,1,4)
+        layout.addWidget(self.axis_w_z,8,4,1,4)
+        layout.addWidget(self.Label_axis_h,9,1,1,4)
+        layout.addWidget(self.axis_h_x,9,2,1,4)
+        layout.addWidget(self.axis_h_y,9,3,1,4)
+        layout.addWidget(self.axis_h_z,9,4,1,4)
+
+        layout.addWidget(image,10,0,1,0)
+
     def accept(self):
         dict_block = {0: kcomp.SEBWM16_B, 1: kcomp.SEB15A_B, 2: kcomp.SEB8_B, 3: kcomp.SEB10_B}
         dict_rail = {0: kcomp.SEBWM16_R, 1: kcomp.SEB15A_R, 2: kcomp.SEB8_R, 3: kcomp.SEB10_R}
         block_dict = dict_block[self.block_dict.currentIndex()]
         rail_dict = dict_rail[self.block_dict.currentIndex()]
-        pos_d = self.pos_d.currentIndex()
-        pos_w = self.pos_w.currentIndex()
-        pos_h = self.pos_h.currentIndex()
+        
+        positions_d = [0,1,2,3]
+        positions_w = [0,1,2,3,4]
+        positions_h = [0,1,2,3,4]
+        pos_d = positions_d[self.pos_d.currentIndex()]
+        pos_w = positions_w[self.pos_w.currentIndex()]
+        pos_h = positions_h[self.pos_h.currentIndex()]
         pos = FreeCAD.Vector(self.pos_x.value(),self.pos_y.value(),self.pos_z.value())
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
+        
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            comps.PartLinGuideBlock(block_dict, rail_dict,
+                                    axis_d = axis_d ,#VX, 
+                                    axis_w = axis_w ,#V0, 
+                                    axis_h = axis_h ,#VZ,
+                                    pos_d = pos_d, pos_w = pos_w, pos_h = pos_h,
+                                    pos = pos,
+                                    model_type = 1, # dimensional model
+                                    name = '')
 
-        comps.PartLinGuideBlock(block_dict, rail_dict,
-                                axis_d = VX, axis_w = V0, axis_h = VZ,
-                                pos_d = pos_d, pos_w = pos_w, pos_h = pos_h,
-                                pos = pos,
-                                model_type = 1, # dimensional model
-                                name = '')
-
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -2235,7 +3663,7 @@ class _BoltCmd:
     This class create Bolts, Nuts & Washers with diferents metrics
     """
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_Bolt = Bolt_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_Bolt) 
 
@@ -2256,36 +3684,89 @@ class _BoltCmd:
 class Bolt_TaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Type ----
-        self.Type_select_Label = QtGui.QLabel("Type")  
+        self.Type_select_Label = QtWidgets.QLabel("Type")  
         self.Type_text = ["Bolt D912", "Nut D934", "Whasher DIN 125", "Whasher DIN 9021"]
-        self.Type_select = QtGui.QComboBox()
+        self.Type_select = QtWidgets.QComboBox()
         self.Type_select.addItems(self.Type_text)
         self.Type_select.setCurrentIndex(0)
 
         # ---- row 1: Metric ----
-        self.Bolt_Metric_Label = QtGui.QLabel("Metric")  
+        self.Bolt_Metric_Label = QtWidgets.QLabel("Metric")  
         self.Bolt_metric = ["3","4","5","6"]
-        self.metric = QtGui.QComboBox()
+        self.metric = QtWidgets.QComboBox()
         self.metric.addItems(self.Bolt_metric)
         self.metric.setCurrentIndex(0)
 
         # ---- row 2: Length ----
-        self.length_Label = QtGui.QLabel("Length for bolt")  
-        self.length_bolt = QtGui.QDoubleSpinBox()
+        self.length_Label = QtWidgets.QLabel("Length for bolt")  
+        self.length_bolt = QtWidgets.QDoubleSpinBox()
         self.length_bolt.setValue(20)
         self.length_bolt.setSuffix(' mm')
         self.length_bolt.setMinimum(4) 
-        
+
+        # ---- row 3: placement ----
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
+        self.pos_x.setValue(0)
+        self.pos_y.setValue(0)
+        self.pos_z.setValue(0)
+
+        # # d :
+        # self.Label_pos_d = QtWidgets.QLabel("in d:")
+        # self.pos_d = QtWidgets.QComboBox()
+        # self.pos_d.addItems(['0','1','2'])
+        # self.pos_d.setCurrentIndex(0)
+
+        # # w :
+        # self.Label_pos_w = QtWidgets.QLabel("in w:")
+        # self.pos_w = QtWidgets.QComboBox()
+        # self.pos_w.addItems(['0','1','2'])
+        # self.pos_w.setCurrentIndex(0)
+
+        # # h :
+        # self.Label_pos_h = QtWidgets.QLabel("in h:")
+        # self.pos_h = QtWidgets.QComboBox()
+        # self.pos_h.addItems(['0','1','2','3','4','5','6','7'])
+        # self.pos_h.setCurrentIndex(0)
+
+        # ---- row 9: image ----
+        # image = QtWidgets.QLabel('Image of points and axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/Bolt_Nut_Washer.png">hear</a>.')
+        # image.setOpenExternalLinks(True)
+
         # row X, column X, rowspan X, colspan X
-        layout.addWidget(self.Type_select_Label,0,0,1,1)
-        layout.addWidget(self.Type_select,0,1,1,1)
-        layout.addWidget(self.Bolt_Metric_Label,1,0,1,1)
-        layout.addWidget(self.metric,1,1,1,1)
-        layout.addWidget(self.length_Label,2,0,1,1)
-        layout.addWidget(self.length_bolt,2,1,1,1)
+        layout.addWidget(self.Type_select_Label,0,0,1,2)
+        layout.addWidget(self.Type_select,0,1,1,2)
+        layout.addWidget(self.Bolt_Metric_Label,1,0,1,2)
+        layout.addWidget(self.metric,1,1,1,2)
+        layout.addWidget(self.length_Label,2,0,1,2)
+        layout.addWidget(self.length_bolt,2,1,1,2)
+
+        layout.addWidget(self.Label_position,3,0,1,2)
+        layout.addWidget(self.Label_pos_x,3,1,1,2)
+        layout.addWidget(self.pos_x,3,2,1,2)
+        layout.addWidget(self.Label_pos_y,4,1,1,2)
+        layout.addWidget(self.pos_y,4,2,1,2)
+        layout.addWidget(self.Label_pos_z,5,1,1,2)
+        layout.addWidget(self.pos_z,5,2,1,2)
+
+        # layout.addWidget(self.Label_pos_d,6,1,1,2)
+        # layout.addWidget(self.pos_d,6,2,1,2)
+        # layout.addWidget(self.Label_pos_w,7,1,1,2)
+        # layout.addWidget(self.pos_w,7,2,1,2)
+        # layout.addWidget(self.Label_pos_h,8,1,1,2)
+        # layout.addWidget(self.pos_h,8,2,1,2)
+
+        # layout.addWidget(image,9,0,1,0)
+
+        
 
     def accept(self):
         metric = {0: 3,
@@ -2295,6 +3776,15 @@ class Bolt_TaskPanel:
         metric = metric[self.metric.currentIndex()]
         Type_sel = self.Type_text[self.Type_select.currentIndex()]
         length = self.length_bolt.value()
+        # positions_d = [0,1,2]
+        # positions_w = [0,1,2]
+        # positions_h = [0,1,2,3,4,5,6,7]
+        # pos_d = positions_d[self.pos_d.currentIndex()]
+        # pos_w = positions_w[self.pos_w.currentIndex()]
+        # pos_h = positions_h[self.pos_h.currentIndex()]
+
+        pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+
         # Chose the data in function of the type selected
         if Type_sel == "Bolt D912":
             fc_clss.Din912Bolt(metric,
@@ -2304,7 +3794,7 @@ class Bolt_TaskPanel:
                                head_out = 0,
                                axis_h = VZ, axis_d = None, axis_w = None,
                                pos_h = 0, pos_d = 0, pos_w = 0,
-                               pos = V0,
+                               pos = pos,
                                model_type = 0,
                                name = '')
 
@@ -2316,13 +3806,13 @@ class Bolt_TaskPanel:
                               axis_d = None,
                               axis_w = None,
                               pos_h = 0, pos_d = 0, pos_w = 0,
-                              pos = V0)
+                              pos = pos)
         elif Type_sel == "Whasher DIN 125":
             fc_clss.Din125Washer(metric,
                                  axis_h = VZ, 
                                  pos_h = 1, 
                                  tol = 0,
-                                 pos = V0,
+                                 pos = pos,
                                  model_type = 0, # exact
                                  name = '')
         else : #Type_sel == "Whasher DIN 9021"
@@ -2330,7 +3820,7 @@ class Bolt_TaskPanel:
                                   axis_h = VZ, 
                                   pos_h = 1, 
                                   tol = 0,
-                                  pos = V0,
+                                  pos = pos,
                                   model_type = 0, # exact
                                   name = '')
             # If there are other types of bolts it could be there
@@ -2348,7 +3838,7 @@ class _TubeLense_Cmd:
     This class create Tube Lense
     """
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_TubeLense = TubeLense_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_TubeLense) 
 
@@ -2369,25 +3859,45 @@ class _TubeLense_Cmd:
 class TubeLense_TaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Length ----
-        self.Label_Length = QtGui.QLabel("Length")
-        self.Length = QtGui.QComboBox()
+        self.Label_Length = QtWidgets.QLabel("Length")
+        self.Length = QtWidgets.QComboBox()
         self.Length.addItems(["3","5","10","15","20","30"])
         self.Length.setCurrentIndex(2) #10
 
         # ---- row 1: Placement ----
-        self.Label_position = QtGui.QLabel("Placement ")
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
+
+        # ---- row 8: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(1)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(0)
+
+        # ---- row 5: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/TubeLense.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_Length,0,0,1,2)
@@ -2400,13 +3910,22 @@ class TubeLense_TaskPanel:
         layout.addWidget(self.Label_pos_z,3,1,1,2)
         layout.addWidget(self.pos_z,3,2,1,2)
 
+        layout.addWidget(self.Label_position,4,0,1,4)
+        layout.addWidget(self.Label_axis_h,4,1,1,4)
+        layout.addWidget(self.axis_h_x,4,2,1,4)
+        layout.addWidget(self.axis_h_y,4,3,1,4)
+        layout.addWidget(self.axis_h_z,4,4,1,4)
+
+        layout.addWidget(image,5,0,1,0)
+
     def accept(self):
         size = {0: 3, 1: 5, 2: 10, 3: 15, 4: 20, 5: 30}
         sm1l_size = size[self.Length.currentIndex()]
         pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
-
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
+        
         comp_optic.SM1TubelensSm2(sm1l_size,
-                                   fc_axis = VX,
+                                   fc_axis = axis_h,#VX,
                                    ref_sm1 = 1,
                                    pos = pos,
                                    ring = 1,
@@ -2426,7 +3945,7 @@ class _Lcpb1mBase_Cmd:
     This class create a Lcpb1mBase
     """
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_Lcpb1mBase = Lcpb1mBase_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_Lcpb1mBase) 
 
@@ -2447,19 +3966,65 @@ class _Lcpb1mBase_Cmd:
 class Lcpb1mBase_TaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Placement ----
-        self.Label_position = QtGui.QLabel("Placement ")
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
+
+        # ---- row 3: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 6: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/LCPB1MBase.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_position,0,0,1,2)
@@ -2470,19 +4035,39 @@ class Lcpb1mBase_TaskPanel:
         layout.addWidget(self.Label_pos_z,2,1,1,2)
         layout.addWidget(self.pos_z,2,2,1,2)
 
+        layout.addWidget(self.Label_axis,3,0,1,4)
+        layout.addWidget(self.Label_axis_d,3,1,1,4)
+        layout.addWidget(self.axis_d_x,3,2,1,4)
+        layout.addWidget(self.axis_d_y,3,3,1,4)
+        layout.addWidget(self.axis_d_z,3,4,1,4)
+        layout.addWidget(self.Label_axis_w,4,1,1,4)
+        layout.addWidget(self.axis_w_x,4,2,1,4)
+        layout.addWidget(self.axis_w_y,4,3,1,4)
+        layout.addWidget(self.axis_w_z,4,4,1,4)
+        layout.addWidget(self.Label_axis_h,5,1,1,4)
+        layout.addWidget(self.axis_h_x,5,2,1,4)
+        layout.addWidget(self.axis_h_y,5,3,1,4)
+        layout.addWidget(self.axis_h_z,5,4,1,4)
+
+        layout.addWidget(image,6,0,1,0)
+
     def accept(self):
         pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
 
-        comp_optic.lcpb1m_base(d_lcpb1m_base = kcomp_optic.LCPB1M_BASE,
-                                fc_axis_d = VX,
-                                fc_axis_w = V0,
-                                fc_axis_h = VZ,
-                                ref_d = 1, ref_w = 1, ref_h = 1,
-                                pos = pos, wfco = 1, toprint= 0, name = 'Lcpb1mBase')
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            comp_optic.lcpb1m_base(d_lcpb1m_base = kcomp_optic.LCPB1M_BASE,
+                                    fc_axis_d = axis_d, #VX,
+                                    fc_axis_w = axis_w, #V0,
+                                    fc_axis_h = axis_h, #VZ,
+                                    ref_d = 1, ref_w = 1, ref_h = 1,
+                                    pos = pos, wfco = 1, toprint= 0, name = 'Lcpb1mBase')
 
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -2491,7 +4076,7 @@ class Lcpb1mBase_TaskPanel:
 
 class _CageCube_Cmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_CageCube = CageCube_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_CageCube) 
 
@@ -2512,11 +4097,11 @@ class _CageCube_Cmd:
 class CageCube_TaskPanel:
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Type ----
-        self.Label_Type = QtGui.QLabel("Type ")
-        self.Type = QtGui.QComboBox()
+        self.Label_Type = QtWidgets.QLabel("Type ")
+        self.Type = QtWidgets.QComboBox()
         self.Type.addItems(["CAGE_CUBE_60","CAGE_CUBE_HALF_60"])
         self.Type.setCurrentIndex(0)
 
@@ -2525,7 +4110,7 @@ class CageCube_TaskPanel:
         layout.addWidget(self.Type,0,1,1,1)
         
     def accept(self):
-
+        # if fc_isperp(axis_d,axis_w) == 1:
         if self.Type.currentIndex() == 0:
             comp_optic.f_cagecube(kcomp_optic.CAGE_CUBE_60,
                                    axis_thru_rods = 'x',
@@ -2541,6 +4126,8 @@ class CageCube_TaskPanel:
         FreeCADGui.activeDocument().activeView().viewAxonometric()
         FreeCADGui.Control.closeDialog() #close the dialog
         FreeCADGui.SendMsgToActiveView("ViewFit")
+        # else:
+            # axis_message()
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -2549,7 +4136,7 @@ class CageCube_TaskPanel:
 
 class _Plate_Cmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_Plate = Plate_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_Plate) 
 
@@ -2570,25 +4157,71 @@ class _Plate_Cmd:
 class Plate_TaskPanel:
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: plate ----
-        self.Label_plate = QtGui.QLabel('Dictionary:')
-        self.Plate = QtGui.QComboBox()
+        self.Label_plate = QtWidgets.QLabel('Dictionary:')
+        self.Plate = QtWidgets.QComboBox()
         self.Plate.addItems(["Lb1cm_Plate","Lb2c_Plate","Lcp01m_plate"])
         self.Plate.setCurrentIndex(0)
 
         # ---- row 1: placement ----
-        self.Label_position = QtGui.QLabel("Placement ")
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
+
+        # ---- row 8: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_d = QtWidgets.QLabel("d:")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_d_x = QtWidgets.QDoubleSpinBox()
+        self.axis_d_y = QtWidgets.QDoubleSpinBox()
+        self.axis_d_z = QtWidgets.QDoubleSpinBox()
+        self.axis_d_x.setMinimum(-1)
+        self.axis_d_x.setMaximum(1)
+        self.axis_d_y.setMinimum(-1)
+        self.axis_d_y.setMaximum(1)
+        self.axis_d_z.setMinimum(-1)
+        self.axis_d_z.setMaximum(1)
+        self.axis_d_x.setValue(1)
+        self.axis_d_y.setValue(0)
+        self.axis_d_z.setValue(0)
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 7: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/Plate.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_plate,0,0,1,1)
@@ -2601,37 +4234,57 @@ class Plate_TaskPanel:
         layout.addWidget(self.Label_pos_z,3,1,1,2)
         layout.addWidget(self.pos_z,3,2,1,2)
 
+        layout.addWidget(self.Label_axis,4,0,1,4)
+        layout.addWidget(self.Label_axis_d,4,1,1,4)
+        layout.addWidget(self.axis_d_x,4,2,1,4)
+        layout.addWidget(self.axis_d_y,4,3,1,4)
+        layout.addWidget(self.axis_d_z,4,4,1,4)
+        layout.addWidget(self.Label_axis_w,5,1,1,4)
+        layout.addWidget(self.axis_w_x,5,2,1,4)
+        layout.addWidget(self.axis_w_y,5,3,1,4)
+        layout.addWidget(self.axis_w_z,5,4,1,4)
+        layout.addWidget(self.Label_axis_h,6,1,1,4)
+        layout.addWidget(self.axis_h_x,6,2,1,4)
+        layout.addWidget(self.axis_h_y,6,3,1,4)
+        layout.addWidget(self.axis_h_z,6,4,1,4)
+
+        layout.addWidget(image,7,0,1,0)
+
     def accept(self):
         pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
-        
-        if self.Plate.currentIndex() == 0:
-            comp_optic.Lb1cPlate(kcomp_optic.LB1CM_PLATE,
-                                  fc_axis_h = VZ,
-                                  fc_axis_l = VX,
-                                  ref_in = 1,
-                                  pos = pos,
-                                  name = 'lb1c_plate')
+        axis_d = FreeCAD.Vector(self.axis_d_x.value(),self.axis_d_y.value(),self.axis_d_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
 
-        if self.Plate.currentIndex() == 1:
-            comp_optic.Lb2cPlate(fc_axis_h = VZ,
-                                  fc_axis_l = VX,
-                                  cl=1, cw=1, ch=0,
-                                  pos = pos,
-                                  name = 'lb2c_plate')
+        if ortonormal_axis(axis_d,axis_w,axis_h) == True:
+            if self.Plate.currentIndex() == 0:
+                comp_optic.Lb1cPlate(kcomp_optic.LB1CM_PLATE,
+                                    fc_axis_h = axis_h ,#VZ,
+                                    fc_axis_l = axis_d ,#VX,
+                                    ref_in = 1,
+                                    pos = pos,
+                                    name = 'lb1c_plate')
 
-        if self.Plate.currentIndex() == 2:
-            comp_optic.lcp01m_plate(d_lcp01m_plate = kcomp_optic.LCP01M_PLATE,
-                                     fc_axis_h = VZ,
-                                     fc_axis_m = VX,
-                                     fc_axis_p = V0,
-                                     cm=1, cp=1, ch=1,
-                                     pos = pos,
-                                     wfco= 1,
-                                     name = 'LCP01M_PLATE')
+            if self.Plate.currentIndex() == 1:
+                comp_optic.Lb2cPlate(fc_axis_h = axis_h ,#VZ,
+                                    fc_axis_l = axis_d ,#VX,
+                                    cl=1, cw=1, ch=0,
+                                    pos = pos,
+                                    name = 'lb2c_plate')
 
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+            if self.Plate.currentIndex() == 2:
+                comp_optic.lcp01m_plate(d_lcp01m_plate = kcomp_optic.LCP01M_PLATE,
+                                        fc_axis_h = axis_h ,#VZ,
+                                        fc_axis_m = axis_d ,#VX,
+                                        fc_axis_p = axis_w ,#V0,
+                                        cm=1, cp=1, ch=1,
+                                        pos = pos,
+                                        wfco= 1,
+                                        name = 'LCP01M_PLATE')
+
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -2640,7 +4293,7 @@ class Plate_TaskPanel:
 
 class _ThLed30_Cmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_ThLed30 = ThLed30_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_ThLed30) 
 
@@ -2661,19 +4314,52 @@ class _ThLed30_Cmd:
 class ThLed30_TaskPanel:
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: placement ----
-        self.Label_position = QtGui.QLabel("Placement ")
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
+
+        # ---- row 3: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_w = QtWidgets.QLabel(":")
+        self.Label_axis_h = QtWidgets.QLabel("cable:")
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(-1)
+
+        # ---- row 5: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/ThLed30.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_position,0,0,1,2)
@@ -2684,17 +4370,35 @@ class ThLed30_TaskPanel:
         layout.addWidget(self.Label_pos_z,2,1,1,2)
         layout.addWidget(self.pos_z,2,2,1,2)
 
+        layout.addWidget(self.Label_position,3,0,1,4)
+        layout.addWidget(self.Label_axis_w,3,1,1,4)
+        layout.addWidget(self.axis_w_x,3,2,1,4)
+        layout.addWidget(self.axis_w_y,3,3,1,4)
+        layout.addWidget(self.axis_w_z,3,4,1,4)
+        layout.addWidget(self.Label_axis_h,4,1,1,4)
+        layout.addWidget(self.axis_h_x,4,2,1,4)
+        layout.addWidget(self.axis_h_y,4,3,1,4)
+        layout.addWidget(self.axis_h_z,4,4,1,4)
+
+        layout.addWidget(image,5,0,1,0)
+
+
     def accept(self):
         pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
-        
-        comp_optic.ThLed30(fc_axis = VY,
-                            fc_axis_cable = VZN,
-                            pos = pos,
-                            name = 'thled30')
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
 
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+        if fc_isperp(axis_w,axis_h) == 1:
+            comp_optic.ThLed30(fc_axis = axis_w,#VY,
+                                fc_axis_cable = axis_h,#VZN,
+                                pos = pos,
+                                name = 'thled30')
+
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
+        else:
+            axis_message()
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -2703,7 +4407,7 @@ class ThLed30_TaskPanel:
 
 class _PrizLed_Cmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_PrizLed = PrizLed_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_PrizLed) 
 
@@ -2724,19 +4428,52 @@ class _PrizLed_Cmd:
 class PrizLed_TaskPanel:
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: placement ----
-        self.Label_position = QtGui.QLabel("Placement ")
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
+
+        # ---- row 3: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_w = QtWidgets.QLabel("led:")
+        self.Label_axis_h = QtWidgets.QLabel("clear:")
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(1)
+        self.axis_w_y.setValue(0)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(-1)
+
+        # ---- row 5: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/PrizLed.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_position,0,0,1,2)
@@ -2747,17 +4484,34 @@ class PrizLed_TaskPanel:
         layout.addWidget(self.Label_pos_z,2,1,1,2)
         layout.addWidget(self.pos_z,2,2,1,2)
 
+        layout.addWidget(self.Label_position,3,0,1,4)
+        layout.addWidget(self.Label_axis_w,3,1,1,4)
+        layout.addWidget(self.axis_w_x,3,2,1,4)
+        layout.addWidget(self.axis_w_y,3,3,1,4)
+        layout.addWidget(self.axis_w_z,3,4,1,4)
+        layout.addWidget(self.Label_axis_h,4,1,1,4)
+        layout.addWidget(self.axis_h_x,4,2,1,4)
+        layout.addWidget(self.axis_h_y,4,3,1,4)
+        layout.addWidget(self.axis_h_z,4,4,1,4)
+
+        layout.addWidget(image,5,0,1,0)
+
     def accept(self):
         pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
         
-        comp_optic.PrizLed(fc_axis_led = VX, 
-                            fc_axis_clear = VZN,
-                            pos = pos, 
-                            name = 'prizmatix_led')
-        
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+        if fc_isperp(axis_w,axis_h) == 1:
+            comp_optic.PrizLed(fc_axis_led = axis_w ,#VX, 
+                                fc_axis_clear = axis_h ,#VZN,
+                                pos = pos, 
+                                name = 'prizmatix_led')
+            
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
+        else:
+            axis_message()
 
 #  _________________________________________________________________
 # |                                                                 |
@@ -2766,7 +4520,7 @@ class PrizLed_TaskPanel:
 
 class _BreadBoard_Cmd:
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_BreadBoard = BreadBoard_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_BreadBoard) 
 
@@ -2787,33 +4541,66 @@ class _BreadBoard_Cmd:
 class BreadBoard_TaskPanel:
     def __init__(self,widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: lenght ----
-        self.Label_len = QtGui.QLabel("Lenght:")
-        self.len = QtGui.QDoubleSpinBox()
+        self.Label_len = QtWidgets.QLabel("Lenght:")
+        self.len = QtWidgets.QDoubleSpinBox()
         self.len.setMinimum(1)
         self.len.setValue(200)
         self.len.setMaximum(9999)
 
         # ---- row 1: width ----
-        self.Label_wid = QtGui.QLabel("Width:")
-        self.wid = QtGui.QDoubleSpinBox()
+        self.Label_wid = QtWidgets.QLabel("Width:")
+        self.wid = QtWidgets.QDoubleSpinBox()
         self.wid.setMinimum(1)
         self.wid.setValue(500)
         self.wid.setMaximum(9999)
 
         # ---- row 2: placement ----
-        self.Label_position = QtGui.QLabel("Placement ")
-        self.Label_pos_x = QtGui.QLabel("x:")
-        self.Label_pos_y = QtGui.QLabel("y:")
-        self.Label_pos_z = QtGui.QLabel("z:")
-        self.pos_x = QtGui.QDoubleSpinBox()
-        self.pos_y = QtGui.QDoubleSpinBox()
-        self.pos_z = QtGui.QDoubleSpinBox()
+        self.Label_position = QtWidgets.QLabel("Placement ")
+        self.Label_pos_x = QtWidgets.QLabel("x:")
+        self.Label_pos_y = QtWidgets.QLabel("y:")
+        self.Label_pos_z = QtWidgets.QLabel("z:")
+        self.pos_x = QtWidgets.QDoubleSpinBox()
+        self.pos_y = QtWidgets.QDoubleSpinBox()
+        self.pos_z = QtWidgets.QDoubleSpinBox()
         self.pos_x.setValue(0)
         self.pos_y.setValue(0)
         self.pos_z.setValue(0)
+
+        # ---- row 5: axis ----
+        self.Label_axis = QtWidgets.QLabel("Axis ")
+        self.Label_axis_w = QtWidgets.QLabel("w:")
+        self.Label_axis_h = QtWidgets.QLabel("h:")
+        self.axis_w_x = QtWidgets.QDoubleSpinBox()
+        self.axis_w_y = QtWidgets.QDoubleSpinBox()
+        self.axis_w_z = QtWidgets.QDoubleSpinBox()
+        self.axis_w_x.setMinimum(-1)
+        self.axis_w_x.setMaximum(1)
+        self.axis_w_y.setMinimum(-1)
+        self.axis_w_y.setMaximum(1)
+        self.axis_w_z.setMinimum(-1)
+        self.axis_w_z.setMaximum(1)
+        self.axis_w_x.setValue(0)
+        self.axis_w_y.setValue(1)
+        self.axis_w_z.setValue(0)
+        self.axis_h_x = QtWidgets.QDoubleSpinBox()
+        self.axis_h_y = QtWidgets.QDoubleSpinBox()
+        self.axis_h_z = QtWidgets.QDoubleSpinBox()
+        self.axis_h_x.setMinimum(-1)
+        self.axis_h_x.setMaximum(1)
+        self.axis_h_y.setMinimum(-1)
+        self.axis_h_y.setMaximum(1)
+        self.axis_h_z.setMinimum(-1)
+        self.axis_h_z.setMaximum(1)
+        self.axis_h_x.setValue(0)
+        self.axis_h_y.setValue(0)
+        self.axis_h_z.setValue(1)
+
+        # ---- row 7: image ----
+        image = QtWidgets.QLabel('Image of axis <a href="https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/img_gui/BreadBoard.png">hear</a>.')
+        image.setOpenExternalLinks(True)
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Label_len,0,0,1,2)
@@ -2828,25 +4615,43 @@ class BreadBoard_TaskPanel:
         layout.addWidget(self.Label_pos_z,4,1,1,2)
         layout.addWidget(self.pos_z,4,2,1,2)
 
+        layout.addWidget(self.Label_position,5,0,1,4)
+        layout.addWidget(self.Label_axis_w,5,1,1,4)
+        layout.addWidget(self.axis_w_x,5,2,1,4)
+        layout.addWidget(self.axis_w_y,5,3,1,4)
+        layout.addWidget(self.axis_w_z,5,4,1,4)
+        layout.addWidget(self.Label_axis_h,6,1,1,4)
+        layout.addWidget(self.axis_h_x,6,2,1,4)
+        layout.addWidget(self.axis_h_y,6,3,1,4)
+        layout.addWidget(self.axis_h_z,6,4,1,4)
+
+        layout.addWidget(image,7,0,1,0)
+
+
     def accept(self):
         length = self.len.value()
         width = self.wid.value()
         pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
+        axis_w = FreeCAD.Vector(self.axis_w_x.value(),self.axis_w_y.value(),self.axis_w_z.value())
+        axis_h = FreeCAD.Vector(self.axis_h_x.value(),self.axis_h_y.value(),self.axis_h_z.value())
         
-        comp_optic.f_breadboard(kcomp_optic.BREAD_BOARD_M,
-                                 length,
-                                 width,
-                                 cl = 1,
-                                 cw = 1,
-                                 ch = 1,
-                                 fc_dir_h = VZ,
-                                 fc_dir_w = VY,
-                                 pos = pos,
-                                 name = 'breadboard')
-        
-        FreeCADGui.activeDocument().activeView().viewAxonometric()
-        FreeCADGui.Control.closeDialog() #close the dialog
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+        if fc_isperp(axis_w,axis_h) == 1:
+            comp_optic.f_breadboard(kcomp_optic.BREAD_BOARD_M,
+                                    length,
+                                    width,
+                                    cl = 1,
+                                    cw = 1,
+                                    ch = 1,
+                                    fc_dir_h = axis_h ,#VZ,
+                                    fc_dir_w = axis_w ,#VY,
+                                    pos = pos,
+                                    name = 'breadboard')
+            
+            FreeCADGui.activeDocument().activeView().viewAxonometric()
+            FreeCADGui.Control.closeDialog() #close the dialog
+            FreeCADGui.SendMsgToActiveView("ViewFit")
+        else:
+            axis_message()
 
 ###############################################################################
 #*************************************TEST*************************************
@@ -2855,7 +4660,7 @@ class _testCmD:
     Test class
     """
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_test = test_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_test) 
 
@@ -2876,14 +4681,25 @@ class _testCmD:
 class test_TaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        # layout = QtWidgets.QGridLayout(self.form)
     
     def accept(self):
 
+        # TODO check Tensioner in NuevaClase. Mirar posiciones para ver que pasa.
 
-        NuevaClase.placa_perforada( 10, 10, 5, 2, name = 'placa perforada')
+        # tensioner_clss_new.TensionerHolder(aluprof_w = 20., belt_pos_h = 20., tens_h=10, tens_w=10, tens_d_inside=25)
+        # tensioner_clss.IdlerTensionerSet()
+        # tensioner_clss_new.IdlerTensionerSet()
+        print("_____________________________")
+        print("Old")
+        tensioner_clss.TensionerSet()
+        print("_____________________________")
+        print("New")
+        tensioner_clss_new.TensionerSet()
 
-        NuevaClase.placa_tornillos( 10, 10, 5, 1, name = 'placa tornillos')
+        # NuevaClase.placa_perforada( 10, 10, 5, 2, name = 'placa perforada')
+
+        # NuevaClase.placa_tornillos( 10, 10, 5, 1, name = 'placa tornillos')
 
         FreeCADGui.activeDocument().activeView().viewAxonometric()
         FreeCADGui.Control.closeDialog() #close the dialog
@@ -2929,14 +4745,14 @@ class _AssemlyCmd:
     
     """
     def Activated(self):
-        baseWidget = QtGui.QWidget()
+        baseWidget = QtWidgets.QWidget()
         panel_Assembly = Assembly_TaskPanel(baseWidget)
         FreeCADGui.Control.showDialog(panel_Assembly) 
         """
-        message = QtGui.QMessageBox()
+        message = QtWidgets.QMessageBox()
         message.setText('Select:\n  - First: Think to move.\n   - Second: New placement.\n')
-        message.setStandardButtons(QtGui.QMessageBox.Ok)
-        message.setDefaultButton(QtGui.QMessageBox.Ok)
+        message.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        message.setDefaultButton(QtWidgets.QMessageBox.Ok)
         message.exec_()"""
         
     def GetResources(self):
@@ -2956,11 +4772,11 @@ class _AssemlyCmd:
 class Assembly_TaskPanel:
     def __init__(self, widget):
         self.form = widget
-        layout = QtGui.QGridLayout(self.form)
+        layout = QtWidgets.QGridLayout(self.form)
 
         # ---- row 0: Text ----
-        self.Text_1_Label = QtGui.QLabel("Select object to move")  
-        self.ComboBox_ObjSelection1 = QtGui.QComboBox()
+        self.Text_1_Label = QtWidgets.QLabel("Select object to move")  
+        self.ComboBox_ObjSelection1 = QtWidgets.QComboBox()
         self.TextObj = []
         for i in range (len (FreeCAD.ActiveDocument.Objects)):
             self.TextObj.append(FreeCAD.ActiveDocument.Objects[i].Name)
@@ -2969,15 +4785,15 @@ class Assembly_TaskPanel:
 
 
         # ---- row 1: Sel obj1 ----
-        self.Text_Selection1 = QtGui.QLabel("Select")
-        self.ComboBox_Selection1 = QtGui.QComboBox()
+        self.Text_Selection1 = QtWidgets.QLabel("Select")
+        self.ComboBox_Selection1 = QtWidgets.QComboBox()
         self.TextSelection1 = ["Vertexes","Edges","Faces"]
         self.ComboBox_Selection1.addItems(self.TextSelection1)
         self.ComboBox_Selection1.setCurrentIndex(0)
 
         # ---- row 2: Text ----
-        self.Text_2_Label = QtGui.QLabel("After select the place")  
-        self.ComboBox_ObjSelection2 = QtGui.QComboBox()
+        self.Text_2_Label = QtWidgets.QLabel("After select the place")  
+        self.ComboBox_ObjSelection2 = QtWidgets.QComboBox()
         self.TextObj = []
         for i in range (len (FreeCAD.ActiveDocument.Objects)):
             self.TextObj.append(FreeCAD.ActiveDocument.Objects[i].Name)
@@ -2985,14 +4801,14 @@ class Assembly_TaskPanel:
         self.ComboBox_ObjSelection2.setCurrentIndex(0)
 
         # ---- row 3: Sel obj2 ----
-        self.Text_Selection2 = QtGui.QLabel("Select")
-        self.ComboBox_Selection2 = QtGui.QComboBox()
+        self.Text_Selection2 = QtWidgets.QLabel("Select")
+        self.ComboBox_Selection2 = QtWidgets.QComboBox()
         self.TextSelection1 = ["Vertexes","Edges","Faces"]
         self.ComboBox_Selection2.addItems(self.TextSelection1)
         self.ComboBox_Selection2.setCurrentIndex(0)
 
         # ---- row 4: Note ----
-        self.Text_Note = QtGui.QLabel("With Vertexes don't work properly")
+        self.Text_Note = QtWidgets.QLabel("With Vertexes don't work properly")
 
         # row X, column X, rowspan X, colspan X
         layout.addWidget(self.Text_1_Label,0,0,1,1)
@@ -3018,10 +4834,10 @@ class Assembly_TaskPanel:
             Assembly_TaskPanel.change_color(self, color = (0.0, 0.0, 0.0), size = 2)
             FreeCADGui.Control.closeDialog() #close the dialog
         else:
-            message = QtGui.QMessageBox()
+            message = QtWidgets.QMessageBox()
             message.setText('Select object to move and placement')
-            message.setStandardButtons(QtGui.QMessageBox.Ok)
-            message.setDefaultButton(QtGui.QMessageBox.Ok)
+            message.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            message.setDefaultButton(QtWidgets.QMessageBox.Ok)
             message.exec_()
     
     def reject(self):
@@ -3052,6 +4868,26 @@ class Assembly_TaskPanel:
             if color == (0.0, 0.0, 0.0):
                 color = (0.8, 0.8, 0.8)
             doc.getObject(self.ObjSelection2.Name).ShapeColor = color
+
+#  _________________________________________________________________
+# |                                                                 |
+# |                         Ortonormal Axis                         |
+# |_________________________________________________________________|
+def ortonormal_axis(axis_1, axis_2, axis_3):
+    if ((fc_isperp(axis_1,axis_2)==0) or (fc_isperp(axis_2,axis_3)==0) or (fc_isperp(axis_1,axis_3)==0)):
+        axis_message()
+        return False
+    else:
+        return True
+    
+def axis_message():
+    axis_message = QtWidgets.QMessageBox()
+    axis_message.setText("Please, check the input axes")
+    axis_message.setInformativeText("The axes must be perpendicular to each other")
+    axis_message.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    axis_message.setDefaultButton(QtWidgets.QMessageBox.Ok)
+    axis_message.exec_()
+
 
 #  _________________________________________________________________
 # |                                                                 |
