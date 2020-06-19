@@ -1429,7 +1429,7 @@ class DoubleBeltClamp (shp_clss.Obj3D):
                  _____________________|_______|______________________
                 |      ____       ___           ___       ____      |
        CB_W  {  |     |____|     /   \         /   \     |____|     |
-       CB_IW {  8  6  4____      | 2 |    0    | 1 |      ____3  5  7
+       CB_IW { -4 -3 -2____      |-1 |    0    | 1 |      ____2  3  4
        CB_W  {  |     |____|     \___/         \___/     |____|     |
                 |___________________________________________________|
                                       |       |                     
@@ -1447,16 +1447,16 @@ class DoubleBeltClamp (shp_clss.Obj3D):
 
                                        ___3___                
                                       |       |               
-                                      |   1   |               
+                                      |   2   |               
                  _____________________|_______|______________________
                 |      ____       ___           ___       ____      |
-       CB_W  {  |     |____|     /   \         /   \     |____|     |
+       CB_W  {  |     |____| . . /   \ .  1 .  /   \ . . |____|     |
        CB_IW {  |      ____      |   |    0    |   |      ____      |
-       CB_W  {  |     |____|     \___/         \___/     |____|     |
+       CB_W  {  |     |____| . . \___/ . -1 .  \___/ . . |____|     |
                 |___________________________________________________|
                                       |       |                     
-                                      |   2   |                     
-                                      |___4___|
+                                      |  -2   |                     
+                                      |__-3___|
                 1: center
                 2: bolt up
                 3: bolt down
@@ -1536,7 +1536,10 @@ class DoubleBeltClamp (shp_clss.Obj3D):
         self.base_h = base_h
         self.base_w = base_w
         self.base_l = base_l
-        self.pos = pos
+        self.pos_o = pos
+        self.pos_d = 0
+        self.pos_w = 0
+        self.pos_h = 0
         chmf_r = 1.
 
         if extra == 0:
@@ -1547,26 +1550,26 @@ class DoubleBeltClamp (shp_clss.Obj3D):
         pos_extra = pos + extra_pos
         base_top_add = DraftVecUtils.scale(self.axis_h, base_h + extra)
 
+        # position centered
+        self.d0_cen = 1
+        self.w0_cen = 1
+        self.h0_cen = 0
         # position along axis_d
-        self.d_o[0] = self.pos
-        self.d_o[1] = self.vec_d( clamp2end/2 + CCYL_R)
-        self.d_o[2] = - self.d_o[1]
-        self.d_o[3] = self.vec_d( clamp2end/2 + CCYL_R + CS + CB_L)
-        self.d_o[4] = -self.d_o[3]
-        self.d_o[5] = self.vec_d( self.base_l/2 - bolt_head_r)
-        self.d_o[6] = - self.d_o[5]
-        self.d_o[7] = self.vec_d( clamp2end/2 + CCYL_R + CS + CB_L + clamp2end)
-        self.d_o[8] = -self.d_o[7]
+        self.d_o[0] = V0
+        self.d_o[1] = self.vec_d(clamp2end/2 + CCYL_R)
+        self.d_o[2] = self.vec_d(clamp2end/2 + CCYL_R + CS + CB_L)
+        self.d_o[3] = self.vec_d(self.base_l/2 - bolt_head_r)
+        self.d_o[4] = self.vec_d(clamp2end/2 + CCYL_R + CS + CB_L + clamp2end)
         # position along axis_w
-        self.w_o[0] = self.pos
-        self.w_o[1] = self.vec_w( (self.base_w + clamp2end)/2)
-        self.w_o[2] = self.vec_w(-(self.base_w + clamp2end)/2)
-        self.w_o[3] = self.vec_w( self.base_w/2 + 2*bolt2end)
-        self.w_o[4] = self.vec_w(-self.base_w/2 - 2*bolt2end)
+        self.w_o[0] = V0
+        self.w_o[1] = self.vec_w((cb_in_w + cb_wall_w)/2.)
+        self.w_o[2] = self.vec_w((self.base_w + clamp2end)/2)
+        self.w_o[3] = self.vec_w(self.base_w/2 + 2*bolt2end)
 
         # position along axis_h
-        self.h_o[0] = self.pos
-        self.h_o[1] = self.vec_h( self.base_h)
+        self.h_o[0] = V0
+        self.h_o[1] = self.vec_h(self.base_h)
+
         # Make the base
             # principal
         shp_base_1 = fcfun.shp_box_dir(box_w = self.base_w,
@@ -1576,7 +1579,7 @@ class DoubleBeltClamp (shp_clss.Obj3D):
                                      fc_axis_h = self.axis_h,
                                      fc_axis_d = self.axis_d,
                                      cw=1, cd=1, ch=0, # 1 centrado, 0 descentrado
-                                     pos = self.pos)
+                                     pos = self.pos_o)
         shp_base_1 = fcfun.shp_filletchamfer_dir (shp_base_1, self.axis_h,
                                                 fillet = 1, radius = chmf_r)
 
@@ -1588,7 +1591,7 @@ class DoubleBeltClamp (shp_clss.Obj3D):
                                      fc_axis_h = self.axis_h,
                                      fc_axis_d = self.axis_d,
                                      cw=1, cd=1, ch=0, # 1 centrado, 0 descentrado
-                                     pos = self.pos)
+                                     pos = self.pos_o)
         shp_base_2 = fcfun.shp_filletchamfer_dir (shp_base_2, self.axis_h,
                                                 fillet = 1, radius = chmf_r)
         
@@ -1597,43 +1600,43 @@ class DoubleBeltClamp (shp_clss.Obj3D):
         # make the clampblock
         clamp_tot_h = C_H + base_h + extra
         clampcyl_pos_1 = self.d_o [1] + pos_extra
-        clampcyl_pos_2 = self.d_o[2] - pos_extra
+        #clampcyl_pos_2 = self.d_o[-1] - pos_extra
         clampblock_side_add = DraftVecUtils.scale(self.axis_w, 
                                                   (cb_in_w + cb_wall_w)/2.)
-        clampblock_1_pos = self.d_o[3]
-        clampblock_2_pos = self.d_o[4]
+        clampblock_1_pos = self.d_o[2]
+        #clampblock_2_pos = self.d_o[-2]
 
-        shp_cyl_1 = fcfun.shp_cyl(CCYL_R, clamp_tot_h, self.axis_h, clampcyl_pos_1 + FreeCAD.Vector(0,0,self.base_h/2))
+        shp_cyl_1 = fcfun.shp_cyl(CCYL_R, clamp_tot_h, self.axis_h, self.get_pos_dwh(1,0,1))#self.pos + clampcyl_pos_1 + FreeCAD.Vector(0,0,self.base_h/2))
         shp_clampblock_1_a = fcfun.shp_box_dir(box_w = cb_wall_w,
                                              box_d = CB_L,
                                              box_h = clamp_tot_h,
                                              fc_axis_h = self.axis_h,
                                              fc_axis_d = self.axis_d,
                                              cw=1, cd=1, ch=0,
-                                             pos = clampblock_1_pos + clampblock_side_add)
+                                             pos = self.get_pos_dwh(2,1,0))#self.pos + clampblock_1_pos + clampblock_side_add)
         shp_clampblock_1_b = fcfun.shp_box_dir(box_w = cb_wall_w,
                                              box_d = CB_L,
                                              box_h = clamp_tot_h,
                                              fc_axis_h = self.axis_h,
                                              fc_axis_d = self.axis_d,
                                              cw=1, cd=1, ch=0,
-                                             pos = clampblock_1_pos - clampblock_side_add)
+                                             pos = self.get_pos_dwh(2,-1,0))#self.pos + clampblock_1_pos - clampblock_side_add)
         
-        shp_cyl_2 = fcfun.shp_cyl(CCYL_R, clamp_tot_h, self.axis_h, clampcyl_pos_2 - FreeCAD.Vector(0,0,self.base_h/2))
+        shp_cyl_2 = fcfun.shp_cyl(CCYL_R, clamp_tot_h, self.axis_h, self.get_pos_dwh(-1,0,1))#self.pos + clampcyl_pos_2 - FreeCAD.Vector(0,0,self.base_h/2))
         shp_clampblock_2_a = fcfun.shp_box_dir(box_w = cb_wall_w,
                                              box_d = CB_L,
                                              box_h = clamp_tot_h,
                                              fc_axis_h = self.axis_h,
                                              fc_axis_d = self.axis_d,
                                              cw=1, cd=1, ch=0,
-                                             pos = clampblock_2_pos + clampblock_side_add)
+                                             pos = self.get_pos_dwh(-2,1,0))#self.pos + clampblock_2_pos + clampblock_side_add)
         shp_clampblock_2_b = fcfun.shp_box_dir(box_w = cb_wall_w,
                                              box_d = CB_L,
                                              box_h = clamp_tot_h,
                                              fc_axis_h = self.axis_h,
                                              fc_axis_d = self.axis_d,
                                              cw=1, cd=1, ch=0,
-                                             pos = clampblock_2_pos - clampblock_side_add)
+                                             pos = self.get_pos_dwh(-2,-1,0))#self.pos + clampblock_2_pos - clampblock_side_add)
         
         shp_clamp = fcfun.fuseshplist([shp_cyl_1, shp_clampblock_1_a, shp_clampblock_1_b,
                                        shp_cyl_2, shp_clampblock_2_a, shp_clampblock_2_b])
@@ -1641,10 +1644,10 @@ class DoubleBeltClamp (shp_clss.Obj3D):
         # Make holes
         if bolt_d > 0:
             
-            pos_bolt_1 = self.d_o[6] 
-            pos_bolt_2 = self.d_o[5]
-            pos_bolt_3 = self.w_o[1] + pos_extra + base_top_add + FreeCAD.Vector(0,0,-self.base_h)
-            pos_bolt_4 = self.w_o[2] - pos_extra - base_top_add 
+            # pos_bolt_1 = self.pos + self.d_o[6] 
+            # pos_bolt_2 = self.pos + self.d_o[5]
+            # pos_bolt_3 = self.pos + self.w_o[1] + pos_extra + base_top_add + FreeCAD.Vector(0,0,-self.base_h)
+            # pos_bolt_4 = self.pos + self.w_o[2] - pos_extra - base_top_add 
             if bolt_csunk > 0 :
                 shp_bolt_1 = fcfun.shp_bolt_dir(
                                             r_shank = bolt_shank_r,
@@ -1653,7 +1656,7 @@ class DoubleBeltClamp (shp_clss.Obj3D):
                                             l_head = bolt_head_l,
                                             support=0,
                                             fc_normal = self.axis_h,
-                                            pos=pos_bolt_1)
+                                            pos= self.get_pos_dwh(3,0,0))#pos_bolt_1)
                 shp_bolt_2 = fcfun.shp_bolt_dir(
                                             r_shank = bolt_shank_r,
                                             l_bolt = base_h + extra,
@@ -1661,7 +1664,7 @@ class DoubleBeltClamp (shp_clss.Obj3D):
                                             l_head = bolt_head_l,
                                             support=0,
                                             fc_normal = self.axis_h,
-                                            pos= pos_bolt_2)
+                                            pos= self.get_pos_dwh(-3,0,0))#pos_bolt_2)
                 shp_bolt_3 = fcfun.shp_bolt_dir(
                                             r_shank = bolt_shank_r,
                                             l_bolt = base_h + extra,
@@ -1669,7 +1672,7 @@ class DoubleBeltClamp (shp_clss.Obj3D):
                                             l_head = bolt_head_l,
                                             support=0,
                                             fc_normal = self.axis_h,
-                                            pos= pos_bolt_3)
+                                            pos= self.get_pos_dwh(0,2,0))#pos_bolt_3)
                 shp_bolt_4 = fcfun.shp_bolt_dir(
                                             r_shank = bolt_shank_r,
                                             l_bolt = base_h + extra,
@@ -1677,7 +1680,7 @@ class DoubleBeltClamp (shp_clss.Obj3D):
                                             l_head = bolt_head_l,
                                             support=0,
                                             fc_normal = self.axis_h,
-                                            pos= pos_bolt_4)
+                                            pos= self.get_pos_dwh(0,-2,0))#pos_bolt_4)
             else: # no head, just a cylinder:
                 shp_bolt_1 = fcfun.shp_cylcenxtr (
                                             r = bolt_shank_r,
@@ -1685,28 +1688,28 @@ class DoubleBeltClamp (shp_clss.Obj3D):
                                             normal = self.axis_h,
                                             ch = 0,
                                             xtr_top=1, xtr_bot=1,
-                                            pos = pos_bolt_1)
+                                            pos = self.get_pos_dwh(3,0,0))#pos_bolt_1)
                 shp_bolt_2 = fcfun.shp_cylcenxtr (
                                             r = bolt_shank_r,
                                             h = base_h + extra,
                                             normal = self.axis_h,
                                             ch = 0,
                                             xtr_top=1, xtr_bot=1,
-                                            pos = pos_bolt_2)
+                                            pos = self.get_pos_dwh(-3,0,0))#pos_bolt_2)
                 shp_bolt_3 = fcfun.shp_cylcenxtr (
                                             r = bolt_shank_r,
                                             h = base_h + extra,
                                             normal = self.axis_h,
                                             ch = 0,
                                             xtr_top=1, xtr_bot=1,
-                                            pos = pos_bolt_3)
+                                            pos = self.get_pos_dwh(0,2,0))#pos_bolt_3)
                 shp_bolt_4 = fcfun.shp_cylcenxtr (
                                             r = bolt_shank_r,
                                             h = base_h + extra,
                                             normal = self.axis_h,
                                             ch = 0,
                                             xtr_top=1, xtr_bot=1,
-                                            pos = pos_bolt_4)
+                                            pos = self.get_pos_dwh(0,-2,0))#pos_bolt_4)
                 
 
             # fuse the bolts:

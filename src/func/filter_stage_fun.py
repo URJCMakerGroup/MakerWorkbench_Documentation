@@ -132,7 +132,7 @@ axis_mov   = VY
 axis_front = VX
 axis_up    = VZ
 
-def filter_stage_fun( move_l, Filter_Length, Filter_Width, nut_hole, tens_stroke_Var, base_w, wall_thick_Var, size_motor, h_motor, thik_motor):
+def filter_stage_fun( move_l, Filter_Length, Filter_Width, nut_hole, tens_stroke_Var, base_w, wall_thick_Var, size_motor, h_motor, thik_motor, pos):
                     #move_l => mov_distance
                     #nut_hole => bolttens_mtr
                     #tens_stroke_Var => tens_stroke
@@ -147,7 +147,7 @@ def filter_stage_fun( move_l, Filter_Length, Filter_Width, nut_hole, tens_stroke
 
     # position of the filter
     # position of the filter in the middle
-    filter_pos_0 = V0
+    filter_pos_0 = pos
     # position of the filter relative to it 0 position
     filter_mov = DraftVecUtils.scale(axis_mov,0)
     filter_pos = filter_pos_0 + filter_mov

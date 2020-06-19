@@ -1510,6 +1510,8 @@ class IdlePulleyHolder (object):
         if 0, there will be no endstop
     endstop_h : float
         Height of the endstop. If 0 it will be just on top of the profile
+    pos : FreeCAD.Vector
+        Object Placement 
 
     Attributes
     ----------
@@ -1528,6 +1530,7 @@ class IdlePulleyHolder (object):
                   mindepth = 0,
                   attach_dir = '-y', endstop_side = 0,
                   endstop_posh = 0,
+                  pos = V0,
                   name = "idlepulleyhold"):
 
         doc = FreeCAD.ActiveDocument
@@ -1782,6 +1785,7 @@ class IdlePulleyHolder (object):
             pulley_holder = doc.addObject("Part::Cut", name)
             pulley_holder.Base = pulleyhold_aux    
             pulley_holder.Tool = nuthole    
+            pulley_holder.Placement.Base = pos
 
             self.fco = pulley_holder
 

@@ -15,9 +15,9 @@
    viewBox="0 0 127 124"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="SimpleEndstopHolder.svg"
-   inkscape:export-filename="C:\Users\david\Documents\Datos\TFG\Workbench_mechatronic\img_gui\SimpleEndstopHolder.png"
+   inkscape:export-filename="D:\Datos\TFG\Workbench_mechatronic\img_gui\SimpleEndstopHolder.png"
    inkscape:export-xdpi="101.398"
    inkscape:export-ydpi="101.398">
   <defs
@@ -107,15 +107,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="202.82894"
+     inkscape:cx="-169.91735"
      inkscape:cy="367.10417"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1013"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:window-height="1027"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata5">
@@ -201,7 +201,7 @@
          id="tspan1279"
          x="118.34471"
          y="292"
-         style="stroke-width:0.26458332">2</tspan></text>
+         style="stroke-width:0.26458332">1</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -212,7 +212,7 @@
          id="tspan1283"
          x="97.029968"
          y="292"
-         style="stroke-width:0.26458332">1</tspan></text>
+         style="stroke-width:0.26458332">0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -234,7 +234,7 @@
          id="tspan1295"
          x="7.4695621"
          y="292"
-         style="stroke-width:0.26458332">4</tspan></text>
+         style="stroke-width:0.26458332">3</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -245,7 +245,7 @@
          id="tspan1299"
          x="22.452097"
          y="291.92523"
-         style="stroke-width:0.26458332">3</tspan></text>
+         style="stroke-width:0.26458332">2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -256,7 +256,7 @@
          id="tspan1303"
          x="25.248735"
          y="292"
-         style="stroke-width:0.26458332">2</tspan></text>
+         style="stroke-width:0.26458332">1</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -267,7 +267,7 @@
          id="tspan1307"
          x="37.323158"
          y="292"
-         style="stroke-width:0.26458332">1</tspan></text>
+         style="stroke-width:0.26458332">0</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.5875, 1.5875;stroke-dashoffset:0;stroke-opacity:1"
        d="M 38.993724,185.54338 V 287.21125"
@@ -345,7 +345,7 @@
          id="tspan1295-7"
          x="75.814308"
          y="267.15897"
-         style="stroke-width:0.26458332">4</tspan></text>
+         style="stroke-width:0.26458332">3</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -356,7 +356,7 @@
          id="tspan1295-7-9"
          x="75.814308"
          y="282.47833"
-         style="stroke-width:0.26458332">5</tspan></text>
+         style="stroke-width:0.26458332">4</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -367,7 +367,7 @@
          id="tspan1295-7-2"
          x="75.597267"
          y="242.52042"
-         style="stroke-width:0.26458332">3</tspan></text>
+         style="stroke-width:0.26458332">2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -378,7 +378,7 @@
          id="tspan1620"
          x="75.61174"
          y="202.16461"
-         style="stroke-width:0.26458332">2</tspan></text>
+         style="stroke-width:0.26458332">1</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -389,6 +389,6 @@
          id="tspan1624"
          x="75.329582"
          y="187.47017"
-         style="stroke-width:0.26458332">1</tspan></text>
+         style="stroke-width:0.26458332">0</tspan></text>
   </g>
 </svg>
