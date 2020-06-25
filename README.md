@@ -8,9 +8,8 @@ Select your language:
 <details>
   <summary>English</summary>
   This repository have the parts of a mechatronic system
+---
 
-  ---
-  
   ### Index
   * [Folder organization](#folder-organization)
   * [Stable Version](#stable-version)
@@ -19,19 +18,19 @@ Select your language:
     * [Mechatronic system](#mechatronic-systems)
     * [Functions](#functions)
 
-  ---
+---
   ### Folder organization
   - comps: copy of the repository [fcad-comps](https://github.com/felipe-m/fcad-comps) of Felipe Machado.
   - icons: icons of the workbench.
   - parts 
   - src: source code
       - func: functions makes for the workbench
-  
-  ---
-  ### Stable version
-  The stable version is in the file [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). This version run in FreeCAD 0.18
 
-  ---
+---
+  ### Stable version
+  The stable version is in the file [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). This version run in FreeCAD 0.19
+
+---
   ### How it works
   This workbench has some parts of a mechatronic system. You can modify this parts and build your system.
   #### Components:
@@ -212,11 +211,10 @@ Select your language:
     <summary>Assembly</summary>
     Select the part you want to move and the place to assembly.
   </details>
-
-  ---
-  ---
+---
+---
 </details>
- 
+
 <details>
   <summary>Español</summary>
   Este repositorio tiene componentes de un sistema mecatrónico.
@@ -229,7 +227,7 @@ Select your language:
   * [Sistemas mecatrónicos](#sistemas-mecatrónicos)
   * [Funciones](#funciones)
 
-  ---
+---
   ### Organización de las carpetas:
   - comps: copia del repositorio [fcad-comps](https://github.com/felipe-m/fcad-comps) de Felipe Machado.
   - icons: iconos del workbench.
@@ -237,11 +235,11 @@ Select your language:
   - src: código fuente
       - func: funciones creadas para el workbench
 
-  ---
+---
   ### Versión estable:
-  La versión estable del workbench se encuentra en el archivo comprimido [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). Funciona en FreeCAD 0.18
+  La versión estable del workbench se encuentra en el archivo comprimido [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). Funciona en FreeCAD 0.19
 
-  ---
+---
   ### Funcionamiento del workbench
 
   El workbench consta de un conjunto de piezas empleadas en sistemas mecatrónicos.  
@@ -425,7 +423,6 @@ Select your language:
     <summary>Ensamblaje</summary>
     Selecciona la pieza que quieres mover y su nueva posición.
   </details>
-
-  ---
-  --- 
+---
+---
 </details>
