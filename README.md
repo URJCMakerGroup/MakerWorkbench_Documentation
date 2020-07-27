@@ -8,11 +8,13 @@ Select your language:
 <details>
   <summary>English</summary>
   This repository have the parts of a mechatronic system
+
 ---
 
   ### Index
   * [Folder organization](#folder-organization)
   * [Stable Version](#stable-version)
+  * [Youtube videos](#youtube-videos)
   * [How it works](#how-it-works)
     * [Components](#components)
     * [Mechatronic system](#mechatronic-systems)
@@ -28,7 +30,11 @@ Select your language:
 
 ---
   ### Stable version
-  The stable version is in the file [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). This version run in FreeCAD 0.19
+  You can install the stable version on FreeCAD with the Addon Manager using the link [https://github.com/davidmubernal/Mechatronic](https://github.com/davidmubernal/Mechatronic) or downloading the [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic) (not the repository in zip). This run in FreeCAD 0.19.
+
+---
+  ### YouTube videos
+  There is some videos in [YouTube](https://www.youtube.com/playlist?list=PLJAGaIjAPiFIkdTY4OOOegZvmtumLL3OK) where you can see the workbench running
 
 ---
   ### How it works
@@ -222,10 +228,11 @@ Select your language:
   ### Índice
   * [Organización de las carpetas](#organización-de-las-carpetas)
   * [Versión estable](#verión-estable)
+  * [Vídeos en Youtube](#vídeos-en-youtube)
   * [Funcionamiento del workbench](#funcionamiento-del-workbench)  
-  * [Componentes](#componentes)
-  * [Sistemas mecatrónicos](#sistemas-mecatrónicos)
-  * [Funciones](#funciones)
+    * [Componentes](#componentes)
+    * [Sistemas mecatrónicos](#sistemas-mecatrónicos)
+    * [Funciones](#funciones)
 
 ---
   ### Organización de las carpetas:
@@ -237,7 +244,11 @@ Select your language:
 
 ---
   ### Versión estable:
-  La versión estable del workbench se encuentra en el archivo comprimido [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic.zip). Funciona en FreeCAD 0.19
+    Puedes instalar la version estable en FreeCAD con el Addon Manager (Administrador de complementos) usando el link [https://github.com/davidmubernal/Mechatronic](https://github.com/davidmubernal/Mechatronic) o descargando el archivo [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic) (no el repositorio en zip). Funciona en FreeCAD 0.19.
+
+---
+  ### Vídeos en YouTube
+  Hay varios vídeos en [YouTube](https://www.youtube.com/playlist?list=PLJAGaIjAPiFIkdTY4OOOegZvmtumLL3OK) donde se puede ver el workbench funcionando.
 
 ---
   ### Funcionamiento del workbench

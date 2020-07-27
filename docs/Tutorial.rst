@@ -9,6 +9,26 @@ Tutorial
 .. note:: 
     **Work in progress**
 
+YouTube Tutorials in Spanish
+----------------------------
+There are diferents tutorials availables in `Youtube <https://www.youtube.com/playlist?list=PLJAGaIjAPiFIkdTY4OOOegZvmtumLL3OK>`_.
+
+.. raw:: html
+
+   <div>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/Fow7y8KEO1E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   </div>
+
+.. raw:: html
+
+   <div>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/kyZiteZLs1A" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   </div>
+   
+
+.. warning::
+    We have update the workbench but we have not yet updated the followings tutorials
+
 Tutorial CAD 1 - Create part
 ----------------------------
 **1-** After opening FreeCAD, the first step is to select the Mechatronic workbench. To do this, click 
