@@ -378,76 +378,77 @@ class Obj3D (object):
         self.fco = fco
         # logger.info('Created the fco '+ name)
 
-        try:
-            self.fco.addProperty("Part::PropertyPartShape","Shape",name, "Shape of the object",1)
-            self.fco.Shape = self.shp
-        except:
-            logger.warning('No se puede asignar la propiedad shape')
+        if int(FreeCAD.Version()[1])>=19:
+            try:
+                self.fco.addProperty("Part::PropertyPartShape","Shape",name, "Shape of the object",1)
+                self.fco.Shape = self.shp
+            except:
+                logger.warning('No se puede asignar la propiedad shape')
 
-        try:
-            self.fco.addProperty("App::PropertyVector","axis_d",name,"Internal axis d",4).axis_d = self.axis_d
-        except:
-            logger.warning('Error al asignar la propiedad axis d')
+            try:
+                self.fco.addProperty("App::PropertyVector","axis_d",name,"Internal axis d",4).axis_d = self.axis_d
+            except:
+                logger.warning('Error al asignar la propiedad axis d')
 
-        try: 
-            self.fco.addProperty("App::PropertyVector","axis_w",name,"Internal axis w",4).axis_w = self.axis_w
-        except:
-            logger.warning('Error al asignar la propiedad axis w')
+            try: 
+                self.fco.addProperty("App::PropertyVector","axis_w",name,"Internal axis w",4).axis_w = self.axis_w
+            except:
+                logger.warning('Error al asignar la propiedad axis w')
 
-        try:
-            self.fco.addProperty("App::PropertyVector","axis_h",name,"Internal axis h",4).axis_h = self.axis_h
-        except:
-            logger.warning('Error al asignar la propiedad axis h')
+            try:
+                self.fco.addProperty("App::PropertyVector","axis_h",name,"Internal axis h",4).axis_h = self.axis_h
+            except:
+                logger.warning('Error al asignar la propiedad axis h')
 
-        try:
-            self.fco.addProperty("App::PropertyInteger","d0_cen",name,"Points d_o are symmetrics",4).d0_cen = self.d0_cen
-        except:
-            logger.warning('Error al asignar la propiedad d0_cen')
+            try:
+                self.fco.addProperty("App::PropertyInteger","d0_cen",name,"Points d_o are symmetrics",4).d0_cen = self.d0_cen
+            except:
+                logger.warning('Error al asignar la propiedad d0_cen')
 
-        try:
-            self.fco.addProperty("App::PropertyInteger","w0_cen",name,"Points w_o are symmetrics",4).w0_cen = self.w0_cen
-        except:
-            logger.warning('Error al asignar la propiedad w0_cen')
+            try:
+                self.fco.addProperty("App::PropertyInteger","w0_cen",name,"Points w_o are symmetrics",4).w0_cen = self.w0_cen
+            except:
+                logger.warning('Error al asignar la propiedad w0_cen')
 
-        try:
-            self.fco.addProperty("App::PropertyInteger","h0_cen",name,"Points h_o are symmetrics",4).h0_cen = self.h0_cen
-        except:
-            logger.warning('Error al asignar la propiedad h0_cen')
+            try:
+                self.fco.addProperty("App::PropertyInteger","h0_cen",name,"Points h_o are symmetrics",4).h0_cen = self.h0_cen
+            except:
+                logger.warning('Error al asignar la propiedad h0_cen')
 
-        try:
-            self.fco.addProperty("App::PropertyVectorList","d_o",name,"Points o to d",4).d_o = self.d_o
-        except:
-            logger.warning('Error al asignar la propiedad d_o')
+            try:
+                self.fco.addProperty("App::PropertyVectorList","d_o",name,"Points o to d",4).d_o = self.d_o
+            except:
+                logger.warning('Error al asignar la propiedad d_o')
 
-        try:
-            self.fco.addProperty("App::PropertyVectorList","w_o",name,"Points o to w",4).w_o = self.w_o
-        except:
-            logger.warning('Error al asignar la propiedad w_o')
+            try:
+                self.fco.addProperty("App::PropertyVectorList","w_o",name,"Points o to w",4).w_o = self.w_o
+            except:
+                logger.warning('Error al asignar la propiedad w_o')
 
-        try:
-            self.fco.addProperty("App::PropertyVectorList","h_o",name,"Points o to h",4).h_o = self.h_o
-        except:
-            logger.warning('Error al asignar la propiedad h_o')
+            try:
+                self.fco.addProperty("App::PropertyVectorList","h_o",name,"Points o to h",4).h_o = self.h_o
+            except:
+                logger.warning('Error al asignar la propiedad h_o')
 
-        # try: #TODO: Furute line of the proyect. Add childs propertys to the father. This doesn't make sense if the children don't have points to import
-        #     self.fco.addProperty("App::PropertyStringList","childs",name,"List of childs",4).childs = self.dict_child.keys()
-        #     try:
-        #         for key in self.dict_child:
-        #             self.fco.addProperty("App::PropertyFloatList",key + "_d_o",name,"Points o to d of " + key,4)# = self.dict_child[key]['child_d_o']
-        #     except:
-        #         logger.warning('Error al asignar la propiedad child_d_o')
-        # except:
-        #     logger.warning('Error al asignar la propiedad childs')
-        # 
-        # try:
-        #     self.fco.addProperty("App::PropertyStringList","childs_sum",name,"List of childs add",4).childs_sum = self.dict_child_sum.keys()
-        # except:
-        #     logger.warning('Error al asignar la propiedad childs_sum')
-        # 
-        # try:
-        #     self.fco.addProperty("App::PropertyStringList","childs_res",name,"List of childs res",4).childs_res = self.dict_child_res.keys()
-        # except:
-        #     logger.warning('Error al asignar la propiedad childs_res')
+            # try: #TODO: Furute line of the proyect. Add childs propertys to the father. This doesn't make sense if the children don't have points to import
+            #     self.fco.addProperty("App::PropertyStringList","childs",name,"List of childs",4).childs = self.dict_child.keys()
+            #     try:
+            #         for key in self.dict_child:
+            #             self.fco.addProperty("App::PropertyFloatList",key + "_d_o",name,"Points o to d of " + key,4)# = self.dict_child[key]['child_d_o']
+            #     except:
+            #         logger.warning('Error al asignar la propiedad child_d_o')
+            # except:
+            #     logger.warning('Error al asignar la propiedad childs')
+            # 
+            # try:
+            #     self.fco.addProperty("App::PropertyStringList","childs_sum",name,"List of childs add",4).childs_sum = self.dict_child_sum.keys()
+            # except:
+            #     logger.warning('Error al asignar la propiedad childs_sum')
+            # 
+            # try:
+            #     self.fco.addProperty("App::PropertyStringList","childs_res",name,"List of childs res",4).childs_res = self.dict_child_res.keys()
+            # except:
+            #     logger.warning('Error al asignar la propiedad childs_res')
 
     def add_child(self, child, child_sum = 1, child_name = None):
         """ add child with their features
@@ -1277,6 +1278,22 @@ class placa(Obj3D):
         #Obj3D.create_fco(self, name)
 class hole(Obj3D):
     def __init__(self, r = None, h = None, axis_d = VX, axis_w = VY, axis_h = VZ, pos = V0, name = None):
+         """
+		   d_o[0]
+            : d_o[1]
+            : : d_o[2]
+            : : :
+            :___:... h_o[2]
+            |   |
+            |   |... h_o[1]
+            |   |
+            |___|... h_o[0]
+           o
+              _... w_o[2]
+             / \... w_o[1]
+             \_/... w_o[0]
+           o
+        """
         self.shp = fcfun.shp_cyl(r, h, axis_h, pos)
         self.name = name
         self.axis_d = axis_d

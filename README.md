@@ -1,8 +1,8 @@
-# Mechatronic
+# MakerWorkbench
 
 ---
 
-All the documentation of Mechatronic is in the website https://mechatronic.readthedocs.io/en/master/
+All the documentation of MakerWorkbench is in the [website](https://makerworkbench.readthedocs.io/en/stable/)
 
 Select your language:
 <details>
@@ -30,7 +30,7 @@ Select your language:
 
 ---
   ### Stable version
-  You can install the stable version on FreeCAD with the Addon Manager using the link [https://github.com/davidmubernal/Mechatronic](https://github.com/davidmubernal/Mechatronic) or downloading the [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic) (not the repository in zip). This run in FreeCAD 0.19.
+  You can install the stable version on FreeCAD with the Addon Manager using the link [https://github.com/URJCMakerGroup/MakerWorkbench](https://github.com/URJCMakerGroup/MakerWorkbench) or downloading the [MakerWorkbench.zip](https://codeload.github.com/URJCMakerGroup/MakerWorkbench/zip/master). This run in FreeCAD 0.19.
 
 ---
   ### YouTube videos
@@ -244,7 +244,7 @@ Select your language:
 
 ---
   ### Versión estable:
-    Puedes instalar la version estable en FreeCAD con el Addon Manager (Administrador de complementos) usando el link [https://github.com/davidmubernal/Mechatronic](https://github.com/davidmubernal/Mechatronic) o descargando el archivo [Mechatronic.zip](https://github.com/davidmubernal/Mechatronic/blob/master/Mechatronic) (no el repositorio en zip). Funciona en FreeCAD 0.19.
+Puedes instalar la versión estable en FreeCAD con el Addon Manager (Administrador de complementos) usando el link [https://github.com/URJCMakerGroup/MakerWorkbench](https://github.com/URJCMakerGroup/MakerWorkbench) o descargando el archivo [Mechatronic.zip](https://codeload.github.com/URJCMakerGroup/MakerWorkbench/zip/master). Funciona en FreeCAD 0.19.
 
 ---
   ### Vídeos en YouTube

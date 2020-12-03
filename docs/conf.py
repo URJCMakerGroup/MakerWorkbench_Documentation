@@ -21,12 +21,12 @@ sys.path.insert(0, os.path.abspath('../comps/'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Mechatronic'
-copyright = '2020, David Muñoz Bernal, Universidad Rey Juan Carlos'
+project = 'Maker Workbench'
+copyright = '2020, URJCMakerGroup, David Muñoz Bernal, Universidad Rey Juan Carlos'
 author = 'David Muñoz Bernal'
 
 version = '12 Sep 2019'
-release = '0.2.1'
+release = '1.0.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -77,7 +77,7 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_logo = '../icons/Mechatronic.png'
+html_logo = '../icons/Maker.png'
 logo_only = True 
 
 # If true, links to the reST sources are added to the pages.

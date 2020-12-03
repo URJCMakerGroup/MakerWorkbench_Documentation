@@ -7,11 +7,11 @@ Install
   :target: https://www.freecadweb.org/downloads.php
   :height: 30px
 
-.. image:: https://img.shields.io/badge/Download-Mechatronic%20Workbench-brightgreen
+.. image:: https://img.shields.io/badge/Download-Maker%20Workbench-brightgreen
   :target: https://raw.githubusercontent.com/davidmubernal/Mechatronic_Documentation/master/Mechatronic.zip
   :height: 30px
 
-To install the Mechatronic Workbench you need `FreeCAD <https://www.freecadweb.org>`_.
+To install the Maker Workbench you need `FreeCAD <https://www.freecadweb.org>`_.
 
 .. note:: 
     Works on FreeCAD 0.19
@@ -19,10 +19,10 @@ To install the Mechatronic Workbench you need `FreeCAD <https://www.freecadweb.o
 After installing the program, there is two ways to install the Workbench:
 
   1. **Use the addon manager**. In FreeCAD, go to the menu *Tools/Addon manager*.
-     In the Addon Manager choose *Configuration* from de upper rigth side. In the new window add `https://github.com/davidmubernal/Mechatronic <https://github.com/davidmubernal/Mechatronic>`_ to the Custom Repositories
+     In the Addon Manager choose *Configuration* from de upper rigth side. In the new window add `https://github.com/URJCMakerGroup/MakerWorkbench <https://github.com/URJCMakerGroup/MakerWorkbench>`_ to the Custom Repositories
   
-  2. Download Mechatronic Workbench from the following `file <https://raw.githubusercontent.com/davidmubernal/Mechatronic/master/Mechatronic.zip>`_.
-     Take the *Mechatronic* folder from the *Mechatronic.zip* file and put it in the *Mod* folder inside the *FreeCAD* installation folder.
+  2. Download Maker Workbench from the following `file <https://codeload.github.com/URJCMakerGroup/MakerWorkbench/zip/master>`_.
+     Take the *Maker Workbench* folder from the *MakerWorkbench.zip* file and put it in the *Mod* folder inside the *FreeCAD* installation folder.
      The default path of *FreeCAD* is:
 
   +----------+-------------------------------------+

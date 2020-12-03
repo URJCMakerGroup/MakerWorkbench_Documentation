@@ -31,10 +31,10 @@ There are diferents tutorials availables in `Youtube <https://www.youtube.com/pl
 
 Tutorial CAD 1 - Create part
 ----------------------------
-**1-** After opening FreeCAD, the first step is to select the Mechatronic workbench. To do this, click 
-from the drop-down menu on the top bar and select Mechatronic.
+**1-** After opening FreeCAD, the first step is to select the Maker workbench. To do this, click 
+from the drop-down menu on the top bar and select Maker.
 
-   .. note:: If Mechatronic does not appear, check that you have followed the installation steps correctly
+   .. note:: If MakerWorkbench does not appear, check that you have followed the installation steps correctly
 
    .. image:: img/Tutorial_1.1.png
       :height: 1080 px
@@ -44,17 +44,17 @@ from the drop-down menu on the top bar and select Mechatronic.
    .. image:: img/Tutorial_1.2.png
       :height: 1080 px
       :scale: 50 %
-      :alt: Select Mechatronic as the workbench
+      :alt: Select MakerWorkbench as the workbench
 
-**2-** Once you have selected the Mechatronic workbench, open a new document, if you have not done so before.
+**2-** Once you have selected the MakerWorkbench workbench, open a new document, if you have not done so before.
 
    .. image:: img/Tutorial_1.3.png
       :height: 1080 px
       :scale: 50 %
       :alt: Open a new document, if this has not already been done.
 
-**3-** When you have selected the Mechatronic tool bank, a set of icons should appear at the top.
-Select one of the models to make your first part. You can also select the *Mechatronic Parts* menu to view the 
+**3-** When you have selected the Maker tool bank, a set of icons should appear at the top.
+Select one of the models to make your first part. You can also select the *Maker Parts* menu to view the 
 models available.
 
    .. image:: img/Tutorial_1.4.png
@@ -106,10 +106,10 @@ the model for 3D printing
 
 Tutorial CAD 2 - Crate a system
 -------------------------------
-**1-** After opening FreeCAD, the first step is to select the Mechatronic workbench. To do this, click 
-from the drop-down menu on the top bar and select Mechatronic.
+**1-** After opening FreeCAD, the first step is to select the Maker workbench. To do this, click 
+from the drop-down menu on the top bar and select MakerWorkbench.
 
-   .. note:: If Mechatronic does not appear, check that you have followed the installation steps correctly
+   .. note:: If MakerWorkbench does not appear, check that you have followed the installation steps correctly
 
    .. image:: img/Tutorial_2.1.png
       :height: 1080 px
@@ -119,17 +119,17 @@ from the drop-down menu on the top bar and select Mechatronic.
    .. image:: img/Tutorial_2.2.png
       :height: 1080 px
       :scale: 50 %
-      :alt: Select Mechatronic as the workbench
+      :alt: Select MakerWorkbench as the workbench
 
-**2-** Once you have selected the Mechatronic workbench, open a new document, if you have not done so before.
+**2-** Once you have selected the Maker workbench, open a new document, if you have not done so before.
 
    .. image:: img/Tutorial_2.3.png
       :height: 1080 px
       :scale: 50 %
       :alt: Open a new document, if this has not already been done.
 
-**3-** When you have selected the Mechatronic tool bank, a set of icons should appear at the top.
-Select one of the systems to make your first part. You can also select the *Mechatronic Systems* menu to view the 
+**3-** When you have selected the Maker tool bank, a set of icons should appear at the top.
+Select one of the systems to make your first part. You can also select the *Maker Systems* menu to view the 
 systems available.
 
    .. image:: img/Tutorial_2.4.png
