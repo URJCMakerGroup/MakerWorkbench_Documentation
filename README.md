@@ -244,7 +244,7 @@ Select your language:
 
 ---
   ### Versión estable:
-Puedes instalar la versión estable en FreeCAD con el Addon Manager (Administrador de complementos) usando el link [https://github.com/URJCMakerGroup/MakerWorkbench](https://github.com/URJCMakerGroup/MakerWorkbench) o descargando el archivo [Mechatronic.zip](https://codeload.github.com/URJCMakerGroup/MakerWorkbench/zip/master). Funciona en FreeCAD 0.19.
+Puedes instalar la versión estable en FreeCAD con el Addon Manager (Administrador de complementos) usando el link [https://github.com/URJCMakerGroup/MakerWorkbench](https://github.com/URJCMakerGroup/MakerWorkbench) o descargando el archivo [MakerWorkbench.zip](https://codeload.github.com/URJCMakerGroup/MakerWorkbench/zip/master). Funciona en FreeCAD 0.19.
 
 ---
   ### Vídeos en YouTube
