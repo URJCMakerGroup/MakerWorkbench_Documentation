@@ -208,7 +208,7 @@ class FilterStage_TaskPanel:
             if 'Point_d_w_h' == obj.Name:
                 FreeCAD.ActiveDocument.removeObject('Point_d_w_h')
 
-        self.selec_base = {0: 5, 1: 10, 2: 15, 3: 20, 4: 30, 5: 40}
+        self.selec_base = {0: 10, 1: 15, 2: 20, 3: 30, 4: 40}
         move_l = self.move_l_Value.value()
         #Filter holder
         Filter_Length = self.Filter_Length_Value.value()

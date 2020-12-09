@@ -1,18 +1,18 @@
 .. Explicacion de donde surge la idea de Mechatronic
 
 
-Introduccion
+Introduction
 ============
 
-Mechatronic
+Maker Workbench
 -----------
-Mechatronic is a Workbench for FreeCAD that allows the modification of parametric models that includes and
+Maker is a Workbench for FreeCAD that allows the modification of parametric models that includes and
 simplify the assembly and composition. It also provides a library of functions with which to generate new
 parametric models to be included in the Workbench.
 
 How it works
 ------------
-Mechatronic is designed for two different users:
+Maker is designed for two different users:
 
 **1.** Basic User: User without CAD or Programming knowledge who needs to make a design.
 For this user is the graphic part. The steps to follow would be:
@@ -34,7 +34,7 @@ You can consult the class design (:ref:`UML`) if you wish to better understand t
 
 History
 -------
-Mechatronic Workbench started with the Filter Stage project. In this project, we designed a support for the 
+Maker Workbench started with the Filter Stage project. In this project, we designed a support for the 
 sample holder of a microscope to the URJC.
 In order to be able to modify the design and adapt it to the required dimensions, we chose to make a parametric design.
 Parametric design requires the use of a programming language to describe the model, in this case we use Python.
@@ -43,7 +43,7 @@ Based on this parameterizable design, a final degree work was conceived to creat
 where the Filter Stage parameters could be modified from the FreeCAD interface. 
 
 It was decided to improve this first Workbench by adding designs commonly used in mechatronic systems and 
-functions to facilitate the placement of these designs
+functions to facilitate the placement of these designs. Also we add some optics models and ther are more models comming soon.
 
 .. rubric:: Footnotes
 

@@ -9,7 +9,7 @@ Wiki
 3D Model library
 ================
 
-Mechatronic
+Maker Workbench
 -----------
 
 Shaft Holder
