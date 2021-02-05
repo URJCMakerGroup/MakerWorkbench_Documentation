@@ -4,7 +4,7 @@
 
 La clase principal de todos los modelos 3D es *Obj3D* y se encuentra dentro del archivo *NuevaClase.py* disponible en [Mechatronic Documentation](https://github.com/davidmubernal/Mechatronic_Documentation/blob/master/src/func/NuevaClase.py). Esta clase contiene las propiedades y funciones que permiten generar los modelos de forma más sencilla.
 
-<img src="img/Tutorial_modelos_3D/UML_simplificado.svg" style="zoom: 67%;" />
+![](/parts/img/UML_simplificado.jpg)
 
 Lo más interesante está en el *\__init__* que nos define las propiedades básicas de nuestro modelo (ejes y nombre) y también inicializa el listado de puntos internos como los diccionarios de volúmenes aditivos o sustractivos.
 
