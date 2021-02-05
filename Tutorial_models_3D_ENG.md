@@ -4,9 +4,7 @@
 
 The main class of all 3D models is *Obj3D* and is located inside the *NewClass.py* file available in [Mechatronic Documentation](https://github.com/davidmubernal/Mechatronic_Documentation/blob/master/src/func/NuevaClase.py). This class contains the properties and functions that allow to generate the models more easily.
 
-
-
-<img src="img/Tutorial_modelos_3D/UML_simplificado.svg" style="zoom: 67%;" />
+![](/parts/img/UML_simplificado.jpg)
 
 The most interesting function in *Obj3D* is the function *\__init__* that defines the basic properties of our model (axes and name). Also, *\__init__* initializes the list of internal points as the dictionaries as additive or subtractive volumes.
 
