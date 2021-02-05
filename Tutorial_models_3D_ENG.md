@@ -2,7 +2,7 @@
 
 ## Main class of the models - **Obj3D**
 
-The main class of all 3D models is *Obj3D* and is located inside the *NewClass.py* file available in [Mechatronic Documentation](https://github.com/davidmubernal/Mechatronic_Documentation/blob/master/src/func/NuevaClase.py). This class contains the properties and functions that allow to generate the models more easily.
+The main class of all 3D models is *Obj3D* and is located inside the *NuevaClase.py* file available in [Mechatronic Documentation](https://github.com/davidmubernal/Mechatronic_Documentation/blob/master/src/func/NuevaClase.py). This class contains the properties and functions that allow to generate the models more easily.
 
 ![](/parts/img/UML_simplificado.jpg)
 
