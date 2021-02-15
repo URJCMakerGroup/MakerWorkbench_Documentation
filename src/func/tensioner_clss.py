@@ -40,7 +40,7 @@
 #                            :
 #                           axis_d
 #
-# min_width = 1 Mininum width
+# min_width = 1 Minimum width
 #
 #                 .... hold_bas_w ........
 #                :        .hold_w.        :
@@ -208,7 +208,7 @@ class ShpIdlerTensioner (shp_clss.Obj3D):
 
     Attributes:
     -----------
-    All the parameters and attributes of father class SinglePart
+    All the parameters and attributes of parent class SinglePart
 
     Dimensional attributes:
     tens_d : float
@@ -692,40 +692,31 @@ class IdlerTensionerSet (fc_clss.PartsSet):
     Parameter:
     ---------
     in_fillet: float
-        Radius of the inner fillets
+        radius of the inner fillets
     pos_d : int
-        Location of pos along the axis_d (0,1,2,3,4,5), see drawing
-
-            * 0: at the back of the holder
-            * 1: at the beginning of the hole for the nut (position for the nut)
-            * 2: at the beginning of the tensioner stroke hole
-            * 3: at the end of the tensioner stroke hole
-            * 4: at the inner end of the bearing. It didnt exist in ShpIdlerTensioner
-              Therefore, from this, numbers change compared with ShpIdlerTensioner
-            * 5: at the center of the idler pulley hole
-              it is 4 in ShpIdlerTensioner)
-            * 6: at the end of the piece (it is 5 in ShpIdlerTensioner)
-
+        location of pos along the axis_d (0,1,2,3,4,5), see drawing
+        0: at the back of the holder
+        1: at the beginning of the hole for the nut (position for the nut)
+        2: at the beginning of the tensioner stroke hole
+        3: at the end of the tensioner stroke hole
+        4: at the inner end of the bearing. It didn't exist in ShpIdlerTensioner
+           Therefore, from this, numbers change compared with ShpIdlerTensioner
+        5: at the center of the idler pulley hole
+           (it is 4 in ShpIdlerTensioner)
+        6: at the end of the piece (it is 5 in ShpIdlerTensioner)
     pos_w : int
-        Location of pos along the axis_w (0,1) almost symmetrical
-
-            * 0: at the center of symmetry
-            * 1: at the end of the tensioner along axis_w
-            * 2: at the end of the larger washer along axis_w
-
+        location of pos along the axis_w (0,1) almost symmetrical
+        0: at the center of symmetry
+        1: at the end of the tensioner along axis_w
+        2: at the end of the larger washer along axis_w
     pos_h : int
-        Location of pos along the axis_h (0,1,2), symmetrical
-
-            * 0: at the center of symmetry
-            * 1: at the inner base: where the base of the pulley goes
-            * 2: at the bottom of the piece
-
+        location of pos along the axis_h (0,1,2), symmetrical
+        0: at the center of symmetry
+        1: at the inner base: where the base of the pulley goes
+        2: at the bottom of the piece
     pos : FreeCAD.Vector
-        Position of the piece
-
-
+        position of the piece
     See drawing:
-    ::
 
                       nut_holder_thick:  :nut_holder_thick
                                      +:  :+
@@ -782,6 +773,8 @@ class IdlerTensionerSet (fc_clss.PartsSet):
     tens_d_inside : float
         length (depth) of the idler tensioner that can be inside the holder
 
+
+
     """
 
     def __init__(self, 
@@ -822,7 +815,7 @@ class IdlerTensionerSet (fc_clss.PartsSet):
         self.w0_cen = 1
         self.h0_cen = 1
 
-        # before creating the idler_pulley and the tensioner, we dont
+        # before creating the idler_pulley and the tensioner, we don't
         # know their dimensions and positions. We could calculate them
         # here, but it would be to calculate twice. Instead, we create
         # them, and then move them and calculate the vectors h_o, d_o, w_o
@@ -838,7 +831,7 @@ class IdlerTensionerSet (fc_clss.PartsSet):
         #self.pulley_h =  pulley.tot_h
         #self.pulley_r_in =  pulley.r_in
         #self.pulley_r_ext =  pulley.r_ext
-        # Creation of the tensioner, with pos_h,d,w = 0 because we dont know
+        # Creation of the tensioner, with pos_h,d,w = 0 because we don't know
         # the dimensions yet
         idler_tens_part =  PartIdlerTensioner(
                                      idler_h     = pulley.tot_h ,
@@ -917,13 +910,13 @@ class IdlerTensionerSet (fc_clss.PartsSet):
         self.h_o[3] = idler_tens_part.h_o[2]
 
         # Now we place the idler tensioner according to pos_d,w,h
-        # argument 1 means that pos_o wasnt in place and has to be
+        # argument 1 means that pos_o wasn't in place and has to be
         # adjusted
         self.set_pos_o(adjust = 1)
 
         # Now we have the position where the origin is, but:
-        # - we havent located the idler_tensioner at pos_o
-        # - we havent located the pulley at pos_o + dist to axis
+        # - we haven't located the idler_tensioner at pos_o
+        # - we haven't located the pulley at pos_o + dist to axis
 
         # we should have call PartIdlerTensioner (pos = self.pos_o)
         # instead, we have it at (pos = self.pos)
@@ -1120,7 +1113,7 @@ class ShpTensionerHolder (shp_clss.Obj3D):
     in_fillet: float
         radius of the inner fillets
     boltaluprof_mtr : integer (could be float 2.5)
-        diameter (metric) of the bolt that attachs the tensioner holder to the
+        diameter (metric) of the bolt that attaches the tensioner holder to the
         aluminum profile (or whatever is attached to)
     bolttens_mtr : integer (could be float 2.5)
         diameter (metric) of the bolt for the tensioner
@@ -1188,7 +1181,7 @@ class ShpTensionerHolder (shp_clss.Obj3D):
 
     Attributes:
     -----------
-    All the parameters and attributes of father class SinglePart
+    All the parameters and attributes of parent class SinglePart
 
     prnt_ax : FreeCAD.Vector
         Best axis to print (normal direction, pointing upwards)
@@ -1775,69 +1768,68 @@ class PartTensionerHolder (fc_clss.SinglePart, ShpTensionerHolder):
 
 class TensionerSet (fc_clss.PartsSet):
     """ Set composed of the idler pulley and the tensioner
-    ::
 
-                               axis_h            axis_h 
-                                :                  :
-                             ___:___               :______________
-                            |  ___  |              |  __________  |---
-                            | |   | |              | |__________| | : |
-     .---- belt_pos_h------/| |___| |\             |________      |---
-     :                    / |_______| \            |        |    /      
-     :             . ____/  |       |  \____       |________|  /
-     :..hold_bas_h:.|_::____|_______|____::_|      |___::___|/......>axis_d
-    
-                                 wall_thick
-                                   +
-                                  : :         
-                     _____________:_:________.........>axis_w
-                    |    |  | :   : |  |     |    :
-                    |  O |  | :   : |  |  O  |    + aluprof_w
-                    |____|__| :   : |__|_____|....:
-                            | :   : |
-                            |_:___:_|
-                              |   |
-                               \_/
-                                :
-                                :
-                              axis_d
- 
                               axis_h            axis_h 
-                                :         pos_h    :
-     ....................... ___:___         4     :______________
-     :                      |  ___  |              |  __________  |---
-     :                      | |   | |        3     | |__________| | : |
-     :+hold_h              /| |___| |\       2     |________      |---
-     :                    / |_______| \            |        |    /      
-     :             . ____/  |       |  \____ 1     |________|  /
-     :..hold_bas_h:.|_::____|___o___|____::_|0     o___::___|/......>axis_d
-                                                   01   2   3     4 5 6: pos_d
-  
-                                       having the tensioner extended:    7  8
-                                                     _____________       :  :
-                                                                  |---------
-                                                                  |      :  |
-                                                                  |---------
-    
-    
-                     .... hold_bas_w ........
-                    :        .hold_w.        :
-                    :       :    wall_thick  :
-                    :       :      +         :
-                    :       :     : :        :
-           pos_w:   4__3____2_1_0_:_:________:........>axis_w
-                    |    |  | :   : |  |     |    :
-                    |  O |  | :   : |  |  O  |    + hold_bas_l
-                    |____|__| :   : |__|_____|....:
-                            | :   : |
-                            |_:___:_|
-                              |   |
-                               \_/
-                                :
-                                :
-                              axis_d
+                               :                  :
+                            ___:___               :______________
+                           |  ___  |              |  __________  |---
+                           | |   | |              | |__________| | : |
+    .---- belt_pos_h------/| |___| |\             |________      |---
+    :                    / |_______| \            |        |    /      
+    :             . ____/  |       |  \____       |________|  /
+    :..hold_bas_h:.|_::____|_______|____::_|      |___::___|/......>axis_d
+   
+                                wall_thick
+                                  +
+                                 : :         
+                    _____________:_:________.........>axis_w
+                   |    |  | :   : |  |     |    :
+                   |  O |  | :   : |  |  O  |    + aluprof_w
+                   |____|__| :   : |__|_____|....:
+                           | :   : |
+                           |_:___:_|
+                             |   |
+                              \_/
+                               :
+                               :
+                             axis_d
+
+                             axis_h            axis_h 
+                               :         pos_h    :
+    ....................... ___:___         4     :______________
+    :                      |  ___  |              |  __________  |---
+    :                      | |   | |        3     | |__________| | : |
+    :+hold_h              /| |___| |\       2     |________      |---
+    :                    / |_______| \            |        |    /      
+    :             . ____/  |       |  \____ 1     |________|  /
+    :..hold_bas_h:.|_::____|___o___|____::_|0     o___::___|/......>axis_d
+                                                  01   2   3     4 5 6: pos_d
  
-         pos_o (origin) is at pos_d=0, pos_w=0, pos_h=0, It marked with o
+                                      having the tensioner extended:    7  8
+                                                    _____________       :  :
+                                                                 |---------
+                                                                 |      :  |
+                                                                 |---------
+   
+   
+                    .... hold_bas_w ........
+                   :        .hold_w.        :
+                   :       :    wall_thick  :
+                   :       :      +         :
+                   :       :     : :        :
+          pos_w:   4__3____2_1_0_:_:________:........>axis_w
+                   |    |  | :   : |  |     |    :
+                   |  O |  | :   : |  |  O  |    + hold_bas_l
+                   |____|__| :   : |__|_____|....:
+                           | :   : |
+                           |_:___:_|
+                             |   |
+                              \_/
+                               :
+                               :
+                             axis_d
+
+        pos_o (origin) is at pos_d=0, pos_w=0, pos_h=0, It marked with o
 
     Parameters
     ----------
@@ -1847,103 +1839,90 @@ class TensionerSet (fc_clss.PartsSet):
         The position along axis_h where the idler pulley that conveys the belt
         starts. THIS POSITION IS CENTERED at the ilder pulley
     tens_h : float
-        Height of the ilder tensioner
+        height of the ilder tensioner
     tens_w : float
-        Width of the ilder tensioner
+        width of the ilder tensioner
     tens_d_inside : float
         Max length (depth) of the ilder tensioner that is inside the holder
     wall_thick : float
         Thickness of the walls
     in_fillet: float
-        Radius of the inner fillets
+        radius of the inner fillets
     boltaluprof_mtr : float
-        Diameter (metric) of the bolt that attachs the tensioner holder to the
+        diameter (metric) of the bolt that attaches the tensioner holder to the
         aluminum profile (or whatever is attached to)
     bolttens_mtr : float
-        Diameter (metric) of the bolt for the tensioner
+        diameter (metric) of the bolt for the tensioner
     hold_bas_h : float
-        Height of the base of the tensioner holder
+        height of the base of the tensioner holder
         if 0, it will take wall_thick
     opt_tens_chmf : int
-        * 1: there is a chamfer at every edge of tensioner, inside the holder
-        * 0: there is a chamfer only at the edges along axis_w, not along axis_h
-
+        1: there is a chamfer at every edge of tensioner, inside the holder
+        0: there is a chamfer only at the edges along axis_w, not along axis_h
     hold_hole_2sides : int
         In the tensioner holder there is a hole to see inside, it can be at
         each side of the holder or just on one side
-
-            * 0: only at one side
-            * 1: at both sides
-
-    min_width: int
-        Make the rim the minimum: the diameter of the washer
-            
-            * 0: normal width: the width of the aluminum profile
-            * 1: minimum width: diameter of the washer
-
+        0: only at one side
+        1: at both sides
+    min_width: make the rim the minimum: the diameter of the washer
+        0: normal width: the width of the aluminum profile
+        1: minimum width: diameter of the washer
     tol : float
         Tolerances to print
     axis_d : FreeCAD.Vector
-        Depth vector of coordinate system
+        depth vector of coordinate system
     axis_w : FreeCAD.Vector
-        Width vector of coordinate system
+        width vector of coordinate system
         if V0: it will be calculated using the cross product: axis_l x axis_h
     axis_h : FreeCAD.Vector
-        Height vector of coordinate system
+        height vector of coordinate system
     pos_d : int
-        Location of pos along the axis_d
-
-            * 0: at the back of the holder
-            * 1: at the place where the tensioner can reach all the way inside
-            * 2: at the center of the base along axis_d, where the bolts to attach
-            *    the holder base to the aluminum profile
-            * 3: at the end of the base
-            * 4: at the end of the holder
-            * 5: at the center of the pulley
-            * 6: at the end of the idler tensioner
-            * 7: at the center of the pulley, when idler is all the way out
-            * 8: at the end of the idler tensioner, whenit is all the way out
-
+        location of pos along the axis_d
+        0: at the back of the holder
+        1: at the place where the tensioner can reach all the way inside
+        2: at the center of the base along axis_d, where the bolts to attach
+           the holder base to the aluminum profile
+        3: at the end of the base
+        4: at the end of the holder
+        5: at the center of the pulley
+        6: at the end of the idler tensioner
+        7: at the center of the pulley, when idler is all the way out
+        8: at the end of the idler tensioner, whenit is all the way out
     pos_w : int
-        Location of pos along the axis_w
-
-            * 0: at the center of symmetry
-            * 1: at the inner walls of the holder, which is the pulley radius
-            * 2: at the end of the holder (the top part, where the base starts)
-            * 3: at the center of the bolt holes to attach the holder base to the
-              aluminum profile
-            * 4: at the end of the piece along axis_w
+        location of pos along the axis_w
+        0: at the center of symmetry
+        1: at the inner walls of the holder, which is the pulley radius
+        2: at the end of the holder (the top part, where the base starts)
+        3: at the center of the bolt holes to attach the holder base to the
+           aluminum profile
+        4: at the end of the piece along axis_w
               axes have direction. So if pos_w == 3, the piece will be drawn
               along the positive side of axis_w
-
     pos_h : int
-        Location of pos along the axis_h (0,1,2,3,4)
-        
-            * 0: at the bottom of the holder
-            * 1: at the top of the base of the holder (for the bolts)
-            * 2: at the bottom of the hole where the idler tensioner goes
-            * 3: at the middle point of the hole where the idler tensioner goes
-            * 4: at the top of the holder
-
+        location of pos along the axis_h (0,1,2,3,4)
+        0: at the bottom of the holder
+        1: at the top of the base of the holder (for the bolts)
+        2: at the bottom of the hole where the idler tensioner goes
+        3: at the middle point of the hole where the idler tensioner goes
+        4: at the top of the holder
     pos : FreeCAD.Vector
         position of the piece
 
-    Paramenters for the set
+    Parameters for the set
 
     tens_in_ratio : float
         from 0 to 1, the ratio of the stroke that the tensioner is inside.
-
-            * if 1: it is all the way inside
-            * if 0: it is all the way outside (all the tens_stroke)
-
-    Note
-    ----
-    All the parameters and attributes of father class SinglePart
+        if 1: it is all the way inside
+        if 0: it is all the way outside (all the tens_stroke)
 
 
-    Attributes
+
+
+
+    Attributes:
     -----------
-    
+    All the parameters and attributes of parent class SinglePart
+
     prnt_ax : FreeCAD.Vector
         Best axis to print (normal direction, pointing upwards)
     d0_cen : int
@@ -1951,15 +1930,15 @@ class TensionerSet (fc_clss.PartsSet):
     h0_cen : int
         indicates if pos_h = 0 (pos_d, pos_w) is at the center along
         axis_h, axis_d, axis_w, or if it is at the end.
-        
-            * 1 : at the center (symmetrical, or almost symmetrical)
-            * 0 : at the end
-
+        1 : at the center (symmetrical, or almost symmetrical)
+        0 : at the end
     tot_d : float
         total depth, including the idler tensioner
     tot_d_extend : float
         total depth including the idler tensioner, having it extended
 
+
+    Parameters:
     """
 
     def __init__(self,
@@ -2079,13 +2058,13 @@ class TensionerSet (fc_clss.PartsSet):
                                    
 
         # Now we place the idler tensioner according to pos_d,w,h
-        # argument 1 means that pos_o wasnt in place and has to be
+        # argument 1 means that pos_o wasn't in place and has to be
         # adjusted
         self.set_pos_o(adjust = 1)
 
         # Now we have the position where the origin is, but:
-        # - we havent located the idler_tensioner at pos_o
-        # - we havent located the pulley at pos_o + dist to axis
+        # - we haven't located the idler_tensioner at pos_o
+        # - we haven't located the pulley at pos_o + dist to axis
 
         # we should have call PartIdlerTensioner (pos = self.pos_o)
         # instead, we have it at (pos = self.pos)

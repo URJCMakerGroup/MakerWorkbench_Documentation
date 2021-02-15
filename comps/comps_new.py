@@ -1,3 +1,20 @@
+# ----------------------------------------------------------------------------
+# -- Components
+# -- comps library
+# -- Python classes that creates useful parts for FreeCAD
+# ----------------------------------------------------------------------------
+# -- (c) Felipe Machado
+# -- Area of Electronics. Rey Juan Carlos University (urjc.es)
+# -- October-2016
+# ----------------------------------------------------------------------------
+# -- (c) David Muñoz
+# -- Update
+# -- Area of Electronics. Rey Juan Carlos University (urjc.es)
+# -- February-2021
+# ----------------------------------------------------------------------------
+# --- LGPL Licence
+# ----------------------------------------------------------------------------
+
 import FreeCAD
 import Part
 import DraftVecUtils
@@ -169,7 +186,7 @@ class Sk_dir (Obj3D):
         # Bolt's head radius
         tbolt_head_r = (self.holtol
                         * kcomp.D912_HEAD_D[skdict['tbolt']])/2.0
-        # Bolt's head lenght
+        # Bolt's head length
         tbolt_head_l = (self.holtol
                         * kcomp.D912_HEAD_L[skdict['tbolt']] )
         # Mounting bolt radius with added tolerance
@@ -221,7 +238,7 @@ class Sk_dir (Obj3D):
             ref2cen_d = DraftVecUtils.scale(axis_d, sk_d/2.) # d_o[1]
             ref2end_d = V0 # d_o[0]
 
-        # TODO: Utilizar este sistema
+        # TODO: Use the newe method:
         # super().get_pos_dwh(pos_d,pos_w,pos_h)
         basecen_pos = self.pos + ref2base_h + ref2cen_w + ref2cen_d
         # Making the tall box:
@@ -429,7 +446,7 @@ class AluProf (Obj3D):
               ||                :  :        : middle point considering total
               | thickness       :  :        :  length (xtr_nd + depth + xtr_d)
               |                 :  :        :
-               inner square     :  :         middle poit considering depth only
+               inner square     :  :         middle point considering depth only
                                 :  :
                                 :   start point, not counting xtr_nd
                                 :
@@ -620,7 +637,7 @@ class PartLinGuideBlock (Obj3D):
         it is not necessary, but if not provided, the block will not have
         the rail hole
     axis_d: FreeCAD.Vector
-        The axis along the depth (lenght) of the block (and rail) 
+        The axis along the depth (length) of the block (and rail) 
     axis_w: FreeCAD.Vector
         The axis along the width of the block
     axis_h: FreeCAD.Vector
