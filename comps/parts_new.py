@@ -603,7 +603,7 @@ class SimpleEndstopHolder (Obj3D):
             # nut axis: (nut axis of the hexagon vertex
             hex_verx = axis_d
         else:
-            # Taking the minimum lenght, very tight
+            # Taking the minimum length, very tight
             tot_d = (3*mbolt_head_r + rail_l + estp_d - holder_out
                      + estp_pin_d/2.)
             hex_verx = axis_w # less space
@@ -656,6 +656,10 @@ class SimpleEndstopHolder (Obj3D):
         self.d_o[2] = self.vec_d(2* mbolt_head_r + rail_l)
         self.d_o[3] = self.vec_d((tot_d + holder_out) - (estp_d - estp_bolt_dist))
         self.d_o[4] = self.vec_d(tot_d + holder_out)
+        if estop_2ndbolt_topdist > 0 :
+            self.d_o[5] = self.vec_d(tot_d + holder_out - estop_2ndbolt_topdist)
+        else:
+            self.d_o[5] = self.d_o[3]
 
         # vectors from the origin to the points along axis_w:
         self.w_o[0] = V0
@@ -683,22 +687,24 @@ class SimpleEndstopHolder (Obj3D):
             # same as 4: (to avoid errors) it will be the same hole
             dis_1_6_d = dis_1_4_d
 
-        fc_1_2_d = DraftVecUtils.scale(axis_d, dis_1_2_d) # d_o[1]
-        fc_1_3_d = DraftVecUtils.scale(axis_d, dis_1_3_d) # d_o[2]
-        fc_1_4_d = DraftVecUtils.scale(axis_d, dis_1_4_d) # d_o[3]
-        fc_1_5_d = DraftVecUtils.scale(axis_d, dis_1_5_d) # d_o[4]
-        fc_1_6_d = DraftVecUtils.scale(axis_d, dis_1_6_d) # d_o[5]
+        fc_1_2_d = self.d_o[1]
+        fc_1_3_d = self.d_o[2]
+        fc_1_4_d = self.d_o[3]
+        fc_1_5_d = self.d_o[4]
+        fc_1_6_d = self.d_o[5]
         # vector from the reference point to point 1 on axis_d
-        if pos_d == 1: 
+        if pos_d == 0: 
             refto_1_d = V0
-        elif pos_d == 2:
+        elif pos_d == 1:
             refto_1_d = fc_1_2_d.negative()
-        elif pos_d == 3:
+        elif pos_d == 2:
             refto_1_d = fc_1_3_d.negative()
-        elif pos_d == 4:
+        elif pos_d == 3:
             refto_1_d = fc_1_4_d.negative()
-        elif pos_d == 5:
+        elif pos_d == 4:
             refto_1_d = fc_1_5_d.negative()
+        elif pos_d == 5:
+            refto_1_d = fc_1_6_d.negative()
         else:
             logger.error('wrong reference point')
 
@@ -717,17 +723,17 @@ class SimpleEndstopHolder (Obj3D):
         dis_1_4_w = tot_w/2.
         dis_1_3_w = dis_1_4_w - 2* mbolt_head_r
 
-        fc_1_2_w = DraftVecUtils.scale(axis_w_n, dis_1_2_w) # w_o[1]
-        fc_1_3_w = DraftVecUtils.scale(axis_w_n, dis_1_3_w) # w_o[2]
-        fc_1_4_w = DraftVecUtils.scale(axis_w_n, dis_1_4_w) # w_o[3]
+        fc_1_2_w = self.w_o[1]
+        fc_1_3_w = self.w_o[2]
+        fc_1_4_w = self.w_o[3]
         # vector from the reference point to point 1 on axis_w
-        if pos_w == 1: 
+        if pos_w == 0: 
             refto_1_w = V0
-        elif pos_w == 2:
+        elif pos_w == 1:
             refto_1_w = fc_1_2_w.negative()
-        elif pos_w == 3:
+        elif pos_w == 2:
             refto_1_w = fc_1_3_w.negative()
-        elif pos_w == 4:
+        elif pos_w == 3:
             refto_1_w = fc_1_4_w.negative()
         else:
             logger.error('wrong reference point')
@@ -735,9 +741,9 @@ class SimpleEndstopHolder (Obj3D):
         # ------------ DISTANCES ON AXIS_H
         fc_1_2_h = DraftVecUtils.scale(axis_h, tot_h)
         fc_2_1_h = fc_1_2_h.negative()
-        if pos_h == 1: 
-            refto_2_h = fc_1_2_h # h_o[1]
-        elif pos_h == 2:
+        if pos_h == 0: 
+            refto_2_h = self.h_o[1]
+        elif pos_h == 1:
             refto_2_h = V0
         else:
             logger.error('wrong reference point')
@@ -777,7 +783,7 @@ class SimpleEndstopHolder (Obj3D):
             shp_estpbolt = fcfun.shp_bolt_dir (
                              r_shank= (estp_bolt_d+TOL)/2.,
                              l_bolt = tot_h,
-                           # 1 TOL didnt fit
+                           # 1 TOL didn't fit
                            r_head = (kcomp.NUT_D934_D[estp_bolt_d]+2*TOL)/2.,
                              l_head = endstop_nut_l,
                              hex_head = 1,
@@ -793,7 +799,7 @@ class SimpleEndstopHolder (Obj3D):
                 shp_estpbolt = fcfun.shp_bolt_dir (
                              r_shank= (estp_bolt_d+TOL)/2.,
                              l_bolt = tot_h,
-                           # 1 TOL didnt fit
+                           # 1 TOL didn't fit
                            r_head = (kcomp.NUT_D934_D[estp_bolt_d]+2*TOL)/2.,
                              l_head = endstop_nut_l,
                              hex_head = 1,

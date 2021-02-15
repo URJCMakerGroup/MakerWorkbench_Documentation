@@ -53,7 +53,7 @@ class StopHolder_TaskPanel:
         width_layout.addWidget(self.Width_Value)
 
         # ---- Height ----
-        self.Heigth_Label = QtWidgets.QLabel("Heigth:")
+        self.Heigth_Label = QtWidgets.QLabel("Height:")
         self.Heigth_Value = QtWidgets.QDoubleSpinBox()
         self.Heigth_Value.setValue(31)
         self.Heigth_Value.setSuffix("mm")
@@ -62,7 +62,7 @@ class StopHolder_TaskPanel:
         height_layout.addWidget(self.Heigth_Label)
         height_layout.addWidget(self.Heigth_Value)
 
-        # ---- Thikness ----
+        # ---- Thickness ----
         self.Thickness_Label = QtWidgets.QLabel("Thickness:")
         self.Thickness_Value = QtWidgets.QDoubleSpinBox()
         self.Thickness_Value.setValue(4)
@@ -244,7 +244,7 @@ class StopHolder_Dialog:
                 FreeCAD.ActiveDocument.removeObject('Point_d_w_h')
 
         Width = self.StopHolder.Width_Value.value()
-        Heigth = self.StopHolder.Heigth_Value.value()
+        Height = self.StopHolder.Heigth_Value.value()
         Thick = self.StopHolder.Thickness_Value.value()
         Bolt_values = {0: 3,
                        1: 4,
@@ -265,7 +265,7 @@ class StopHolder_Dialog:
         
         if ortonormal_axis(axis_d,axis_w,axis_h) == True:
             hallestop_holder(stp_w = Width,
-                                stp_h = Heigth,
+                                stp_h = Height,
                                 base_thick = Thick,
                                 sup_thick = Thick,
                                 bolt_base_d = Bolt, #metric of the bolt 

@@ -144,8 +144,8 @@ class MakerWorkbench (Workbench):
 
         modList = ["ChangePosExport",
                    "Assembly",
-                   "New_Internal_Point",
-                   "test"]
+                   "New_Internal_Point"]#,
+                   #"test"]
 
         # +-------------------------------+
         # |                               |

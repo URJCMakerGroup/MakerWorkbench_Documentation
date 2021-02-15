@@ -140,16 +140,16 @@ class FilterStage_TaskPanel:
         rail_layout.addWidget(self.motor_high_Label)
         rail_layout.addWidget(self.motor_high_Value)
 
-        # ---- Thikness ----
-        self.Thikness_Label = QtWidgets.QLabel("Motor holder thikness:")
-        self.Thikness_Value = QtWidgets.QDoubleSpinBox()
-        self.Thikness_Value.setValue(3)
-        self.Thikness_Value.setMinimum(2)
-        self.Thikness_Value.setSuffix(' mm')
+        # ---- Thickness ----
+        self.Thickness_Label = QtWidgets.QLabel("Motor holder thickness:")
+        self.Thickness_Value = QtWidgets.QDoubleSpinBox()
+        self.Thickness_Value.setValue(3)
+        self.Thickness_Value.setMinimum(2)
+        self.Thickness_Value.setSuffix(' mm')
 
-        thikness_layout = QtWidgets.QHBoxLayout()
-        thikness_layout.addWidget(self.Thikness_Label)
-        thikness_layout.addWidget(self.Thikness_Value)
+        thickness_layout = QtWidgets.QHBoxLayout()
+        thickness_layout.addWidget(self.Thickness_Label)
+        thickness_layout.addWidget(self.Thickness_Value)
 
         # ---- Placement ----
         self.label_position = QtWidgets.QLabel("Placement ")
@@ -196,7 +196,7 @@ class FilterStage_TaskPanel:
         main_layout.addLayout(nut_layout)
         main_layout.addLayout(nema_holder_layout)
         main_layout.addLayout(rail_layout)
-        main_layout.addLayout(thikness_layout)
+        main_layout.addLayout(thickness_layout)
         main_layout.addLayout(placement_layout)
 
         self.track = self.v.addEventCallback("SoEvent",self.position)
@@ -208,7 +208,7 @@ class FilterStage_TaskPanel:
             if 'Point_d_w_h' == obj.Name:
                 FreeCAD.ActiveDocument.removeObject('Point_d_w_h')
 
-        self.selec_base = {0: 10, 1: 15, 2: 20, 3: 30, 4: 40}
+        self.selec_base = {0: 5, 1: 10, 2: 15, 3: 20, 4: 30, 5: 40}
         move_l = self.move_l_Value.value()
         #Filter holder
         Filter_Length = self.Filter_Length_Value.value()
@@ -222,7 +222,7 @@ class FilterStage_TaskPanel:
         SizeHolder = {0:8, 1:11, 2:14, 3:17, 4:23, 5:34, 6:42}
         size_motor = SizeHolder[self.ComboBox_Size_Holder.currentIndex()]
         h_motor=self.motor_high_Value.value()
-        thik_motor = self.Thikness_Value.value()
+        thik_motor = self.Thickness_Value.value()
 
         pos = FreeCAD.Vector(self.pos_x.value(), self.pos_y.value(), self.pos_z.value())
 
